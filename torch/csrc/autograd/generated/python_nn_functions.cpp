@@ -1,22 +1,21 @@
-#include "python_nn_functions.h"
-
 // @generated from tools/autograd/templates/python_nn_functions.cpp
-
 
 #include "torch/csrc/Device.h"
 #include "torch/csrc/DynamicTypes.h"
 #include "torch/csrc/Exceptions.h"
+#include "torch/csrc/autograd/python_nn_functions.h"
 #include "torch/csrc/autograd/python_variable.h"
 #include "torch/csrc/autograd/utils/wrap_outputs.h"
 #include "torch/csrc/autograd/utils/python_arg_parsing.h"
 #include "torch/csrc/utils/python_arg_parser.h"
 #include "torch/csrc/utils/structseq.h"
 
-#include "python_nn_functions_dispatch.h"
-
 using at::Tensor;
 using at::Scalar;
 using at::MemoryFormat;
+using at::Generator;
+using at::IntArrayRef;
+
 using namespace torch::autograd::utils;
 
 namespace torch { namespace autograd {
@@ -54,7 +53,7 @@ static PyObject * THPVariable__parse_to(PyObject* module, PyObject* args, PyObje
   END_HANDLE_TH_ERRORS
 }
 
-\
+// adaptive_avg_pool2d
 static PyObject * THPVariable_adaptive_avg_pool2d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -63,34 +62,28 @@ static PyObject * THPVariable_adaptive_avg_pool2d(PyObject* self_, PyObject* arg
   }, /*traceable=*/true);
 
   ParsedArgs<3> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "adaptive_avg_pool2d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nadaptive_avg_pool2d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(2)) {
-      return wrap(dispatch_adaptive_avg_pool2d(r.tensor(0), r.intlist(1)));
-    } else {
-      return wrap(dispatch_adaptive_avg_pool2d(r.tensor(0), r.intlist(1), r.tensor(2)));
-    }
+  if (_r.isNone(2)) {
+    // aten::adaptive_avg_pool2d(Tensor self, int[2] output_size) -> Tensor
+    auto dispatch_adaptive_avg_pool2d = [](const Tensor & self, IntArrayRef output_size) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::adaptive_avg_pool2d(self, output_size);
+    };
+    return wrap(dispatch_adaptive_avg_pool2d(_r.tensor(0), _r.intlist(1)));
+  } else {
+    // aten::adaptive_avg_pool2d.out(Tensor self, int[2] output_size, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_adaptive_avg_pool2d_out = [](Tensor out, const Tensor & self, IntArrayRef output_size) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::adaptive_avg_pool2d_out(out, self, output_size);
+    };
+    return wrap(dispatch_adaptive_avg_pool2d_out(_r.tensor(2), _r.tensor(0), _r.intlist(1)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// adaptive_avg_pool3d
 static PyObject * THPVariable_adaptive_avg_pool3d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -99,34 +92,28 @@ static PyObject * THPVariable_adaptive_avg_pool3d(PyObject* self_, PyObject* arg
   }, /*traceable=*/true);
 
   ParsedArgs<3> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "adaptive_avg_pool3d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nadaptive_avg_pool3d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(2)) {
-      return wrap(dispatch_adaptive_avg_pool3d(r.tensor(0), r.intlist(1)));
-    } else {
-      return wrap(dispatch_adaptive_avg_pool3d(r.tensor(0), r.intlist(1), r.tensor(2)));
-    }
+  if (_r.isNone(2)) {
+    // aten::adaptive_avg_pool3d(Tensor self, int[3] output_size) -> Tensor
+    auto dispatch_adaptive_avg_pool3d = [](const Tensor & self, IntArrayRef output_size) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::adaptive_avg_pool3d(self, output_size);
+    };
+    return wrap(dispatch_adaptive_avg_pool3d(_r.tensor(0), _r.intlist(1)));
+  } else {
+    // aten::adaptive_avg_pool3d.out(Tensor self, int[3] output_size, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_adaptive_avg_pool3d_out = [](Tensor out, const Tensor & self, IntArrayRef output_size) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::adaptive_avg_pool3d_out(out, self, output_size);
+    };
+    return wrap(dispatch_adaptive_avg_pool3d_out(_r.tensor(2), _r.tensor(0), _r.intlist(1)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// adaptive_max_pool2d
 static PyObject * THPVariable_adaptive_max_pool2d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -134,36 +121,30 @@ static PyObject * THPVariable_adaptive_max_pool2d(PyObject* self_, PyObject* arg
     "adaptive_max_pool2d(Tensor input, IntArrayRef[2] output_size, *, TensorList[2] out=None)",
   }, /*traceable=*/true);
 
-  ParsedArgs<4> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "adaptive_max_pool2d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nadaptive_max_pool2d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  ParsedArgs<3> parsed_args;
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(2)) {
-      return wrap(dispatch_adaptive_max_pool2d(r.tensor(0), r.intlist(1)));
-    } else {
-      auto results = r.tensorlist_n<2>(2);
-      return wrap(dispatch_adaptive_max_pool2d(r.tensor(0), r.intlist(1), results[0], results[1]));
-    }
+  if (_r.isNone(2)) {
+    // aten::adaptive_max_pool2d(Tensor self, int[2] output_size) -> (Tensor, Tensor)
+    auto dispatch_adaptive_max_pool2d = [](const Tensor & self, IntArrayRef output_size) -> std::tuple<Tensor,Tensor> {
+      pybind11::gil_scoped_release no_gil;
+      return at::adaptive_max_pool2d(self, output_size);
+    };
+    return wrap(dispatch_adaptive_max_pool2d(_r.tensor(0), _r.intlist(1)));
+  } else {
+    // aten::adaptive_max_pool2d.out(Tensor self, int[2] output_size, *, Tensor(a!) out, Tensor(b!) indices) -> (Tensor(a!), Tensor(b!))
+    auto out = _r.tensorlist_n<2>(2);
+    auto dispatch_adaptive_max_pool2d_out = [](Tensor & out, Tensor & indices, const Tensor & self, IntArrayRef output_size) -> std::tuple<Tensor,Tensor> {
+      pybind11::gil_scoped_release no_gil;
+      return at::adaptive_max_pool2d_out(out, indices, self, output_size);
+    };
+    return wrap(dispatch_adaptive_max_pool2d_out(out[0], out[1], _r.tensor(0), _r.intlist(1)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// adaptive_max_pool3d
 static PyObject * THPVariable_adaptive_max_pool3d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -171,36 +152,30 @@ static PyObject * THPVariable_adaptive_max_pool3d(PyObject* self_, PyObject* arg
     "adaptive_max_pool3d(Tensor input, IntArrayRef[3] output_size, *, TensorList[2] out=None)",
   }, /*traceable=*/true);
 
-  ParsedArgs<4> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "adaptive_max_pool3d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nadaptive_max_pool3d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  ParsedArgs<3> parsed_args;
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(2)) {
-      return wrap(dispatch_adaptive_max_pool3d(r.tensor(0), r.intlist(1)));
-    } else {
-      auto results = r.tensorlist_n<2>(2);
-      return wrap(dispatch_adaptive_max_pool3d(r.tensor(0), r.intlist(1), results[0], results[1]));
-    }
+  if (_r.isNone(2)) {
+    // aten::adaptive_max_pool3d(Tensor self, int[3] output_size) -> (Tensor, Tensor)
+    auto dispatch_adaptive_max_pool3d = [](const Tensor & self, IntArrayRef output_size) -> std::tuple<Tensor,Tensor> {
+      pybind11::gil_scoped_release no_gil;
+      return at::adaptive_max_pool3d(self, output_size);
+    };
+    return wrap(dispatch_adaptive_max_pool3d(_r.tensor(0), _r.intlist(1)));
+  } else {
+    // aten::adaptive_max_pool3d.out(Tensor self, int[3] output_size, *, Tensor(a!) out, Tensor(b!) indices) -> (Tensor(a!), Tensor(b!))
+    auto out = _r.tensorlist_n<2>(2);
+    auto dispatch_adaptive_max_pool3d_out = [](Tensor & out, Tensor & indices, const Tensor & self, IntArrayRef output_size) -> std::tuple<Tensor,Tensor> {
+      pybind11::gil_scoped_release no_gil;
+      return at::adaptive_max_pool3d_out(out, indices, self, output_size);
+    };
+    return wrap(dispatch_adaptive_max_pool3d_out(out[0], out[1], _r.tensor(0), _r.intlist(1)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// avg_pool2d
 static PyObject * THPVariable_avg_pool2d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -209,34 +184,28 @@ static PyObject * THPVariable_avg_pool2d(PyObject* self_, PyObject* args, PyObje
   }, /*traceable=*/true);
 
   ParsedArgs<8> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "avg_pool2d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\navg_pool2d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(7)) {
-      return wrap(dispatch_avg_pool2d(r.tensor(0), r.intlist(1), r.intlist(2), r.intlist(3), r.toBool(4), r.toBool(5), r.toInt64Optional(6)));
-    } else {
-      return wrap(dispatch_avg_pool2d(r.tensor(0), r.intlist(1), r.intlist(2), r.intlist(3), r.toBool(4), r.toBool(5), r.toInt64Optional(6), r.tensor(7)));
-    }
+  if (_r.isNone(7)) {
+    // aten::avg_pool2d(Tensor self, int[2] kernel_size, int[2] stride=[], int[2] padding=0, bool ceil_mode=False, bool count_include_pad=True, int? divisor_override=None) -> Tensor
+    auto dispatch_avg_pool2d = [](const Tensor & self, IntArrayRef kernel_size, IntArrayRef stride, IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::avg_pool2d(self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
+    };
+    return wrap(dispatch_avg_pool2d(_r.tensor(0), _r.intlist(1), _r.intlist(2), _r.intlist(3), _r.toBool(4), _r.toBool(5), _r.toInt64Optional(6)));
+  } else {
+    // aten::avg_pool2d.out(Tensor self, int[2] kernel_size, int[2] stride=[], int[2] padding=0, bool ceil_mode=False, bool count_include_pad=True, int? divisor_override=None, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_avg_pool2d_out = [](Tensor out, const Tensor & self, IntArrayRef kernel_size, IntArrayRef stride, IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::avg_pool2d_out(out, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
+    };
+    return wrap(dispatch_avg_pool2d_out(_r.tensor(7), _r.tensor(0), _r.intlist(1), _r.intlist(2), _r.intlist(3), _r.toBool(4), _r.toBool(5), _r.toInt64Optional(6)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// avg_pool3d
 static PyObject * THPVariable_avg_pool3d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -245,34 +214,28 @@ static PyObject * THPVariable_avg_pool3d(PyObject* self_, PyObject* args, PyObje
   }, /*traceable=*/true);
 
   ParsedArgs<8> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "avg_pool3d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\navg_pool3d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(7)) {
-      return wrap(dispatch_avg_pool3d(r.tensor(0), r.intlist(1), r.intlist(2), r.intlist(3), r.toBool(4), r.toBool(5), r.toInt64Optional(6)));
-    } else {
-      return wrap(dispatch_avg_pool3d(r.tensor(0), r.intlist(1), r.intlist(2), r.intlist(3), r.toBool(4), r.toBool(5), r.toInt64Optional(6), r.tensor(7)));
-    }
+  if (_r.isNone(7)) {
+    // aten::avg_pool3d(Tensor self, int[3] kernel_size, int[3] stride=[], int[3] padding=0, bool ceil_mode=False, bool count_include_pad=True, int? divisor_override=None) -> Tensor
+    auto dispatch_avg_pool3d = [](const Tensor & self, IntArrayRef kernel_size, IntArrayRef stride, IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::avg_pool3d(self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
+    };
+    return wrap(dispatch_avg_pool3d(_r.tensor(0), _r.intlist(1), _r.intlist(2), _r.intlist(3), _r.toBool(4), _r.toBool(5), _r.toInt64Optional(6)));
+  } else {
+    // aten::avg_pool3d.out(Tensor self, int[3] kernel_size, int[3] stride=[], int[3] padding=0, bool ceil_mode=False, bool count_include_pad=True, int? divisor_override=None, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_avg_pool3d_out = [](Tensor out, const Tensor & self, IntArrayRef kernel_size, IntArrayRef stride, IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::avg_pool3d_out(out, self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
+    };
+    return wrap(dispatch_avg_pool3d_out(_r.tensor(7), _r.tensor(0), _r.intlist(1), _r.intlist(2), _r.intlist(3), _r.toBool(4), _r.toBool(5), _r.toInt64Optional(6)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// binary_cross_entropy
 static PyObject * THPVariable_binary_cross_entropy(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -281,34 +244,28 @@ static PyObject * THPVariable_binary_cross_entropy(PyObject* self_, PyObject* ar
   }, /*traceable=*/true);
 
   ParsedArgs<5> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "binary_cross_entropy", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nbinary_cross_entropy";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(4)) {
-      return wrap(dispatch_binary_cross_entropy(r.tensor(0), r.tensor(1), r.tensor(2), r.toInt64(3)));
-    } else {
-      return wrap(dispatch_binary_cross_entropy(r.tensor(0), r.tensor(1), r.tensor(2), r.toInt64(3), r.tensor(4)));
-    }
+  if (_r.isNone(4)) {
+    // aten::binary_cross_entropy(Tensor self, Tensor target, Tensor? weight=None, int reduction=Mean) -> Tensor
+    auto dispatch_binary_cross_entropy = [](const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::binary_cross_entropy(self, target, weight, reduction);
+    };
+    return wrap(dispatch_binary_cross_entropy(_r.tensor(0), _r.tensor(1), _r.tensor(2), _r.toInt64(3)));
+  } else {
+    // aten::binary_cross_entropy.out(Tensor self, Tensor target, Tensor? weight=None, int reduction=Mean, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_binary_cross_entropy_out = [](Tensor out, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::binary_cross_entropy_out(out, self, target, weight, reduction);
+    };
+    return wrap(dispatch_binary_cross_entropy_out(_r.tensor(4), _r.tensor(0), _r.tensor(1), _r.tensor(2), _r.toInt64(3)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// col2im
 static PyObject * THPVariable_col2im(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -317,34 +274,28 @@ static PyObject * THPVariable_col2im(PyObject* self_, PyObject* args, PyObject* 
   }, /*traceable=*/true);
 
   ParsedArgs<7> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "col2im", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\ncol2im";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(6)) {
-      return wrap(dispatch_col2im(r.tensor(0), r.intlist(1), r.intlist(2), r.intlist(3), r.intlist(4), r.intlist(5)));
-    } else {
-      return wrap(dispatch_col2im(r.tensor(0), r.intlist(1), r.intlist(2), r.intlist(3), r.intlist(4), r.intlist(5), r.tensor(6)));
-    }
+  if (_r.isNone(6)) {
+    // aten::col2im(Tensor self, int[2] output_size, int[2] kernel_size, int[2] dilation, int[2] padding, int[2] stride) -> Tensor
+    auto dispatch_col2im = [](const Tensor & self, IntArrayRef output_size, IntArrayRef kernel_size, IntArrayRef dilation, IntArrayRef padding, IntArrayRef stride) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::col2im(self, output_size, kernel_size, dilation, padding, stride);
+    };
+    return wrap(dispatch_col2im(_r.tensor(0), _r.intlist(1), _r.intlist(2), _r.intlist(3), _r.intlist(4), _r.intlist(5)));
+  } else {
+    // aten::col2im.out(Tensor self, int[2] output_size, int[2] kernel_size, int[2] dilation, int[2] padding, int[2] stride, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_col2im_out = [](Tensor out, const Tensor & self, IntArrayRef output_size, IntArrayRef kernel_size, IntArrayRef dilation, IntArrayRef padding, IntArrayRef stride) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::col2im_out(out, self, output_size, kernel_size, dilation, padding, stride);
+    };
+    return wrap(dispatch_col2im_out(_r.tensor(6), _r.tensor(0), _r.intlist(1), _r.intlist(2), _r.intlist(3), _r.intlist(4), _r.intlist(5)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// elu
 static PyObject * THPVariable_elu(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -353,34 +304,28 @@ static PyObject * THPVariable_elu(PyObject* self_, PyObject* args, PyObject* kwa
   }, /*traceable=*/true);
 
   ParsedArgs<5> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "elu", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nelu";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(4)) {
-      return wrap(dispatch_elu(r.tensor(0), r.scalar(1), r.scalar(2), r.scalar(3)));
-    } else {
-      return wrap(dispatch_elu(r.tensor(0), r.scalar(1), r.scalar(2), r.scalar(3), r.tensor(4)));
-    }
+  if (_r.isNone(4)) {
+    // aten::elu(Tensor self, Scalar alpha=1, Scalar scale=1, Scalar input_scale=1) -> Tensor
+    auto dispatch_elu = [](const Tensor & self, Scalar alpha, Scalar scale, Scalar input_scale) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::elu(self, alpha, scale, input_scale);
+    };
+    return wrap(dispatch_elu(_r.tensor(0), _r.scalar(1), _r.scalar(2), _r.scalar(3)));
+  } else {
+    // aten::elu.out(Tensor self, Scalar alpha=1, Scalar scale=1, Scalar input_scale=1, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_elu_out = [](Tensor out, const Tensor & self, Scalar alpha, Scalar scale, Scalar input_scale) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::elu_out(out, self, alpha, scale, input_scale);
+    };
+    return wrap(dispatch_elu_out(_r.tensor(4), _r.tensor(0), _r.scalar(1), _r.scalar(2), _r.scalar(3)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// elu_
 static PyObject * THPVariable_elu_(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -389,30 +334,19 @@ static PyObject * THPVariable_elu_(PyObject* self_, PyObject* args, PyObject* kw
   }, /*traceable=*/true);
 
   ParsedArgs<4> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "elu_", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nelu_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    return wrap(dispatch_elu_(r.tensor(0), r.scalar(1), r.scalar(2), r.scalar(3)));
-  }
+  // aten::elu_(Tensor(a!) self, Scalar alpha=1, Scalar scale=1, Scalar input_scale=1) -> Tensor(a!)
+  auto dispatch_elu_ = [](Tensor self, Scalar alpha, Scalar scale, Scalar input_scale) -> Tensor {
+    pybind11::gil_scoped_release no_gil;
+    return at::elu_(self, alpha, scale, input_scale);
+  };
+  return wrap(dispatch_elu_(_r.tensor(0), _r.scalar(1), _r.scalar(2), _r.scalar(3)));
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// fractional_max_pool2d
 static PyObject * THPVariable_fractional_max_pool2d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -420,36 +354,30 @@ static PyObject * THPVariable_fractional_max_pool2d(PyObject* self_, PyObject* a
     "fractional_max_pool2d(Tensor input, IntArrayRef[2] kernel_size, IntArrayRef[2] output_size, Tensor random_samples, *, TensorList[2] out=None)",
   }, /*traceable=*/true);
 
-  ParsedArgs<6> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "fractional_max_pool2d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nfractional_max_pool2d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  ParsedArgs<5> parsed_args;
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(4)) {
-      return wrap(dispatch_fractional_max_pool2d(r.tensor(0), r.intlist(1), r.intlist(2), r.tensor(3)));
-    } else {
-      auto results = r.tensorlist_n<2>(4);
-      return wrap(dispatch_fractional_max_pool2d(r.tensor(0), r.intlist(1), r.intlist(2), r.tensor(3), results[0], results[1]));
-    }
+  if (_r.isNone(4)) {
+    // aten::fractional_max_pool2d(Tensor self, int[2] kernel_size, int[2] output_size, Tensor random_samples) -> (Tensor, Tensor)
+    auto dispatch_fractional_max_pool2d = [](const Tensor & self, IntArrayRef kernel_size, IntArrayRef output_size, const Tensor & random_samples) -> std::tuple<Tensor,Tensor> {
+      pybind11::gil_scoped_release no_gil;
+      return at::fractional_max_pool2d(self, kernel_size, output_size, random_samples);
+    };
+    return wrap(dispatch_fractional_max_pool2d(_r.tensor(0), _r.intlist(1), _r.intlist(2), _r.tensor(3)));
+  } else {
+    // aten::fractional_max_pool2d.output(Tensor self, int[2] kernel_size, int[2] output_size, Tensor random_samples, *, Tensor(a!) output, Tensor(b!) indices) -> (Tensor(a!), Tensor(b!))
+    auto out = _r.tensorlist_n<2>(4);
+    auto dispatch_fractional_max_pool2d_out = [](Tensor & output, Tensor & indices, const Tensor & self, IntArrayRef kernel_size, IntArrayRef output_size, const Tensor & random_samples) -> std::tuple<Tensor,Tensor> {
+      pybind11::gil_scoped_release no_gil;
+      return at::fractional_max_pool2d_out(output, indices, self, kernel_size, output_size, random_samples);
+    };
+    return wrap(dispatch_fractional_max_pool2d_out(out[0], out[1], _r.tensor(0), _r.intlist(1), _r.intlist(2), _r.tensor(3)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// fractional_max_pool3d
 static PyObject * THPVariable_fractional_max_pool3d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -457,36 +385,30 @@ static PyObject * THPVariable_fractional_max_pool3d(PyObject* self_, PyObject* a
     "fractional_max_pool3d(Tensor input, IntArrayRef[3] kernel_size, IntArrayRef[3] output_size, Tensor random_samples, *, TensorList[2] out=None)",
   }, /*traceable=*/true);
 
-  ParsedArgs<6> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "fractional_max_pool3d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nfractional_max_pool3d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  ParsedArgs<5> parsed_args;
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(4)) {
-      return wrap(dispatch_fractional_max_pool3d(r.tensor(0), r.intlist(1), r.intlist(2), r.tensor(3)));
-    } else {
-      auto results = r.tensorlist_n<2>(4);
-      return wrap(dispatch_fractional_max_pool3d(r.tensor(0), r.intlist(1), r.intlist(2), r.tensor(3), results[0], results[1]));
-    }
+  if (_r.isNone(4)) {
+    // aten::fractional_max_pool3d(Tensor self, int[3] kernel_size, int[3] output_size, Tensor random_samples) -> (Tensor, Tensor)
+    auto dispatch_fractional_max_pool3d = [](const Tensor & self, IntArrayRef kernel_size, IntArrayRef output_size, const Tensor & random_samples) -> std::tuple<Tensor,Tensor> {
+      pybind11::gil_scoped_release no_gil;
+      return at::fractional_max_pool3d(self, kernel_size, output_size, random_samples);
+    };
+    return wrap(dispatch_fractional_max_pool3d(_r.tensor(0), _r.intlist(1), _r.intlist(2), _r.tensor(3)));
+  } else {
+    // aten::fractional_max_pool3d.output(Tensor self, int[3] kernel_size, int[3] output_size, Tensor random_samples, *, Tensor(a!) output, Tensor(b!) indices) -> (Tensor(a!), Tensor(b!))
+    auto out = _r.tensorlist_n<2>(4);
+    auto dispatch_fractional_max_pool3d_out = [](Tensor & output, Tensor & indices, const Tensor & self, IntArrayRef kernel_size, IntArrayRef output_size, const Tensor & random_samples) -> std::tuple<Tensor,Tensor> {
+      pybind11::gil_scoped_release no_gil;
+      return at::fractional_max_pool3d_out(output, indices, self, kernel_size, output_size, random_samples);
+    };
+    return wrap(dispatch_fractional_max_pool3d_out(out[0], out[1], _r.tensor(0), _r.intlist(1), _r.intlist(2), _r.tensor(3)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// gelu
 static PyObject * THPVariable_gelu(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -495,30 +417,19 @@ static PyObject * THPVariable_gelu(PyObject* self_, PyObject* args, PyObject* kw
   }, /*traceable=*/true);
 
   ParsedArgs<1> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "gelu", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\ngelu";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    return wrap(dispatch_gelu(r.tensor(0)));
-  }
+  // aten::gelu(Tensor self) -> Tensor
+  auto dispatch_gelu = [](const Tensor & self) -> Tensor {
+    pybind11::gil_scoped_release no_gil;
+    return at::gelu(self);
+  };
+  return wrap(dispatch_gelu(_r.tensor(0)));
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// glu
 static PyObject * THPVariable_glu(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -527,34 +438,28 @@ static PyObject * THPVariable_glu(PyObject* self_, PyObject* args, PyObject* kwa
   }, /*traceable=*/true);
 
   ParsedArgs<3> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "glu", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nglu";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(2)) {
-      return wrap(dispatch_glu(r.tensor(0), r.toInt64(1)));
-    } else {
-      return wrap(dispatch_glu(r.tensor(0), r.toInt64(1), r.tensor(2)));
-    }
+  if (_r.isNone(2)) {
+    // aten::glu(Tensor self, int dim=-1) -> Tensor
+    auto dispatch_glu = [](const Tensor & self, int64_t dim) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::glu(self, dim);
+    };
+    return wrap(dispatch_glu(_r.tensor(0), _r.toInt64(1)));
+  } else {
+    // aten::glu.out(Tensor self, int dim=-1, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_glu_out = [](Tensor out, const Tensor & self, int64_t dim) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::glu_out(out, self, dim);
+    };
+    return wrap(dispatch_glu_out(_r.tensor(2), _r.tensor(0), _r.toInt64(1)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// hardtanh
 static PyObject * THPVariable_hardtanh(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -563,34 +468,28 @@ static PyObject * THPVariable_hardtanh(PyObject* self_, PyObject* args, PyObject
   }, /*traceable=*/true);
 
   ParsedArgs<4> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "hardtanh", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nhardtanh";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(3)) {
-      return wrap(dispatch_hardtanh(r.tensor(0), r.scalar(1), r.scalar(2)));
-    } else {
-      return wrap(dispatch_hardtanh(r.tensor(0), r.scalar(1), r.scalar(2), r.tensor(3)));
-    }
+  if (_r.isNone(3)) {
+    // aten::hardtanh(Tensor self, Scalar min_val=-1, Scalar max_val=1) -> Tensor
+    auto dispatch_hardtanh = [](const Tensor & self, Scalar min_val, Scalar max_val) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::hardtanh(self, min_val, max_val);
+    };
+    return wrap(dispatch_hardtanh(_r.tensor(0), _r.scalar(1), _r.scalar(2)));
+  } else {
+    // aten::hardtanh.out(Tensor self, Scalar min_val=-1, Scalar max_val=1, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_hardtanh_out = [](Tensor out, const Tensor & self, Scalar min_val, Scalar max_val) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::hardtanh_out(out, self, min_val, max_val);
+    };
+    return wrap(dispatch_hardtanh_out(_r.tensor(3), _r.tensor(0), _r.scalar(1), _r.scalar(2)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// hardtanh_
 static PyObject * THPVariable_hardtanh_(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -599,30 +498,19 @@ static PyObject * THPVariable_hardtanh_(PyObject* self_, PyObject* args, PyObjec
   }, /*traceable=*/true);
 
   ParsedArgs<3> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "hardtanh_", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nhardtanh_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    return wrap(dispatch_hardtanh_(r.tensor(0), r.scalar(1), r.scalar(2)));
-  }
+  // aten::hardtanh_(Tensor(a!) self, Scalar min_val=-1, Scalar max_val=1) -> Tensor(a!)
+  auto dispatch_hardtanh_ = [](Tensor self, Scalar min_val, Scalar max_val) -> Tensor {
+    pybind11::gil_scoped_release no_gil;
+    return at::hardtanh_(self, min_val, max_val);
+  };
+  return wrap(dispatch_hardtanh_(_r.tensor(0), _r.scalar(1), _r.scalar(2)));
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// im2col
 static PyObject * THPVariable_im2col(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -631,34 +519,28 @@ static PyObject * THPVariable_im2col(PyObject* self_, PyObject* args, PyObject* 
   }, /*traceable=*/true);
 
   ParsedArgs<6> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "im2col", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nim2col";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(5)) {
-      return wrap(dispatch_im2col(r.tensor(0), r.intlist(1), r.intlist(2), r.intlist(3), r.intlist(4)));
-    } else {
-      return wrap(dispatch_im2col(r.tensor(0), r.intlist(1), r.intlist(2), r.intlist(3), r.intlist(4), r.tensor(5)));
-    }
+  if (_r.isNone(5)) {
+    // aten::im2col(Tensor self, int[2] kernel_size, int[2] dilation, int[2] padding, int[2] stride) -> Tensor
+    auto dispatch_im2col = [](const Tensor & self, IntArrayRef kernel_size, IntArrayRef dilation, IntArrayRef padding, IntArrayRef stride) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::im2col(self, kernel_size, dilation, padding, stride);
+    };
+    return wrap(dispatch_im2col(_r.tensor(0), _r.intlist(1), _r.intlist(2), _r.intlist(3), _r.intlist(4)));
+  } else {
+    // aten::im2col.out(Tensor self, int[2] kernel_size, int[2] dilation, int[2] padding, int[2] stride, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_im2col_out = [](Tensor out, const Tensor & self, IntArrayRef kernel_size, IntArrayRef dilation, IntArrayRef padding, IntArrayRef stride) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::im2col_out(out, self, kernel_size, dilation, padding, stride);
+    };
+    return wrap(dispatch_im2col_out(_r.tensor(5), _r.tensor(0), _r.intlist(1), _r.intlist(2), _r.intlist(3), _r.intlist(4)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// l1_loss
 static PyObject * THPVariable_l1_loss(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -667,34 +549,28 @@ static PyObject * THPVariable_l1_loss(PyObject* self_, PyObject* args, PyObject*
   }, /*traceable=*/true);
 
   ParsedArgs<4> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "l1_loss", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nl1_loss";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(3)) {
-      return wrap(dispatch_l1_loss(r.tensor(0), r.tensor(1), r.toInt64(2)));
-    } else {
-      return wrap(dispatch_l1_loss(r.tensor(0), r.tensor(1), r.toInt64(2), r.tensor(3)));
-    }
+  if (_r.isNone(3)) {
+    // aten::l1_loss(Tensor self, Tensor target, int reduction=Mean) -> Tensor
+    auto dispatch_l1_loss = [](const Tensor & self, const Tensor & target, int64_t reduction) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::l1_loss(self, target, reduction);
+    };
+    return wrap(dispatch_l1_loss(_r.tensor(0), _r.tensor(1), _r.toInt64(2)));
+  } else {
+    // aten::l1_loss.out(Tensor self, Tensor target, int reduction=Mean, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_l1_loss_out = [](Tensor out, const Tensor & self, const Tensor & target, int64_t reduction) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::l1_loss_out(out, self, target, reduction);
+    };
+    return wrap(dispatch_l1_loss_out(_r.tensor(3), _r.tensor(0), _r.tensor(1), _r.toInt64(2)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// leaky_relu
 static PyObject * THPVariable_leaky_relu(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -703,34 +579,28 @@ static PyObject * THPVariable_leaky_relu(PyObject* self_, PyObject* args, PyObje
   }, /*traceable=*/true);
 
   ParsedArgs<3> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "leaky_relu", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nleaky_relu";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(2)) {
-      return wrap(dispatch_leaky_relu(r.tensor(0), r.scalar(1)));
-    } else {
-      return wrap(dispatch_leaky_relu(r.tensor(0), r.scalar(1), r.tensor(2)));
-    }
+  if (_r.isNone(2)) {
+    // aten::leaky_relu(Tensor self, Scalar negative_slope=0.01) -> Tensor
+    auto dispatch_leaky_relu = [](const Tensor & self, Scalar negative_slope) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::leaky_relu(self, negative_slope);
+    };
+    return wrap(dispatch_leaky_relu(_r.tensor(0), _r.scalar(1)));
+  } else {
+    // aten::leaky_relu.out(Tensor self, Scalar negative_slope=0.01, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_leaky_relu_out = [](Tensor out, const Tensor & self, Scalar negative_slope) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::leaky_relu_out(out, self, negative_slope);
+    };
+    return wrap(dispatch_leaky_relu_out(_r.tensor(2), _r.tensor(0), _r.scalar(1)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// leaky_relu_
 static PyObject * THPVariable_leaky_relu_(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -739,30 +609,19 @@ static PyObject * THPVariable_leaky_relu_(PyObject* self_, PyObject* args, PyObj
   }, /*traceable=*/true);
 
   ParsedArgs<2> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "leaky_relu_", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nleaky_relu_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    return wrap(dispatch_leaky_relu_(r.tensor(0), r.scalar(1)));
-  }
+  // aten::leaky_relu_(Tensor(a!) self, Scalar negative_slope=0.01) -> Tensor(a!)
+  auto dispatch_leaky_relu_ = [](Tensor self, Scalar negative_slope) -> Tensor {
+    pybind11::gil_scoped_release no_gil;
+    return at::leaky_relu_(self, negative_slope);
+  };
+  return wrap(dispatch_leaky_relu_(_r.tensor(0), _r.scalar(1)));
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// linear
 static PyObject * THPVariable_linear(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -771,30 +630,19 @@ static PyObject * THPVariable_linear(PyObject* self_, PyObject* args, PyObject* 
   }, /*traceable=*/false);
 
   ParsedArgs<3> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "linear", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nlinear";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    return wrap(dispatch_linear(r.tensor(0), r.tensor(1), r.tensor(2)));
-  }
+  // aten::linear(Tensor input, Tensor weight, Tensor? bias=None) -> Tensor
+  auto dispatch_linear = [](const Tensor & input, const Tensor & weight, const Tensor & bias) -> Tensor {
+    pybind11::gil_scoped_release no_gil;
+    return at::linear(input, weight, bias);
+  };
+  return wrap(dispatch_linear(_r.tensor(0), _r.tensor(1), _r.tensor(2)));
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// log_sigmoid
 static PyObject * THPVariable_log_sigmoid(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -803,34 +651,28 @@ static PyObject * THPVariable_log_sigmoid(PyObject* self_, PyObject* args, PyObj
   }, /*traceable=*/true);
 
   ParsedArgs<2> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "log_sigmoid", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nlog_sigmoid";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(1)) {
-      return wrap(dispatch_log_sigmoid(r.tensor(0)));
-    } else {
-      return wrap(dispatch_log_sigmoid(r.tensor(0), r.tensor(1)));
-    }
+  if (_r.isNone(1)) {
+    // aten::log_sigmoid(Tensor self) -> Tensor
+    auto dispatch_log_sigmoid = [](const Tensor & self) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::log_sigmoid(self);
+    };
+    return wrap(dispatch_log_sigmoid(_r.tensor(0)));
+  } else {
+    // aten::log_sigmoid.out(Tensor self, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_log_sigmoid_out = [](Tensor out, const Tensor & self) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::log_sigmoid_out(out, self);
+    };
+    return wrap(dispatch_log_sigmoid_out(_r.tensor(1), _r.tensor(0)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// max_pool2d_with_indices
 static PyObject * THPVariable_max_pool2d_with_indices(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -838,36 +680,30 @@ static PyObject * THPVariable_max_pool2d_with_indices(PyObject* self_, PyObject*
     "max_pool2d_with_indices(Tensor input, IntArrayRef[2] kernel_size, IntArrayRef[2] stride=None, IntArrayRef[2] padding=0, IntArrayRef[2] dilation=1, bool ceil_mode=False, *, TensorList[2] out=None)",
   }, /*traceable=*/true);
 
-  ParsedArgs<8> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "max_pool2d_with_indices", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nmax_pool2d_with_indices";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  ParsedArgs<7> parsed_args;
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(6)) {
-      return wrap(dispatch_max_pool2d_with_indices(r.tensor(0), r.intlist(1), r.intlist(2), r.intlist(3), r.intlist(4), r.toBool(5)));
-    } else {
-      auto results = r.tensorlist_n<2>(6);
-      return wrap(dispatch_max_pool2d_with_indices(r.tensor(0), r.intlist(1), r.intlist(2), r.intlist(3), r.intlist(4), r.toBool(5), results[0], results[1]));
-    }
+  if (_r.isNone(6)) {
+    // aten::max_pool2d_with_indices(Tensor self, int[2] kernel_size, int[2] stride=[], int[2] padding=0, int[2] dilation=1, bool ceil_mode=False) -> (Tensor, Tensor)
+    auto dispatch_max_pool2d_with_indices = [](const Tensor & self, IntArrayRef kernel_size, IntArrayRef stride, IntArrayRef padding, IntArrayRef dilation, bool ceil_mode) -> std::tuple<Tensor,Tensor> {
+      pybind11::gil_scoped_release no_gil;
+      return at::max_pool2d_with_indices(self, kernel_size, stride, padding, dilation, ceil_mode);
+    };
+    return wrap(dispatch_max_pool2d_with_indices(_r.tensor(0), _r.intlist(1), _r.intlist(2), _r.intlist(3), _r.intlist(4), _r.toBool(5)));
+  } else {
+    // aten::max_pool2d_with_indices.out(Tensor self, int[2] kernel_size, int[2] stride=[], int[2] padding=0, int[2] dilation=1, bool ceil_mode=False, *, Tensor(a!) out, Tensor(b!) indices) -> (Tensor(a!), Tensor(b!))
+    auto out = _r.tensorlist_n<2>(6);
+    auto dispatch_max_pool2d_with_indices_out = [](Tensor & out, Tensor & indices, const Tensor & self, IntArrayRef kernel_size, IntArrayRef stride, IntArrayRef padding, IntArrayRef dilation, bool ceil_mode) -> std::tuple<Tensor,Tensor> {
+      pybind11::gil_scoped_release no_gil;
+      return at::max_pool2d_with_indices_out(out, indices, self, kernel_size, stride, padding, dilation, ceil_mode);
+    };
+    return wrap(dispatch_max_pool2d_with_indices_out(out[0], out[1], _r.tensor(0), _r.intlist(1), _r.intlist(2), _r.intlist(3), _r.intlist(4), _r.toBool(5)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// max_pool3d_with_indices
 static PyObject * THPVariable_max_pool3d_with_indices(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -875,36 +711,30 @@ static PyObject * THPVariable_max_pool3d_with_indices(PyObject* self_, PyObject*
     "max_pool3d_with_indices(Tensor input, IntArrayRef[3] kernel_size, IntArrayRef[3] stride=None, IntArrayRef[3] padding=0, IntArrayRef[3] dilation=1, bool ceil_mode=False, *, TensorList[2] out=None)",
   }, /*traceable=*/true);
 
-  ParsedArgs<8> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "max_pool3d_with_indices", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nmax_pool3d_with_indices";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  ParsedArgs<7> parsed_args;
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(6)) {
-      return wrap(dispatch_max_pool3d_with_indices(r.tensor(0), r.intlist(1), r.intlist(2), r.intlist(3), r.intlist(4), r.toBool(5)));
-    } else {
-      auto results = r.tensorlist_n<2>(6);
-      return wrap(dispatch_max_pool3d_with_indices(r.tensor(0), r.intlist(1), r.intlist(2), r.intlist(3), r.intlist(4), r.toBool(5), results[0], results[1]));
-    }
+  if (_r.isNone(6)) {
+    // aten::max_pool3d_with_indices(Tensor self, int[3] kernel_size, int[3] stride=[], int[3] padding=0, int[3] dilation=1, bool ceil_mode=False) -> (Tensor, Tensor)
+    auto dispatch_max_pool3d_with_indices = [](const Tensor & self, IntArrayRef kernel_size, IntArrayRef stride, IntArrayRef padding, IntArrayRef dilation, bool ceil_mode) -> std::tuple<Tensor,Tensor> {
+      pybind11::gil_scoped_release no_gil;
+      return at::max_pool3d_with_indices(self, kernel_size, stride, padding, dilation, ceil_mode);
+    };
+    return wrap(dispatch_max_pool3d_with_indices(_r.tensor(0), _r.intlist(1), _r.intlist(2), _r.intlist(3), _r.intlist(4), _r.toBool(5)));
+  } else {
+    // aten::max_pool3d_with_indices.out(Tensor self, int[3] kernel_size, int[3] stride=[], int[3] padding=0, int[3] dilation=1, bool ceil_mode=False, *, Tensor(a!) out, Tensor(b!) indices) -> (Tensor(a!), Tensor(b!))
+    auto out = _r.tensorlist_n<2>(6);
+    auto dispatch_max_pool3d_with_indices_out = [](Tensor & out, Tensor & indices, const Tensor & self, IntArrayRef kernel_size, IntArrayRef stride, IntArrayRef padding, IntArrayRef dilation, bool ceil_mode) -> std::tuple<Tensor,Tensor> {
+      pybind11::gil_scoped_release no_gil;
+      return at::max_pool3d_with_indices_out(out, indices, self, kernel_size, stride, padding, dilation, ceil_mode);
+    };
+    return wrap(dispatch_max_pool3d_with_indices_out(out[0], out[1], _r.tensor(0), _r.intlist(1), _r.intlist(2), _r.intlist(3), _r.intlist(4), _r.toBool(5)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// max_unpool2d
 static PyObject * THPVariable_max_unpool2d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -913,34 +743,28 @@ static PyObject * THPVariable_max_unpool2d(PyObject* self_, PyObject* args, PyOb
   }, /*traceable=*/true);
 
   ParsedArgs<4> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "max_unpool2d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nmax_unpool2d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(3)) {
-      return wrap(dispatch_max_unpool2d(r.tensor(0), r.tensor(1), r.intlist(2)));
-    } else {
-      return wrap(dispatch_max_unpool2d(r.tensor(0), r.tensor(1), r.intlist(2), r.tensor(3)));
-    }
+  if (_r.isNone(3)) {
+    // aten::max_unpool2d(Tensor self, Tensor indices, int[2] output_size) -> Tensor
+    auto dispatch_max_unpool2d = [](const Tensor & self, const Tensor & indices, IntArrayRef output_size) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::max_unpool2d(self, indices, output_size);
+    };
+    return wrap(dispatch_max_unpool2d(_r.tensor(0), _r.tensor(1), _r.intlist(2)));
+  } else {
+    // aten::max_unpool2d.out(Tensor self, Tensor indices, int[2] output_size, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_max_unpool2d_out = [](Tensor out, const Tensor & self, const Tensor & indices, IntArrayRef output_size) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::max_unpool2d_out(out, self, indices, output_size);
+    };
+    return wrap(dispatch_max_unpool2d_out(_r.tensor(3), _r.tensor(0), _r.tensor(1), _r.intlist(2)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// max_unpool3d
 static PyObject * THPVariable_max_unpool3d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -949,34 +773,28 @@ static PyObject * THPVariable_max_unpool3d(PyObject* self_, PyObject* args, PyOb
   }, /*traceable=*/true);
 
   ParsedArgs<6> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "max_unpool3d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nmax_unpool3d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(5)) {
-      return wrap(dispatch_max_unpool3d(r.tensor(0), r.tensor(1), r.intlist(2), r.intlist(3), r.intlist(4)));
-    } else {
-      return wrap(dispatch_max_unpool3d(r.tensor(0), r.tensor(1), r.intlist(2), r.intlist(3), r.intlist(4), r.tensor(5)));
-    }
+  if (_r.isNone(5)) {
+    // aten::max_unpool3d(Tensor self, Tensor indices, int[3] output_size, int[3] stride, int[3] padding) -> Tensor
+    auto dispatch_max_unpool3d = [](const Tensor & self, const Tensor & indices, IntArrayRef output_size, IntArrayRef stride, IntArrayRef padding) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::max_unpool3d(self, indices, output_size, stride, padding);
+    };
+    return wrap(dispatch_max_unpool3d(_r.tensor(0), _r.tensor(1), _r.intlist(2), _r.intlist(3), _r.intlist(4)));
+  } else {
+    // aten::max_unpool3d.out(Tensor self, Tensor indices, int[3] output_size, int[3] stride, int[3] padding, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_max_unpool3d_out = [](Tensor out, const Tensor & self, const Tensor & indices, IntArrayRef output_size, IntArrayRef stride, IntArrayRef padding) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::max_unpool3d_out(out, self, indices, output_size, stride, padding);
+    };
+    return wrap(dispatch_max_unpool3d_out(_r.tensor(5), _r.tensor(0), _r.tensor(1), _r.intlist(2), _r.intlist(3), _r.intlist(4)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// mkldnn_linear
 static PyObject * THPVariable_mkldnn_linear(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -985,30 +803,19 @@ static PyObject * THPVariable_mkldnn_linear(PyObject* self_, PyObject* args, PyO
   }, /*traceable=*/true);
 
   ParsedArgs<3> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "mkldnn_linear", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nmkldnn_linear";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    return wrap(dispatch_mkldnn_linear(r.tensor(0), r.tensor(1), r.tensor(2)));
-  }
+  // aten::mkldnn_linear(Tensor input, Tensor weight, Tensor? bias=None) -> Tensor
+  auto dispatch_mkldnn_linear = [](const Tensor & input, const Tensor & weight, const Tensor & bias) -> Tensor {
+    pybind11::gil_scoped_release no_gil;
+    return at::mkldnn_linear(input, weight, bias);
+  };
+  return wrap(dispatch_mkldnn_linear(_r.tensor(0), _r.tensor(1), _r.tensor(2)));
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// mkldnn_reorder_conv2d_weight
 static PyObject * THPVariable_mkldnn_reorder_conv2d_weight(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1017,30 +824,19 @@ static PyObject * THPVariable_mkldnn_reorder_conv2d_weight(PyObject* self_, PyOb
   }, /*traceable=*/true);
 
   ParsedArgs<5> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "mkldnn_reorder_conv2d_weight", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nmkldnn_reorder_conv2d_weight";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    return wrap(dispatch_mkldnn_reorder_conv2d_weight(r.tensor(0), r.intlist(1), r.intlist(2), r.intlist(3), r.toInt64(4)));
-  }
+  // aten::mkldnn_reorder_conv2d_weight(Tensor self, int[2] padding=0, int[2] stride=1, int[2] dilation=1, int groups=1) -> Tensor
+  auto dispatch_mkldnn_reorder_conv2d_weight = [](const Tensor & self, IntArrayRef padding, IntArrayRef stride, IntArrayRef dilation, int64_t groups) -> Tensor {
+    pybind11::gil_scoped_release no_gil;
+    return at::mkldnn_reorder_conv2d_weight(self, padding, stride, dilation, groups);
+  };
+  return wrap(dispatch_mkldnn_reorder_conv2d_weight(_r.tensor(0), _r.intlist(1), _r.intlist(2), _r.intlist(3), _r.toInt64(4)));
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// mse_loss
 static PyObject * THPVariable_mse_loss(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1049,34 +845,28 @@ static PyObject * THPVariable_mse_loss(PyObject* self_, PyObject* args, PyObject
   }, /*traceable=*/true);
 
   ParsedArgs<4> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "mse_loss", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nmse_loss";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(3)) {
-      return wrap(dispatch_mse_loss(r.tensor(0), r.tensor(1), r.toInt64(2)));
-    } else {
-      return wrap(dispatch_mse_loss(r.tensor(0), r.tensor(1), r.toInt64(2), r.tensor(3)));
-    }
+  if (_r.isNone(3)) {
+    // aten::mse_loss(Tensor self, Tensor target, int reduction=Mean) -> Tensor
+    auto dispatch_mse_loss = [](const Tensor & self, const Tensor & target, int64_t reduction) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::mse_loss(self, target, reduction);
+    };
+    return wrap(dispatch_mse_loss(_r.tensor(0), _r.tensor(1), _r.toInt64(2)));
+  } else {
+    // aten::mse_loss.out(Tensor self, Tensor target, int reduction=Mean, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_mse_loss_out = [](Tensor out, const Tensor & self, const Tensor & target, int64_t reduction) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::mse_loss_out(out, self, target, reduction);
+    };
+    return wrap(dispatch_mse_loss_out(_r.tensor(3), _r.tensor(0), _r.tensor(1), _r.toInt64(2)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// multi_margin_loss
 static PyObject * THPVariable_multi_margin_loss(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1085,34 +875,28 @@ static PyObject * THPVariable_multi_margin_loss(PyObject* self_, PyObject* args,
   }, /*traceable=*/true);
 
   ParsedArgs<7> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "multi_margin_loss", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nmulti_margin_loss";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(6)) {
-      return wrap(dispatch_multi_margin_loss(r.tensor(0), r.tensor(1), r.scalar(2), r.scalar(3), r.tensor(4), r.toInt64(5)));
-    } else {
-      return wrap(dispatch_multi_margin_loss(r.tensor(0), r.tensor(1), r.scalar(2), r.scalar(3), r.tensor(4), r.toInt64(5), r.tensor(6)));
-    }
+  if (_r.isNone(6)) {
+    // aten::multi_margin_loss(Tensor self, Tensor target, Scalar p=1, Scalar margin=1, Tensor? weight=None, int reduction=Mean) -> Tensor
+    auto dispatch_multi_margin_loss = [](const Tensor & self, const Tensor & target, Scalar p, Scalar margin, const Tensor & weight, int64_t reduction) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::multi_margin_loss(self, target, p, margin, weight, reduction);
+    };
+    return wrap(dispatch_multi_margin_loss(_r.tensor(0), _r.tensor(1), _r.scalar(2), _r.scalar(3), _r.tensor(4), _r.toInt64(5)));
+  } else {
+    // aten::multi_margin_loss.out(Tensor self, Tensor target, Scalar p=1, Scalar margin=1, Tensor? weight=None, int reduction=Mean, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_multi_margin_loss_out = [](Tensor out, const Tensor & self, const Tensor & target, Scalar p, Scalar margin, const Tensor & weight, int64_t reduction) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::multi_margin_loss_out(out, self, target, p, margin, weight, reduction);
+    };
+    return wrap(dispatch_multi_margin_loss_out(_r.tensor(6), _r.tensor(0), _r.tensor(1), _r.scalar(2), _r.scalar(3), _r.tensor(4), _r.toInt64(5)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// multilabel_margin_loss
 static PyObject * THPVariable_multilabel_margin_loss(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1121,34 +905,28 @@ static PyObject * THPVariable_multilabel_margin_loss(PyObject* self_, PyObject* 
   }, /*traceable=*/true);
 
   ParsedArgs<4> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "multilabel_margin_loss", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nmultilabel_margin_loss";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(3)) {
-      return wrap(dispatch_multilabel_margin_loss(r.tensor(0), r.tensor(1), r.toInt64(2)));
-    } else {
-      return wrap(dispatch_multilabel_margin_loss(r.tensor(0), r.tensor(1), r.toInt64(2), r.tensor(3)));
-    }
+  if (_r.isNone(3)) {
+    // aten::multilabel_margin_loss(Tensor self, Tensor target, int reduction=Mean) -> Tensor
+    auto dispatch_multilabel_margin_loss = [](const Tensor & self, const Tensor & target, int64_t reduction) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::multilabel_margin_loss(self, target, reduction);
+    };
+    return wrap(dispatch_multilabel_margin_loss(_r.tensor(0), _r.tensor(1), _r.toInt64(2)));
+  } else {
+    // aten::multilabel_margin_loss.out(Tensor self, Tensor target, int reduction=Mean, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_multilabel_margin_loss_out = [](Tensor out, const Tensor & self, const Tensor & target, int64_t reduction) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::multilabel_margin_loss_out(out, self, target, reduction);
+    };
+    return wrap(dispatch_multilabel_margin_loss_out(_r.tensor(3), _r.tensor(0), _r.tensor(1), _r.toInt64(2)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// nll_loss
 static PyObject * THPVariable_nll_loss(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1157,34 +935,28 @@ static PyObject * THPVariable_nll_loss(PyObject* self_, PyObject* args, PyObject
   }, /*traceable=*/true);
 
   ParsedArgs<6> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "nll_loss", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nnll_loss";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(5)) {
-      return wrap(dispatch_nll_loss(r.tensor(0), r.tensor(1), r.tensor(2), r.toInt64(3), r.toInt64(4)));
-    } else {
-      return wrap(dispatch_nll_loss(r.tensor(0), r.tensor(1), r.tensor(2), r.toInt64(3), r.toInt64(4), r.tensor(5)));
-    }
+  if (_r.isNone(5)) {
+    // aten::nll_loss(Tensor self, Tensor target, Tensor? weight=None, int reduction=Mean, int ignore_index=-100) -> Tensor
+    auto dispatch_nll_loss = [](const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction, int64_t ignore_index) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::nll_loss(self, target, weight, reduction, ignore_index);
+    };
+    return wrap(dispatch_nll_loss(_r.tensor(0), _r.tensor(1), _r.tensor(2), _r.toInt64(3), _r.toInt64(4)));
+  } else {
+    // aten::nll_loss.out(Tensor self, Tensor target, Tensor? weight=None, int reduction=Mean, int ignore_index=-100, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_nll_loss_out = [](Tensor out, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction, int64_t ignore_index) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::nll_loss_out(out, self, target, weight, reduction, ignore_index);
+    };
+    return wrap(dispatch_nll_loss_out(_r.tensor(5), _r.tensor(0), _r.tensor(1), _r.tensor(2), _r.toInt64(3), _r.toInt64(4)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// nll_loss2d
 static PyObject * THPVariable_nll_loss2d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1193,34 +965,28 @@ static PyObject * THPVariable_nll_loss2d(PyObject* self_, PyObject* args, PyObje
   }, /*traceable=*/true);
 
   ParsedArgs<6> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "nll_loss2d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nnll_loss2d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(5)) {
-      return wrap(dispatch_nll_loss2d(r.tensor(0), r.tensor(1), r.tensor(2), r.toInt64(3), r.toInt64(4)));
-    } else {
-      return wrap(dispatch_nll_loss2d(r.tensor(0), r.tensor(1), r.tensor(2), r.toInt64(3), r.toInt64(4), r.tensor(5)));
-    }
+  if (_r.isNone(5)) {
+    // aten::nll_loss2d(Tensor self, Tensor target, Tensor? weight=None, int reduction=Mean, int ignore_index=-100) -> Tensor
+    auto dispatch_nll_loss2d = [](const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction, int64_t ignore_index) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::nll_loss2d(self, target, weight, reduction, ignore_index);
+    };
+    return wrap(dispatch_nll_loss2d(_r.tensor(0), _r.tensor(1), _r.tensor(2), _r.toInt64(3), _r.toInt64(4)));
+  } else {
+    // aten::nll_loss2d.out(Tensor self, Tensor target, Tensor? weight=None, int reduction=Mean, int ignore_index=-100, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_nll_loss2d_out = [](Tensor out, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction, int64_t ignore_index) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::nll_loss2d_out(out, self, target, weight, reduction, ignore_index);
+    };
+    return wrap(dispatch_nll_loss2d_out(_r.tensor(5), _r.tensor(0), _r.tensor(1), _r.tensor(2), _r.toInt64(3), _r.toInt64(4)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// one_hot
 static PyObject * THPVariable_one_hot(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1229,30 +995,19 @@ static PyObject * THPVariable_one_hot(PyObject* self_, PyObject* args, PyObject*
   }, /*traceable=*/true);
 
   ParsedArgs<2> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "one_hot", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\none_hot";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    return wrap(dispatch_one_hot(r.tensor(0), r.toInt64(1)));
-  }
+  // aten::one_hot(Tensor self, int num_classes=-1) -> Tensor
+  auto dispatch_one_hot = [](const Tensor & self, int64_t num_classes) -> Tensor {
+    pybind11::gil_scoped_release no_gil;
+    return at::one_hot(self, num_classes);
+  };
+  return wrap(dispatch_one_hot(_r.tensor(0), _r.toInt64(1)));
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// reflection_pad1d
 static PyObject * THPVariable_reflection_pad1d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1261,34 +1016,28 @@ static PyObject * THPVariable_reflection_pad1d(PyObject* self_, PyObject* args, 
   }, /*traceable=*/true);
 
   ParsedArgs<3> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "reflection_pad1d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nreflection_pad1d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(2)) {
-      return wrap(dispatch_reflection_pad1d(r.tensor(0), r.intlist(1)));
-    } else {
-      return wrap(dispatch_reflection_pad1d(r.tensor(0), r.intlist(1), r.tensor(2)));
-    }
+  if (_r.isNone(2)) {
+    // aten::reflection_pad1d(Tensor self, int[2] padding) -> Tensor
+    auto dispatch_reflection_pad1d = [](const Tensor & self, IntArrayRef padding) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::reflection_pad1d(self, padding);
+    };
+    return wrap(dispatch_reflection_pad1d(_r.tensor(0), _r.intlist(1)));
+  } else {
+    // aten::reflection_pad1d.out(Tensor self, int[2] padding, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_reflection_pad1d_out = [](Tensor out, const Tensor & self, IntArrayRef padding) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::reflection_pad1d_out(out, self, padding);
+    };
+    return wrap(dispatch_reflection_pad1d_out(_r.tensor(2), _r.tensor(0), _r.intlist(1)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// reflection_pad2d
 static PyObject * THPVariable_reflection_pad2d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1297,34 +1046,28 @@ static PyObject * THPVariable_reflection_pad2d(PyObject* self_, PyObject* args, 
   }, /*traceable=*/true);
 
   ParsedArgs<3> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "reflection_pad2d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nreflection_pad2d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(2)) {
-      return wrap(dispatch_reflection_pad2d(r.tensor(0), r.intlist(1)));
-    } else {
-      return wrap(dispatch_reflection_pad2d(r.tensor(0), r.intlist(1), r.tensor(2)));
-    }
+  if (_r.isNone(2)) {
+    // aten::reflection_pad2d(Tensor self, int[4] padding) -> Tensor
+    auto dispatch_reflection_pad2d = [](const Tensor & self, IntArrayRef padding) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::reflection_pad2d(self, padding);
+    };
+    return wrap(dispatch_reflection_pad2d(_r.tensor(0), _r.intlist(1)));
+  } else {
+    // aten::reflection_pad2d.out(Tensor self, int[4] padding, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_reflection_pad2d_out = [](Tensor out, const Tensor & self, IntArrayRef padding) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::reflection_pad2d_out(out, self, padding);
+    };
+    return wrap(dispatch_reflection_pad2d_out(_r.tensor(2), _r.tensor(0), _r.intlist(1)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// replication_pad1d
 static PyObject * THPVariable_replication_pad1d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1333,34 +1076,28 @@ static PyObject * THPVariable_replication_pad1d(PyObject* self_, PyObject* args,
   }, /*traceable=*/true);
 
   ParsedArgs<3> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "replication_pad1d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nreplication_pad1d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(2)) {
-      return wrap(dispatch_replication_pad1d(r.tensor(0), r.intlist(1)));
-    } else {
-      return wrap(dispatch_replication_pad1d(r.tensor(0), r.intlist(1), r.tensor(2)));
-    }
+  if (_r.isNone(2)) {
+    // aten::replication_pad1d(Tensor self, int[2] padding) -> Tensor
+    auto dispatch_replication_pad1d = [](const Tensor & self, IntArrayRef padding) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::replication_pad1d(self, padding);
+    };
+    return wrap(dispatch_replication_pad1d(_r.tensor(0), _r.intlist(1)));
+  } else {
+    // aten::replication_pad1d.out(Tensor self, int[2] padding, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_replication_pad1d_out = [](Tensor out, const Tensor & self, IntArrayRef padding) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::replication_pad1d_out(out, self, padding);
+    };
+    return wrap(dispatch_replication_pad1d_out(_r.tensor(2), _r.tensor(0), _r.intlist(1)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// replication_pad2d
 static PyObject * THPVariable_replication_pad2d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1369,34 +1106,28 @@ static PyObject * THPVariable_replication_pad2d(PyObject* self_, PyObject* args,
   }, /*traceable=*/true);
 
   ParsedArgs<3> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "replication_pad2d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nreplication_pad2d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(2)) {
-      return wrap(dispatch_replication_pad2d(r.tensor(0), r.intlist(1)));
-    } else {
-      return wrap(dispatch_replication_pad2d(r.tensor(0), r.intlist(1), r.tensor(2)));
-    }
+  if (_r.isNone(2)) {
+    // aten::replication_pad2d(Tensor self, int[4] padding) -> Tensor
+    auto dispatch_replication_pad2d = [](const Tensor & self, IntArrayRef padding) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::replication_pad2d(self, padding);
+    };
+    return wrap(dispatch_replication_pad2d(_r.tensor(0), _r.intlist(1)));
+  } else {
+    // aten::replication_pad2d.out(Tensor self, int[4] padding, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_replication_pad2d_out = [](Tensor out, const Tensor & self, IntArrayRef padding) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::replication_pad2d_out(out, self, padding);
+    };
+    return wrap(dispatch_replication_pad2d_out(_r.tensor(2), _r.tensor(0), _r.intlist(1)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// replication_pad3d
 static PyObject * THPVariable_replication_pad3d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1405,34 +1136,28 @@ static PyObject * THPVariable_replication_pad3d(PyObject* self_, PyObject* args,
   }, /*traceable=*/true);
 
   ParsedArgs<3> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "replication_pad3d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nreplication_pad3d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(2)) {
-      return wrap(dispatch_replication_pad3d(r.tensor(0), r.intlist(1)));
-    } else {
-      return wrap(dispatch_replication_pad3d(r.tensor(0), r.intlist(1), r.tensor(2)));
-    }
+  if (_r.isNone(2)) {
+    // aten::replication_pad3d(Tensor self, int[6] padding) -> Tensor
+    auto dispatch_replication_pad3d = [](const Tensor & self, IntArrayRef padding) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::replication_pad3d(self, padding);
+    };
+    return wrap(dispatch_replication_pad3d(_r.tensor(0), _r.intlist(1)));
+  } else {
+    // aten::replication_pad3d.out(Tensor self, int[6] padding, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_replication_pad3d_out = [](Tensor out, const Tensor & self, IntArrayRef padding) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::replication_pad3d_out(out, self, padding);
+    };
+    return wrap(dispatch_replication_pad3d_out(_r.tensor(2), _r.tensor(0), _r.intlist(1)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// rrelu_with_noise
 static PyObject * THPVariable_rrelu_with_noise(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1441,34 +1166,28 @@ static PyObject * THPVariable_rrelu_with_noise(PyObject* self_, PyObject* args, 
   }, /*traceable=*/true);
 
   ParsedArgs<7> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "rrelu_with_noise", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nrrelu_with_noise";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(6)) {
-      return wrap(dispatch_rrelu_with_noise(r.tensor(0), r.tensor(1), r.scalar(2), r.scalar(3), r.toBool(4), r.generator(5)));
-    } else {
-      return wrap(dispatch_rrelu_with_noise(r.tensor(0), r.tensor(1), r.scalar(2), r.scalar(3), r.toBool(4), r.generator(5), r.tensor(6)));
-    }
+  if (_r.isNone(6)) {
+    // aten::rrelu_with_noise(Tensor self, Tensor noise, Scalar lower=0.125, Scalar upper=0.3333333333333333, bool training=False, Generator? generator=None) -> Tensor
+    auto dispatch_rrelu_with_noise = [](const Tensor & self, const Tensor & noise, Scalar lower, Scalar upper, bool training, Generator * generator) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::rrelu_with_noise(self, noise, lower, upper, training, generator);
+    };
+    return wrap(dispatch_rrelu_with_noise(_r.tensor(0), _r.tensor(1), _r.scalar(2), _r.scalar(3), _r.toBool(4), _r.generator(5)));
+  } else {
+    // aten::rrelu_with_noise.out(Tensor self, Tensor noise, Scalar lower=0.125, Scalar upper=0.3333333333333333, bool training=False, Generator? generator=None, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_rrelu_with_noise_out = [](Tensor out, const Tensor & self, const Tensor & noise, Scalar lower, Scalar upper, bool training, Generator * generator) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::rrelu_with_noise_out(out, self, noise, lower, upper, training, generator);
+    };
+    return wrap(dispatch_rrelu_with_noise_out(_r.tensor(6), _r.tensor(0), _r.tensor(1), _r.scalar(2), _r.scalar(3), _r.toBool(4), _r.generator(5)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// rrelu_with_noise_
 static PyObject * THPVariable_rrelu_with_noise_(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1477,30 +1196,19 @@ static PyObject * THPVariable_rrelu_with_noise_(PyObject* self_, PyObject* args,
   }, /*traceable=*/true);
 
   ParsedArgs<6> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "rrelu_with_noise_", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nrrelu_with_noise_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    return wrap(dispatch_rrelu_with_noise_(r.tensor(0), r.tensor(1), r.scalar(2), r.scalar(3), r.toBool(4), r.generator(5)));
-  }
+  // aten::rrelu_with_noise_(Tensor(a!) self, Tensor noise, Scalar lower=0.125, Scalar upper=0.3333333333333333, bool training=False, Generator? generator=None) -> Tensor(a!)
+  auto dispatch_rrelu_with_noise_ = [](Tensor self, const Tensor & noise, Scalar lower, Scalar upper, bool training, Generator * generator) -> Tensor {
+    pybind11::gil_scoped_release no_gil;
+    return at::rrelu_with_noise_(self, noise, lower, upper, training, generator);
+  };
+  return wrap(dispatch_rrelu_with_noise_(_r.tensor(0), _r.tensor(1), _r.scalar(2), _r.scalar(3), _r.toBool(4), _r.generator(5)));
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// slow_conv3d
 static PyObject * THPVariable_slow_conv3d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1509,34 +1217,28 @@ static PyObject * THPVariable_slow_conv3d(PyObject* self_, PyObject* args, PyObj
   }, /*traceable=*/true);
 
   ParsedArgs<7> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "slow_conv3d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nslow_conv3d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(6)) {
-      return wrap(dispatch_slow_conv3d(r.tensor(0), r.tensor(1), r.intlist(2), r.tensor(3), r.intlist(4), r.intlist(5)));
-    } else {
-      return wrap(dispatch_slow_conv3d(r.tensor(0), r.tensor(1), r.intlist(2), r.tensor(3), r.intlist(4), r.intlist(5), r.tensor(6)));
-    }
+  if (_r.isNone(6)) {
+    // aten::slow_conv3d(Tensor self, Tensor weight, int[3] kernel_size, Tensor? bias=None, int[3] stride=1, int[3] padding=0) -> Tensor
+    auto dispatch_slow_conv3d = [](const Tensor & self, const Tensor & weight, IntArrayRef kernel_size, const Tensor & bias, IntArrayRef stride, IntArrayRef padding) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::slow_conv3d(self, weight, kernel_size, bias, stride, padding);
+    };
+    return wrap(dispatch_slow_conv3d(_r.tensor(0), _r.tensor(1), _r.intlist(2), _r.tensor(3), _r.intlist(4), _r.intlist(5)));
+  } else {
+    // aten::slow_conv3d.out(Tensor self, Tensor weight, int[3] kernel_size, Tensor? bias=None, int[3] stride=1, int[3] padding=0, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_slow_conv3d_out = [](Tensor out, const Tensor & self, const Tensor & weight, IntArrayRef kernel_size, const Tensor & bias, IntArrayRef stride, IntArrayRef padding) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::slow_conv3d_out(out, self, weight, kernel_size, bias, stride, padding);
+    };
+    return wrap(dispatch_slow_conv3d_out(_r.tensor(6), _r.tensor(0), _r.tensor(1), _r.intlist(2), _r.tensor(3), _r.intlist(4), _r.intlist(5)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// slow_conv_dilated2d
 static PyObject * THPVariable_slow_conv_dilated2d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1545,30 +1247,19 @@ static PyObject * THPVariable_slow_conv_dilated2d(PyObject* self_, PyObject* arg
   }, /*traceable=*/true);
 
   ParsedArgs<7> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "slow_conv_dilated2d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nslow_conv_dilated2d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    return wrap(dispatch_slow_conv_dilated2d(r.tensor(0), r.tensor(1), r.intlist(2), r.tensor(3), r.intlist(4), r.intlist(5), r.intlist(6)));
-  }
+  // aten::slow_conv_dilated2d(Tensor self, Tensor weight, int[2] kernel_size, Tensor? bias=None, int[2] stride=1, int[2] padding=0, int[2] dilation=1) -> Tensor
+  auto dispatch_slow_conv_dilated2d = [](const Tensor & self, const Tensor & weight, IntArrayRef kernel_size, const Tensor & bias, IntArrayRef stride, IntArrayRef padding, IntArrayRef dilation) -> Tensor {
+    pybind11::gil_scoped_release no_gil;
+    return at::slow_conv_dilated2d(self, weight, kernel_size, bias, stride, padding, dilation);
+  };
+  return wrap(dispatch_slow_conv_dilated2d(_r.tensor(0), _r.tensor(1), _r.intlist(2), _r.tensor(3), _r.intlist(4), _r.intlist(5), _r.intlist(6)));
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// slow_conv_dilated3d
 static PyObject * THPVariable_slow_conv_dilated3d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1577,30 +1268,19 @@ static PyObject * THPVariable_slow_conv_dilated3d(PyObject* self_, PyObject* arg
   }, /*traceable=*/true);
 
   ParsedArgs<7> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "slow_conv_dilated3d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nslow_conv_dilated3d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    return wrap(dispatch_slow_conv_dilated3d(r.tensor(0), r.tensor(1), r.intlist(2), r.tensor(3), r.intlist(4), r.intlist(5), r.intlist(6)));
-  }
+  // aten::slow_conv_dilated3d(Tensor self, Tensor weight, int[3] kernel_size, Tensor? bias=None, int[3] stride=1, int[3] padding=0, int[3] dilation=1) -> Tensor
+  auto dispatch_slow_conv_dilated3d = [](const Tensor & self, const Tensor & weight, IntArrayRef kernel_size, const Tensor & bias, IntArrayRef stride, IntArrayRef padding, IntArrayRef dilation) -> Tensor {
+    pybind11::gil_scoped_release no_gil;
+    return at::slow_conv_dilated3d(self, weight, kernel_size, bias, stride, padding, dilation);
+  };
+  return wrap(dispatch_slow_conv_dilated3d(_r.tensor(0), _r.tensor(1), _r.intlist(2), _r.tensor(3), _r.intlist(4), _r.intlist(5), _r.intlist(6)));
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// slow_conv_transpose2d
 static PyObject * THPVariable_slow_conv_transpose2d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1609,34 +1289,28 @@ static PyObject * THPVariable_slow_conv_transpose2d(PyObject* self_, PyObject* a
   }, /*traceable=*/true);
 
   ParsedArgs<9> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "slow_conv_transpose2d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nslow_conv_transpose2d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(8)) {
-      return wrap(dispatch_slow_conv_transpose2d(r.tensor(0), r.tensor(1), r.intlist(2), r.tensor(3), r.intlist(4), r.intlist(5), r.intlist(6), r.intlist(7)));
-    } else {
-      return wrap(dispatch_slow_conv_transpose2d(r.tensor(0), r.tensor(1), r.intlist(2), r.tensor(3), r.intlist(4), r.intlist(5), r.intlist(6), r.intlist(7), r.tensor(8)));
-    }
+  if (_r.isNone(8)) {
+    // aten::slow_conv_transpose2d(Tensor self, Tensor weight, int[2] kernel_size, Tensor? bias=None, int[2] stride=1, int[2] padding=0, int[2] output_padding=0, int[2] dilation=1) -> Tensor
+    auto dispatch_slow_conv_transpose2d = [](const Tensor & self, const Tensor & weight, IntArrayRef kernel_size, const Tensor & bias, IntArrayRef stride, IntArrayRef padding, IntArrayRef output_padding, IntArrayRef dilation) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::slow_conv_transpose2d(self, weight, kernel_size, bias, stride, padding, output_padding, dilation);
+    };
+    return wrap(dispatch_slow_conv_transpose2d(_r.tensor(0), _r.tensor(1), _r.intlist(2), _r.tensor(3), _r.intlist(4), _r.intlist(5), _r.intlist(6), _r.intlist(7)));
+  } else {
+    // aten::slow_conv_transpose2d.out(Tensor self, Tensor weight, int[2] kernel_size, Tensor? bias=None, int[2] stride=1, int[2] padding=0, int[2] output_padding=0, int[2] dilation=1, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_slow_conv_transpose2d_out = [](Tensor out, const Tensor & self, const Tensor & weight, IntArrayRef kernel_size, const Tensor & bias, IntArrayRef stride, IntArrayRef padding, IntArrayRef output_padding, IntArrayRef dilation) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::slow_conv_transpose2d_out(out, self, weight, kernel_size, bias, stride, padding, output_padding, dilation);
+    };
+    return wrap(dispatch_slow_conv_transpose2d_out(_r.tensor(8), _r.tensor(0), _r.tensor(1), _r.intlist(2), _r.tensor(3), _r.intlist(4), _r.intlist(5), _r.intlist(6), _r.intlist(7)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// slow_conv_transpose3d
 static PyObject * THPVariable_slow_conv_transpose3d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1645,34 +1319,28 @@ static PyObject * THPVariable_slow_conv_transpose3d(PyObject* self_, PyObject* a
   }, /*traceable=*/true);
 
   ParsedArgs<9> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "slow_conv_transpose3d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nslow_conv_transpose3d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(8)) {
-      return wrap(dispatch_slow_conv_transpose3d(r.tensor(0), r.tensor(1), r.intlist(2), r.tensor(3), r.intlist(4), r.intlist(5), r.intlist(6), r.intlist(7)));
-    } else {
-      return wrap(dispatch_slow_conv_transpose3d(r.tensor(0), r.tensor(1), r.intlist(2), r.tensor(3), r.intlist(4), r.intlist(5), r.intlist(6), r.intlist(7), r.tensor(8)));
-    }
+  if (_r.isNone(8)) {
+    // aten::slow_conv_transpose3d(Tensor self, Tensor weight, int[3] kernel_size, Tensor? bias=None, int[3] stride=1, int[3] padding=0, int[3] output_padding=0, int[3] dilation=1) -> Tensor
+    auto dispatch_slow_conv_transpose3d = [](const Tensor & self, const Tensor & weight, IntArrayRef kernel_size, const Tensor & bias, IntArrayRef stride, IntArrayRef padding, IntArrayRef output_padding, IntArrayRef dilation) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::slow_conv_transpose3d(self, weight, kernel_size, bias, stride, padding, output_padding, dilation);
+    };
+    return wrap(dispatch_slow_conv_transpose3d(_r.tensor(0), _r.tensor(1), _r.intlist(2), _r.tensor(3), _r.intlist(4), _r.intlist(5), _r.intlist(6), _r.intlist(7)));
+  } else {
+    // aten::slow_conv_transpose3d.out(Tensor self, Tensor weight, int[3] kernel_size, Tensor? bias=None, int[3] stride=1, int[3] padding=0, int[3] output_padding=0, int[3] dilation=1, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_slow_conv_transpose3d_out = [](Tensor out, const Tensor & self, const Tensor & weight, IntArrayRef kernel_size, const Tensor & bias, IntArrayRef stride, IntArrayRef padding, IntArrayRef output_padding, IntArrayRef dilation) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::slow_conv_transpose3d_out(out, self, weight, kernel_size, bias, stride, padding, output_padding, dilation);
+    };
+    return wrap(dispatch_slow_conv_transpose3d_out(_r.tensor(8), _r.tensor(0), _r.tensor(1), _r.intlist(2), _r.tensor(3), _r.intlist(4), _r.intlist(5), _r.intlist(6), _r.intlist(7)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// smooth_l1_loss
 static PyObject * THPVariable_smooth_l1_loss(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1681,34 +1349,28 @@ static PyObject * THPVariable_smooth_l1_loss(PyObject* self_, PyObject* args, Py
   }, /*traceable=*/true);
 
   ParsedArgs<4> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "smooth_l1_loss", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nsmooth_l1_loss";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(3)) {
-      return wrap(dispatch_smooth_l1_loss(r.tensor(0), r.tensor(1), r.toInt64(2)));
-    } else {
-      return wrap(dispatch_smooth_l1_loss(r.tensor(0), r.tensor(1), r.toInt64(2), r.tensor(3)));
-    }
+  if (_r.isNone(3)) {
+    // aten::smooth_l1_loss(Tensor self, Tensor target, int reduction=Mean) -> Tensor
+    auto dispatch_smooth_l1_loss = [](const Tensor & self, const Tensor & target, int64_t reduction) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::smooth_l1_loss(self, target, reduction);
+    };
+    return wrap(dispatch_smooth_l1_loss(_r.tensor(0), _r.tensor(1), _r.toInt64(2)));
+  } else {
+    // aten::smooth_l1_loss.out(Tensor self, Tensor target, int reduction=Mean, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_smooth_l1_loss_out = [](Tensor out, const Tensor & self, const Tensor & target, int64_t reduction) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::smooth_l1_loss_out(out, self, target, reduction);
+    };
+    return wrap(dispatch_smooth_l1_loss_out(_r.tensor(3), _r.tensor(0), _r.tensor(1), _r.toInt64(2)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// soft_margin_loss
 static PyObject * THPVariable_soft_margin_loss(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1717,34 +1379,28 @@ static PyObject * THPVariable_soft_margin_loss(PyObject* self_, PyObject* args, 
   }, /*traceable=*/true);
 
   ParsedArgs<4> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "soft_margin_loss", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nsoft_margin_loss";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(3)) {
-      return wrap(dispatch_soft_margin_loss(r.tensor(0), r.tensor(1), r.toInt64(2)));
-    } else {
-      return wrap(dispatch_soft_margin_loss(r.tensor(0), r.tensor(1), r.toInt64(2), r.tensor(3)));
-    }
+  if (_r.isNone(3)) {
+    // aten::soft_margin_loss(Tensor self, Tensor target, int reduction=Mean) -> Tensor
+    auto dispatch_soft_margin_loss = [](const Tensor & self, const Tensor & target, int64_t reduction) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::soft_margin_loss(self, target, reduction);
+    };
+    return wrap(dispatch_soft_margin_loss(_r.tensor(0), _r.tensor(1), _r.toInt64(2)));
+  } else {
+    // aten::soft_margin_loss.out(Tensor self, Tensor target, int reduction=Mean, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_soft_margin_loss_out = [](Tensor out, const Tensor & self, const Tensor & target, int64_t reduction) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::soft_margin_loss_out(out, self, target, reduction);
+    };
+    return wrap(dispatch_soft_margin_loss_out(_r.tensor(3), _r.tensor(0), _r.tensor(1), _r.toInt64(2)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// softplus
 static PyObject * THPVariable_softplus(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1753,34 +1409,28 @@ static PyObject * THPVariable_softplus(PyObject* self_, PyObject* args, PyObject
   }, /*traceable=*/true);
 
   ParsedArgs<4> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "softplus", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nsoftplus";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(3)) {
-      return wrap(dispatch_softplus(r.tensor(0), r.scalar(1), r.scalar(2)));
-    } else {
-      return wrap(dispatch_softplus(r.tensor(0), r.scalar(1), r.scalar(2), r.tensor(3)));
-    }
+  if (_r.isNone(3)) {
+    // aten::softplus(Tensor self, Scalar beta=1, Scalar threshold=20) -> Tensor
+    auto dispatch_softplus = [](const Tensor & self, Scalar beta, Scalar threshold) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::softplus(self, beta, threshold);
+    };
+    return wrap(dispatch_softplus(_r.tensor(0), _r.scalar(1), _r.scalar(2)));
+  } else {
+    // aten::softplus.out(Tensor self, Scalar beta=1, Scalar threshold=20, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_softplus_out = [](Tensor out, const Tensor & self, Scalar beta, Scalar threshold) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::softplus_out(out, self, beta, threshold);
+    };
+    return wrap(dispatch_softplus_out(_r.tensor(3), _r.tensor(0), _r.scalar(1), _r.scalar(2)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// softshrink
 static PyObject * THPVariable_softshrink(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1789,34 +1439,28 @@ static PyObject * THPVariable_softshrink(PyObject* self_, PyObject* args, PyObje
   }, /*traceable=*/true);
 
   ParsedArgs<3> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "softshrink", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nsoftshrink";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(2)) {
-      return wrap(dispatch_softshrink(r.tensor(0), r.scalar(1)));
-    } else {
-      return wrap(dispatch_softshrink(r.tensor(0), r.scalar(1), r.tensor(2)));
-    }
+  if (_r.isNone(2)) {
+    // aten::softshrink(Tensor self, Scalar lambd=0.5) -> Tensor
+    auto dispatch_softshrink = [](const Tensor & self, Scalar lambd) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::softshrink(self, lambd);
+    };
+    return wrap(dispatch_softshrink(_r.tensor(0), _r.scalar(1)));
+  } else {
+    // aten::softshrink.out(Tensor self, Scalar lambd=0.5, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_softshrink_out = [](Tensor out, const Tensor & self, Scalar lambd) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::softshrink_out(out, self, lambd);
+    };
+    return wrap(dispatch_softshrink_out(_r.tensor(2), _r.tensor(0), _r.scalar(1)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// thnn_conv2d
 static PyObject * THPVariable_thnn_conv2d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1825,34 +1469,28 @@ static PyObject * THPVariable_thnn_conv2d(PyObject* self_, PyObject* args, PyObj
   }, /*traceable=*/true);
 
   ParsedArgs<7> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "thnn_conv2d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nthnn_conv2d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(6)) {
-      return wrap(dispatch_thnn_conv2d(r.tensor(0), r.tensor(1), r.intlist(2), r.tensor(3), r.intlist(4), r.intlist(5)));
-    } else {
-      return wrap(dispatch_thnn_conv2d(r.tensor(0), r.tensor(1), r.intlist(2), r.tensor(3), r.intlist(4), r.intlist(5), r.tensor(6)));
-    }
+  if (_r.isNone(6)) {
+    // aten::thnn_conv2d(Tensor self, Tensor weight, int[2] kernel_size, Tensor? bias=None, int[2] stride=1, int[2] padding=0) -> Tensor
+    auto dispatch_thnn_conv2d = [](const Tensor & self, const Tensor & weight, IntArrayRef kernel_size, const Tensor & bias, IntArrayRef stride, IntArrayRef padding) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::thnn_conv2d(self, weight, kernel_size, bias, stride, padding);
+    };
+    return wrap(dispatch_thnn_conv2d(_r.tensor(0), _r.tensor(1), _r.intlist(2), _r.tensor(3), _r.intlist(4), _r.intlist(5)));
+  } else {
+    // aten::thnn_conv2d.out(Tensor self, Tensor weight, int[2] kernel_size, Tensor? bias=None, int[2] stride=1, int[2] padding=0, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_thnn_conv2d_out = [](Tensor out, const Tensor & self, const Tensor & weight, IntArrayRef kernel_size, const Tensor & bias, IntArrayRef stride, IntArrayRef padding) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::thnn_conv2d_out(out, self, weight, kernel_size, bias, stride, padding);
+    };
+    return wrap(dispatch_thnn_conv2d_out(_r.tensor(6), _r.tensor(0), _r.tensor(1), _r.intlist(2), _r.tensor(3), _r.intlist(4), _r.intlist(5)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// thnn_conv_depthwise2d
 static PyObject * THPVariable_thnn_conv_depthwise2d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1861,34 +1499,28 @@ static PyObject * THPVariable_thnn_conv_depthwise2d(PyObject* self_, PyObject* a
   }, /*traceable=*/true);
 
   ParsedArgs<8> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "thnn_conv_depthwise2d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nthnn_conv_depthwise2d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(7)) {
-      return wrap(dispatch_thnn_conv_depthwise2d(r.tensor(0), r.tensor(1), r.intlist(2), r.tensor(3), r.intlist(4), r.intlist(5), r.intlist(6)));
-    } else {
-      return wrap(dispatch_thnn_conv_depthwise2d(r.tensor(0), r.tensor(1), r.intlist(2), r.tensor(3), r.intlist(4), r.intlist(5), r.intlist(6), r.tensor(7)));
-    }
+  if (_r.isNone(7)) {
+    // aten::thnn_conv_depthwise2d(Tensor self, Tensor weight, int[2] kernel_size, Tensor? bias=None, int[2] stride=1, int[2] padding=0, int[2] dilation=1) -> Tensor
+    auto dispatch_thnn_conv_depthwise2d = [](const Tensor & self, const Tensor & weight, IntArrayRef kernel_size, const Tensor & bias, IntArrayRef stride, IntArrayRef padding, IntArrayRef dilation) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::thnn_conv_depthwise2d(self, weight, kernel_size, bias, stride, padding, dilation);
+    };
+    return wrap(dispatch_thnn_conv_depthwise2d(_r.tensor(0), _r.tensor(1), _r.intlist(2), _r.tensor(3), _r.intlist(4), _r.intlist(5), _r.intlist(6)));
+  } else {
+    // aten::thnn_conv_depthwise2d.out(Tensor self, Tensor weight, int[2] kernel_size, Tensor? bias=None, int[2] stride=1, int[2] padding=0, int[2] dilation=1, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_thnn_conv_depthwise2d_out = [](Tensor out, const Tensor & self, const Tensor & weight, IntArrayRef kernel_size, const Tensor & bias, IntArrayRef stride, IntArrayRef padding, IntArrayRef dilation) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::thnn_conv_depthwise2d_out(out, self, weight, kernel_size, bias, stride, padding, dilation);
+    };
+    return wrap(dispatch_thnn_conv_depthwise2d_out(_r.tensor(7), _r.tensor(0), _r.tensor(1), _r.intlist(2), _r.tensor(3), _r.intlist(4), _r.intlist(5), _r.intlist(6)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// upsample_bicubic2d
 static PyObject * THPVariable_upsample_bicubic2d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1897,34 +1529,28 @@ static PyObject * THPVariable_upsample_bicubic2d(PyObject* self_, PyObject* args
   }, /*traceable=*/true);
 
   ParsedArgs<6> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "upsample_bicubic2d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nupsample_bicubic2d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(5)) {
-      return wrap(dispatch_upsample_bicubic2d(r.tensor(0), r.intlist(1), r.toBool(2), r.toDoubleOptional(3), r.toDoubleOptional(4)));
-    } else {
-      return wrap(dispatch_upsample_bicubic2d(r.tensor(0), r.intlist(1), r.toBool(2), r.toDoubleOptional(3), r.toDoubleOptional(4), r.tensor(5)));
-    }
+  if (_r.isNone(5)) {
+    // aten::upsample_bicubic2d(Tensor self, int[2] output_size, bool align_corners, float? scales_h=None, float? scales_w=None) -> Tensor
+    auto dispatch_upsample_bicubic2d = [](const Tensor & self, IntArrayRef output_size, bool align_corners, c10::optional<double> scales_h, c10::optional<double> scales_w) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::upsample_bicubic2d(self, output_size, align_corners, scales_h, scales_w);
+    };
+    return wrap(dispatch_upsample_bicubic2d(_r.tensor(0), _r.intlist(1), _r.toBool(2), _r.toDoubleOptional(3), _r.toDoubleOptional(4)));
+  } else {
+    // aten::upsample_bicubic2d.out(Tensor self, int[2] output_size, bool align_corners, float? scales_h=None, float? scales_w=None, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_upsample_bicubic2d_out = [](Tensor out, const Tensor & self, IntArrayRef output_size, bool align_corners, c10::optional<double> scales_h, c10::optional<double> scales_w) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::upsample_bicubic2d_out(out, self, output_size, align_corners, scales_h, scales_w);
+    };
+    return wrap(dispatch_upsample_bicubic2d_out(_r.tensor(5), _r.tensor(0), _r.intlist(1), _r.toBool(2), _r.toDoubleOptional(3), _r.toDoubleOptional(4)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// upsample_bilinear2d
 static PyObject * THPVariable_upsample_bilinear2d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1933,34 +1559,28 @@ static PyObject * THPVariable_upsample_bilinear2d(PyObject* self_, PyObject* arg
   }, /*traceable=*/true);
 
   ParsedArgs<6> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "upsample_bilinear2d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nupsample_bilinear2d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(5)) {
-      return wrap(dispatch_upsample_bilinear2d(r.tensor(0), r.intlist(1), r.toBool(2), r.toDoubleOptional(3), r.toDoubleOptional(4)));
-    } else {
-      return wrap(dispatch_upsample_bilinear2d(r.tensor(0), r.intlist(1), r.toBool(2), r.toDoubleOptional(3), r.toDoubleOptional(4), r.tensor(5)));
-    }
+  if (_r.isNone(5)) {
+    // aten::upsample_bilinear2d(Tensor self, int[2] output_size, bool align_corners, float? scales_h=None, float? scales_w=None) -> Tensor
+    auto dispatch_upsample_bilinear2d = [](const Tensor & self, IntArrayRef output_size, bool align_corners, c10::optional<double> scales_h, c10::optional<double> scales_w) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::upsample_bilinear2d(self, output_size, align_corners, scales_h, scales_w);
+    };
+    return wrap(dispatch_upsample_bilinear2d(_r.tensor(0), _r.intlist(1), _r.toBool(2), _r.toDoubleOptional(3), _r.toDoubleOptional(4)));
+  } else {
+    // aten::upsample_bilinear2d.out(Tensor self, int[2] output_size, bool align_corners, float? scales_h=None, float? scales_w=None, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_upsample_bilinear2d_out = [](Tensor out, const Tensor & self, IntArrayRef output_size, bool align_corners, c10::optional<double> scales_h, c10::optional<double> scales_w) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::upsample_bilinear2d_out(out, self, output_size, align_corners, scales_h, scales_w);
+    };
+    return wrap(dispatch_upsample_bilinear2d_out(_r.tensor(5), _r.tensor(0), _r.intlist(1), _r.toBool(2), _r.toDoubleOptional(3), _r.toDoubleOptional(4)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// upsample_linear1d
 static PyObject * THPVariable_upsample_linear1d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -1969,34 +1589,28 @@ static PyObject * THPVariable_upsample_linear1d(PyObject* self_, PyObject* args,
   }, /*traceable=*/true);
 
   ParsedArgs<5> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "upsample_linear1d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nupsample_linear1d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(4)) {
-      return wrap(dispatch_upsample_linear1d(r.tensor(0), r.intlist(1), r.toBool(2), r.toDoubleOptional(3)));
-    } else {
-      return wrap(dispatch_upsample_linear1d(r.tensor(0), r.intlist(1), r.toBool(2), r.toDoubleOptional(3), r.tensor(4)));
-    }
+  if (_r.isNone(4)) {
+    // aten::upsample_linear1d(Tensor self, int[1] output_size, bool align_corners, float? scales=None) -> Tensor
+    auto dispatch_upsample_linear1d = [](const Tensor & self, IntArrayRef output_size, bool align_corners, c10::optional<double> scales) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::upsample_linear1d(self, output_size, align_corners, scales);
+    };
+    return wrap(dispatch_upsample_linear1d(_r.tensor(0), _r.intlist(1), _r.toBool(2), _r.toDoubleOptional(3)));
+  } else {
+    // aten::upsample_linear1d.out(Tensor self, int[1] output_size, bool align_corners, float? scales=None, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_upsample_linear1d_out = [](Tensor out, const Tensor & self, IntArrayRef output_size, bool align_corners, c10::optional<double> scales) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::upsample_linear1d_out(out, self, output_size, align_corners, scales);
+    };
+    return wrap(dispatch_upsample_linear1d_out(_r.tensor(4), _r.tensor(0), _r.intlist(1), _r.toBool(2), _r.toDoubleOptional(3)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// upsample_nearest1d
 static PyObject * THPVariable_upsample_nearest1d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -2005,34 +1619,28 @@ static PyObject * THPVariable_upsample_nearest1d(PyObject* self_, PyObject* args
   }, /*traceable=*/true);
 
   ParsedArgs<4> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "upsample_nearest1d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nupsample_nearest1d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(3)) {
-      return wrap(dispatch_upsample_nearest1d(r.tensor(0), r.intlist(1), r.toDoubleOptional(2)));
-    } else {
-      return wrap(dispatch_upsample_nearest1d(r.tensor(0), r.intlist(1), r.toDoubleOptional(2), r.tensor(3)));
-    }
+  if (_r.isNone(3)) {
+    // aten::upsample_nearest1d(Tensor self, int[1] output_size, float? scales=None) -> Tensor
+    auto dispatch_upsample_nearest1d = [](const Tensor & self, IntArrayRef output_size, c10::optional<double> scales) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::upsample_nearest1d(self, output_size, scales);
+    };
+    return wrap(dispatch_upsample_nearest1d(_r.tensor(0), _r.intlist(1), _r.toDoubleOptional(2)));
+  } else {
+    // aten::upsample_nearest1d.out(Tensor self, int[1] output_size, float? scales=None, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_upsample_nearest1d_out = [](Tensor out, const Tensor & self, IntArrayRef output_size, c10::optional<double> scales) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::upsample_nearest1d_out(out, self, output_size, scales);
+    };
+    return wrap(dispatch_upsample_nearest1d_out(_r.tensor(3), _r.tensor(0), _r.intlist(1), _r.toDoubleOptional(2)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// upsample_nearest2d
 static PyObject * THPVariable_upsample_nearest2d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -2041,34 +1649,28 @@ static PyObject * THPVariable_upsample_nearest2d(PyObject* self_, PyObject* args
   }, /*traceable=*/true);
 
   ParsedArgs<5> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "upsample_nearest2d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nupsample_nearest2d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(4)) {
-      return wrap(dispatch_upsample_nearest2d(r.tensor(0), r.intlist(1), r.toDoubleOptional(2), r.toDoubleOptional(3)));
-    } else {
-      return wrap(dispatch_upsample_nearest2d(r.tensor(0), r.intlist(1), r.toDoubleOptional(2), r.toDoubleOptional(3), r.tensor(4)));
-    }
+  if (_r.isNone(4)) {
+    // aten::upsample_nearest2d(Tensor self, int[2] output_size, float? scales_h=None, float? scales_w=None) -> Tensor
+    auto dispatch_upsample_nearest2d = [](const Tensor & self, IntArrayRef output_size, c10::optional<double> scales_h, c10::optional<double> scales_w) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::upsample_nearest2d(self, output_size, scales_h, scales_w);
+    };
+    return wrap(dispatch_upsample_nearest2d(_r.tensor(0), _r.intlist(1), _r.toDoubleOptional(2), _r.toDoubleOptional(3)));
+  } else {
+    // aten::upsample_nearest2d.out(Tensor self, int[2] output_size, float? scales_h=None, float? scales_w=None, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_upsample_nearest2d_out = [](Tensor out, const Tensor & self, IntArrayRef output_size, c10::optional<double> scales_h, c10::optional<double> scales_w) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::upsample_nearest2d_out(out, self, output_size, scales_h, scales_w);
+    };
+    return wrap(dispatch_upsample_nearest2d_out(_r.tensor(4), _r.tensor(0), _r.intlist(1), _r.toDoubleOptional(2), _r.toDoubleOptional(3)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// upsample_nearest3d
 static PyObject * THPVariable_upsample_nearest3d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -2077,34 +1679,28 @@ static PyObject * THPVariable_upsample_nearest3d(PyObject* self_, PyObject* args
   }, /*traceable=*/true);
 
   ParsedArgs<6> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "upsample_nearest3d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nupsample_nearest3d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(5)) {
-      return wrap(dispatch_upsample_nearest3d(r.tensor(0), r.intlist(1), r.toDoubleOptional(2), r.toDoubleOptional(3), r.toDoubleOptional(4)));
-    } else {
-      return wrap(dispatch_upsample_nearest3d(r.tensor(0), r.intlist(1), r.toDoubleOptional(2), r.toDoubleOptional(3), r.toDoubleOptional(4), r.tensor(5)));
-    }
+  if (_r.isNone(5)) {
+    // aten::upsample_nearest3d(Tensor self, int[3] output_size, float? scales_d=None, float? scales_h=None, float? scales_w=None) -> Tensor
+    auto dispatch_upsample_nearest3d = [](const Tensor & self, IntArrayRef output_size, c10::optional<double> scales_d, c10::optional<double> scales_h, c10::optional<double> scales_w) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::upsample_nearest3d(self, output_size, scales_d, scales_h, scales_w);
+    };
+    return wrap(dispatch_upsample_nearest3d(_r.tensor(0), _r.intlist(1), _r.toDoubleOptional(2), _r.toDoubleOptional(3), _r.toDoubleOptional(4)));
+  } else {
+    // aten::upsample_nearest3d.out(Tensor self, int[3] output_size, float? scales_d=None, float? scales_h=None, float? scales_w=None, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_upsample_nearest3d_out = [](Tensor out, const Tensor & self, IntArrayRef output_size, c10::optional<double> scales_d, c10::optional<double> scales_h, c10::optional<double> scales_w) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::upsample_nearest3d_out(out, self, output_size, scales_d, scales_h, scales_w);
+    };
+    return wrap(dispatch_upsample_nearest3d_out(_r.tensor(5), _r.tensor(0), _r.intlist(1), _r.toDoubleOptional(2), _r.toDoubleOptional(3), _r.toDoubleOptional(4)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
-\
+
+// upsample_trilinear3d
 static PyObject * THPVariable_upsample_trilinear3d(PyObject* self_, PyObject* args, PyObject* kwargs)
 {
   HANDLE_TH_ERRORS
@@ -2113,29 +1709,22 @@ static PyObject * THPVariable_upsample_trilinear3d(PyObject* self_, PyObject* ar
   }, /*traceable=*/true);
 
   ParsedArgs<7> parsed_args;
-  auto r = parser.parse(args, kwargs, parsed_args);
-  if (r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", r.signature.name, " is deprecated:\n",
-        "upsample_trilinear3d", r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nupsample_trilinear3d";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
+  auto _r = parser.parse(args, kwargs, parsed_args);
 
-
-  if (r.idx == 0) {
-    if (r.isNone(6)) {
-      return wrap(dispatch_upsample_trilinear3d(r.tensor(0), r.intlist(1), r.toBool(2), r.toDoubleOptional(3), r.toDoubleOptional(4), r.toDoubleOptional(5)));
-    } else {
-      return wrap(dispatch_upsample_trilinear3d(r.tensor(0), r.intlist(1), r.toBool(2), r.toDoubleOptional(3), r.toDoubleOptional(4), r.toDoubleOptional(5), r.tensor(6)));
-    }
+  if (_r.isNone(6)) {
+    // aten::upsample_trilinear3d(Tensor self, int[3] output_size, bool align_corners, float? scales_d=None, float? scales_h=None, float? scales_w=None) -> Tensor
+    auto dispatch_upsample_trilinear3d = [](const Tensor & self, IntArrayRef output_size, bool align_corners, c10::optional<double> scales_d, c10::optional<double> scales_h, c10::optional<double> scales_w) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::upsample_trilinear3d(self, output_size, align_corners, scales_d, scales_h, scales_w);
+    };
+    return wrap(dispatch_upsample_trilinear3d(_r.tensor(0), _r.intlist(1), _r.toBool(2), _r.toDoubleOptional(3), _r.toDoubleOptional(4), _r.toDoubleOptional(5)));
+  } else {
+    // aten::upsample_trilinear3d.out(Tensor self, int[3] output_size, bool align_corners, float? scales_d=None, float? scales_h=None, float? scales_w=None, *, Tensor(a!) out) -> Tensor(a!)
+    auto dispatch_upsample_trilinear3d_out = [](Tensor out, const Tensor & self, IntArrayRef output_size, bool align_corners, c10::optional<double> scales_d, c10::optional<double> scales_h, c10::optional<double> scales_w) -> Tensor {
+      pybind11::gil_scoped_release no_gil;
+      return at::upsample_trilinear3d_out(out, self, output_size, align_corners, scales_d, scales_h, scales_w);
+    };
+    return wrap(dispatch_upsample_trilinear3d_out(_r.tensor(6), _r.tensor(0), _r.intlist(1), _r.toBool(2), _r.toDoubleOptional(3), _r.toDoubleOptional(4), _r.toDoubleOptional(5)));
   }
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
