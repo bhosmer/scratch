@@ -574,7 +574,7 @@ RegisterOperators reg(
          atenOperatorOptions()
      ),
      Operator(
-         "aten::_index_put_impl_(Tensor(a!) self, Tensor[] indices, Tensor values, bool accumulate=False, bool unsafe=False) -> Tensor(a!)",
+         "aten::_index_put_impl_(Tensor(a!) self, Tensor?[] indices, Tensor values, bool accumulate=False, bool unsafe=False) -> Tensor(a!)",
          [](Stack & stack) {
              auto self = (std::move(peek(stack, 0, 5))).toTensor();
              auto result_ = at::_index_put_impl_(
@@ -3229,7 +3229,7 @@ RegisterOperators reg(
          atenOperatorOptions()
      ),
      Operator(
-         "aten::index_put_(Tensor(a!) self, Tensor[] indices, Tensor values, bool accumulate=False) -> Tensor(a!)",
+         "aten::index_put_(Tensor(a!) self, Tensor?[] indices, Tensor values, bool accumulate=False) -> Tensor(a!)",
          [](Stack & stack) {
              auto self = (std::move(peek(stack, 0, 4))).toTensor();
              auto result_ = at::index_put_(

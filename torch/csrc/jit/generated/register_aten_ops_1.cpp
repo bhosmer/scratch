@@ -3195,7 +3195,7 @@ RegisterOperators reg(
          atenOperatorOptions()
      ),
      Operator(
-         "aten::index_put(Tensor self, Tensor[] indices, Tensor values, bool accumulate=False) -> Tensor",
+         "aten::index_put(Tensor self, Tensor?[] indices, Tensor values, bool accumulate=False) -> Tensor",
          [](Stack & stack) {
          
              auto result_ = at::index_put(

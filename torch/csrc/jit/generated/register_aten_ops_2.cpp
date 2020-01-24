@@ -3040,7 +3040,7 @@ RegisterOperators reg(
          atenOperatorOptions()
      ),
      Operator(
-         "aten::index.Tensor(Tensor self, Tensor[] indices) -> Tensor",
+         "aten::index.Tensor(Tensor self, Tensor?[] indices) -> Tensor",
          [](Stack & stack) {
          
              auto result_ = at::index(
