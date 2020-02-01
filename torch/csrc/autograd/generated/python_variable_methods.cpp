@@ -830,20 +830,6 @@ static PyObject * THPVariable___and__(PyObject* self_, PyObject* args, PyObject*
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "__and__", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\n__and__";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -880,20 +866,6 @@ static PyObject * THPVariable___iand__(PyObject* self_, PyObject* args, PyObject
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "__iand__", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\n__iand__";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -930,20 +902,6 @@ static PyObject * THPVariable___ilshift__(PyObject* self_, PyObject* args, PyObj
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "__ilshift__", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\n__ilshift__";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -980,20 +938,6 @@ static PyObject * THPVariable___ior__(PyObject* self_, PyObject* args, PyObject*
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "__ior__", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\n__ior__";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -1030,20 +974,6 @@ static PyObject * THPVariable___irshift__(PyObject* self_, PyObject* args, PyObj
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "__irshift__", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\n__irshift__";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -1080,20 +1010,6 @@ static PyObject * THPVariable___ixor__(PyObject* self_, PyObject* args, PyObject
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "__ixor__", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\n__ixor__";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -1130,20 +1046,6 @@ static PyObject * THPVariable___lshift__(PyObject* self_, PyObject* args, PyObje
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "__lshift__", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\n__lshift__";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -1180,20 +1082,6 @@ static PyObject * THPVariable___or__(PyObject* self_, PyObject* args, PyObject* 
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "__or__", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\n__or__";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -1230,20 +1118,6 @@ static PyObject * THPVariable___rshift__(PyObject* self_, PyObject* args, PyObje
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "__rshift__", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\n__rshift__";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -1280,20 +1154,6 @@ static PyObject * THPVariable___xor__(PyObject* self_, PyObject* args, PyObject*
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "__xor__", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\n__xor__";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -1478,20 +1338,6 @@ static PyObject * THPVariable_add(PyObject* self_, PyObject* args, PyObject* kwa
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "add", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nadd";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -1528,20 +1374,6 @@ static PyObject * THPVariable_add_(PyObject* self_, PyObject* args, PyObject* kw
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "add_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nadd_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -1579,20 +1411,6 @@ static PyObject * THPVariable_addbmm(PyObject* self_, PyObject* args, PyObject* 
 
   ParsedArgs<4> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "addbmm", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\naddbmm";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -1638,20 +1456,6 @@ static PyObject * THPVariable_addbmm_(PyObject* self_, PyObject* args, PyObject*
 
   ParsedArgs<4> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "addbmm_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\naddbmm_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -1696,20 +1500,6 @@ static PyObject * THPVariable_addcdiv(PyObject* self_, PyObject* args, PyObject*
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "addcdiv", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\naddcdiv";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -1746,20 +1536,6 @@ static PyObject * THPVariable_addcdiv_(PyObject* self_, PyObject* args, PyObject
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "addcdiv_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\naddcdiv_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -1796,20 +1572,6 @@ static PyObject * THPVariable_addcmul(PyObject* self_, PyObject* args, PyObject*
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "addcmul", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\naddcmul";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -1846,20 +1608,6 @@ static PyObject * THPVariable_addcmul_(PyObject* self_, PyObject* args, PyObject
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "addcmul_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\naddcmul_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -1897,20 +1645,6 @@ static PyObject * THPVariable_addmm(PyObject* self_, PyObject* args, PyObject* k
 
   ParsedArgs<4> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "addmm", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\naddmm";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -1956,20 +1690,6 @@ static PyObject * THPVariable_addmm_(PyObject* self_, PyObject* args, PyObject* 
 
   ParsedArgs<4> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "addmm_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\naddmm_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -2015,20 +1735,6 @@ static PyObject * THPVariable_addmv(PyObject* self_, PyObject* args, PyObject* k
 
   ParsedArgs<4> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "addmv", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\naddmv";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -2074,20 +1780,6 @@ static PyObject * THPVariable_addmv_(PyObject* self_, PyObject* args, PyObject* 
 
   ParsedArgs<4> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "addmv_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\naddmv_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -2133,20 +1825,6 @@ static PyObject * THPVariable_addr(PyObject* self_, PyObject* args, PyObject* kw
 
   ParsedArgs<4> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "addr", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\naddr";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -2192,20 +1870,6 @@ static PyObject * THPVariable_addr_(PyObject* self_, PyObject* args, PyObject* k
 
   ParsedArgs<4> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "addr_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\naddr_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -2272,20 +1936,6 @@ static PyObject * THPVariable_align_to(PyObject* self_, PyObject* args, PyObject
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "align_to", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nalign_to";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -2323,20 +1973,6 @@ static PyObject * THPVariable_all(PyObject* self_, PyObject* args, PyObject* kwa
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "all", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nall";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -2418,20 +2054,6 @@ static PyObject * THPVariable_any(PyObject* self_, PyObject* args, PyObject* kwa
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "any", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nany";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -2520,20 +2142,6 @@ static PyObject * THPVariable_argsort(PyObject* self_, PyObject* args, PyObject*
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "argsort", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nargsort";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -2738,20 +2346,6 @@ static PyObject * THPVariable_baddbmm(PyObject* self_, PyObject* args, PyObject*
 
   ParsedArgs<4> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "baddbmm", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nbaddbmm";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -2797,20 +2391,6 @@ static PyObject * THPVariable_baddbmm_(PyObject* self_, PyObject* args, PyObject
 
   ParsedArgs<4> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "baddbmm_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nbaddbmm_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -2855,20 +2435,6 @@ static PyObject * THPVariable_bernoulli(PyObject* self_, PyObject* args, PyObjec
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "bernoulli", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nbernoulli";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -2905,20 +2471,6 @@ static PyObject * THPVariable_bernoulli_(PyObject* self_, PyObject* args, PyObje
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "bernoulli_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nbernoulli_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -2977,20 +2529,6 @@ static PyObject * THPVariable_bitwise_and(PyObject* self_, PyObject* args, PyObj
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "bitwise_and", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nbitwise_and";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -3027,20 +2565,6 @@ static PyObject * THPVariable_bitwise_and_(PyObject* self_, PyObject* args, PyOb
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "bitwise_and_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nbitwise_and_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -3105,20 +2629,6 @@ static PyObject * THPVariable_bitwise_or(PyObject* self_, PyObject* args, PyObje
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "bitwise_or", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nbitwise_or";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -3155,20 +2665,6 @@ static PyObject * THPVariable_bitwise_or_(PyObject* self_, PyObject* args, PyObj
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "bitwise_or_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nbitwise_or_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -3205,20 +2701,6 @@ static PyObject * THPVariable_bitwise_xor(PyObject* self_, PyObject* args, PyObj
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "bitwise_xor", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nbitwise_xor";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -3255,20 +2737,6 @@ static PyObject * THPVariable_bitwise_xor_(PyObject* self_, PyObject* args, PyOb
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "bitwise_xor_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nbitwise_xor_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -3734,20 +3202,6 @@ static PyObject * THPVariable_cummax(PyObject* self_, PyObject* args, PyObject* 
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "cummax", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\ncummax";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -3793,20 +3247,6 @@ static PyObject * THPVariable_cummin(PyObject* self_, PyObject* args, PyObject* 
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "cummin", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\ncummin";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -3843,20 +3283,6 @@ static PyObject * THPVariable_cumprod(PyObject* self_, PyObject* args, PyObject*
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "cumprod", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\ncumprod";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -3893,20 +3319,6 @@ static PyObject * THPVariable_cumsum(PyObject* self_, PyObject* args, PyObject* 
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "cumsum", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\ncumsum";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -4079,20 +3491,6 @@ static PyObject * THPVariable_diagonal(PyObject* self_, PyObject* args, PyObject
 
   ParsedArgs<4> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "diagonal", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\ndiagonal";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -4276,20 +3674,6 @@ static PyObject * THPVariable_eq(PyObject* self_, PyObject* args, PyObject* kwar
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "eq", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\neq";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -4326,20 +3710,6 @@ static PyObject * THPVariable_eq_(PyObject* self_, PyObject* args, PyObject* kwa
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "eq_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\neq_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -4626,20 +3996,6 @@ static PyObject * THPVariable_fill_(PyObject* self_, PyObject* args, PyObject* k
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "fill_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nfill_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -4700,20 +4056,6 @@ static PyObject * THPVariable_flatten(PyObject* self_, PyObject* args, PyObject*
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "flatten", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nflatten";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -4816,20 +4158,6 @@ static PyObject * THPVariable_fmod(PyObject* self_, PyObject* args, PyObject* kw
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "fmod", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nfmod";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -4866,20 +4194,6 @@ static PyObject * THPVariable_fmod_(PyObject* self_, PyObject* args, PyObject* k
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "fmod_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nfmod_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -4944,20 +4258,6 @@ static PyObject * THPVariable_gather(PyObject* self_, PyObject* args, PyObject* 
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "gather", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\ngather";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -4994,20 +4294,6 @@ static PyObject * THPVariable_ge(PyObject* self_, PyObject* args, PyObject* kwar
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "ge", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nge";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -5044,20 +4330,6 @@ static PyObject * THPVariable_ge_(PyObject* self_, PyObject* args, PyObject* kwa
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "ge_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nge_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -5161,20 +4433,6 @@ static PyObject * THPVariable_gt(PyObject* self_, PyObject* args, PyObject* kwar
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "gt", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\ngt";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -5211,20 +4469,6 @@ static PyObject * THPVariable_gt_(PyObject* self_, PyObject* args, PyObject* kwa
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "gt_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\ngt_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -5341,20 +4585,6 @@ static PyObject * THPVariable_index_add(PyObject* self_, PyObject* args, PyObjec
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "index_add", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nindex_add";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -5413,20 +4643,6 @@ static PyObject * THPVariable_index_copy(PyObject* self_, PyObject* args, PyObje
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "index_copy", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nindex_copy";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -5463,20 +4679,6 @@ static PyObject * THPVariable_index_copy_(PyObject* self_, PyObject* args, PyObj
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "index_copy_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nindex_copy_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -5515,20 +4717,6 @@ static PyObject * THPVariable_index_fill(PyObject* self_, PyObject* args, PyObje
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "index_fill", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nindex_fill";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -5583,20 +4771,6 @@ static PyObject * THPVariable_index_fill_(PyObject* self_, PyObject* args, PyObj
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "index_fill_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nindex_fill_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -5693,20 +4867,6 @@ static PyObject * THPVariable_index_select(PyObject* self_, PyObject* args, PyOb
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "index_select", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nindex_select";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -5980,20 +5140,6 @@ static PyObject * THPVariable_kthvalue(PyObject* self_, PyObject* args, PyObject
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "kthvalue", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nkthvalue";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -6030,20 +5176,6 @@ static PyObject * THPVariable_le(PyObject* self_, PyObject* args, PyObject* kwar
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "le", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nle";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -6080,20 +5212,6 @@ static PyObject * THPVariable_le_(PyObject* self_, PyObject* args, PyObject* kwa
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "le_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nle_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -6130,20 +5248,6 @@ static PyObject * THPVariable_lerp(PyObject* self_, PyObject* args, PyObject* kw
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "lerp", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nlerp";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -6180,20 +5284,6 @@ static PyObject * THPVariable_lerp_(PyObject* self_, PyObject* args, PyObject* k
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "lerp_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nlerp_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -6392,20 +5482,6 @@ static PyObject * THPVariable_log_softmax(PyObject* self_, PyObject* args, PyObj
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "log_softmax", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nlog_softmax";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -6616,20 +5692,6 @@ static PyObject * THPVariable_logsumexp(PyObject* self_, PyObject* args, PyObjec
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "logsumexp", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nlogsumexp";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -6697,20 +5759,6 @@ static PyObject * THPVariable_lt(PyObject* self_, PyObject* args, PyObject* kwar
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "lt", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nlt";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -6747,20 +5795,6 @@ static PyObject * THPVariable_lt_(PyObject* self_, PyObject* args, PyObject* kwa
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "lt_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nlt_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -6819,20 +5853,6 @@ static PyObject * THPVariable_masked_fill(PyObject* self_, PyObject* args, PyObj
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "masked_fill", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nmasked_fill";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -6869,20 +5889,6 @@ static PyObject * THPVariable_masked_fill_(PyObject* self_, PyObject* args, PyOb
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "masked_fill_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nmasked_fill_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -7040,20 +6046,6 @@ static PyObject * THPVariable_max(PyObject* self_, PyObject* args, PyObject* kwa
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "max", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nmax";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -7107,20 +6099,6 @@ static PyObject * THPVariable_mean(PyObject* self_, PyObject* args, PyObject* kw
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "mean", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nmean";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -7175,20 +6153,6 @@ static PyObject * THPVariable_median(PyObject* self_, PyObject* args, PyObject* 
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "median", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nmedian";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -7244,20 +6208,6 @@ static PyObject * THPVariable_min(PyObject* self_, PyObject* args, PyObject* kwa
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "min", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nmin";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -7341,20 +6291,6 @@ static PyObject * THPVariable_mode(PyObject* self_, PyObject* args, PyObject* kw
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "mode", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nmode";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -7567,20 +6503,6 @@ static PyObject * THPVariable_ne(PyObject* self_, PyObject* args, PyObject* kwar
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "ne", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nne";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -7617,20 +6539,6 @@ static PyObject * THPVariable_ne_(PyObject* self_, PyObject* args, PyObject* kwa
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "ne_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nne_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -7786,20 +6694,6 @@ static PyObject * THPVariable_norm(PyObject* self_, PyObject* args, PyObject* kw
 
   ParsedArgs<4> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "norm", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nnorm";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -8036,20 +6930,6 @@ static PyObject * THPVariable_pow(PyObject* self_, PyObject* args, PyObject* kwa
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "pow", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\npow";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -8086,20 +6966,6 @@ static PyObject * THPVariable_pow_(PyObject* self_, PyObject* args, PyObject* kw
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "pow_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\npow_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -8159,20 +7025,6 @@ static PyObject * THPVariable_prod(PyObject* self_, PyObject* args, PyObject* kw
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "prod", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nprod";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -8355,20 +7207,6 @@ static PyObject * THPVariable_random_(PyObject* self_, PyObject* args, PyObject*
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "random_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nrandom_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -8505,20 +7343,6 @@ static PyObject * THPVariable_remainder(PyObject* self_, PyObject* args, PyObjec
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "remainder", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nremainder";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -8555,20 +7379,6 @@ static PyObject * THPVariable_remainder_(PyObject* self_, PyObject* args, PyObje
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "remainder_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nremainder_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -8719,20 +7529,6 @@ static PyObject * THPVariable_repeat_interleave(PyObject* self_, PyObject* args,
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "repeat_interleave", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nrepeat_interleave";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -8981,20 +7777,6 @@ static PyObject * THPVariable_scatter(PyObject* self_, PyObject* args, PyObject*
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "scatter", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nscatter";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -9047,20 +7829,6 @@ static PyObject * THPVariable_scatter_(PyObject* self_, PyObject* args, PyObject
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "scatter_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nscatter_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -9097,20 +7865,6 @@ static PyObject * THPVariable_scatter_add(PyObject* self_, PyObject* args, PyObj
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "scatter_add", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nscatter_add";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -9169,20 +7923,6 @@ static PyObject * THPVariable_select(PyObject* self_, PyObject* args, PyObject* 
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "select", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nselect";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -9221,20 +7961,6 @@ static PyObject * THPVariable_set_(PyObject* self_, PyObject* args, PyObject* kw
 
   ParsedArgs<4> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "set_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nset_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -9444,20 +8170,6 @@ static PyObject * THPVariable_softmax(PyObject* self_, PyObject* args, PyObject*
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "softmax", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nsoftmax";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -9534,20 +8246,6 @@ static PyObject * THPVariable_sort(PyObject* self_, PyObject* args, PyObject* kw
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "sort", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nsort";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -9765,20 +8463,6 @@ static PyObject * THPVariable_squeeze(PyObject* self_, PyObject* args, PyObject*
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "squeeze", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nsqueeze";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -9824,20 +8508,6 @@ static PyObject * THPVariable_squeeze_(PyObject* self_, PyObject* args, PyObject
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "squeeze_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nsqueeze_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -9883,20 +8553,6 @@ static PyObject * THPVariable_sspaddmm(PyObject* self_, PyObject* args, PyObject
 
   ParsedArgs<4> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "sspaddmm", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nsspaddmm";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -9942,20 +8598,6 @@ static PyObject * THPVariable_std(PyObject* self_, PyObject* args, PyObject* kwa
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "std", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nstd";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -10022,20 +8664,6 @@ static PyObject * THPVariable_sub(PyObject* self_, PyObject* args, PyObject* kwa
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "sub", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nsub";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -10072,20 +8700,6 @@ static PyObject * THPVariable_sub_(PyObject* self_, PyObject* args, PyObject* kw
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "sub_", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nsub_";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -10123,20 +8737,6 @@ static PyObject * THPVariable_sum(PyObject* self_, PyObject* args, PyObject* kwa
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "sum", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nsum";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -10399,20 +8999,6 @@ static PyObject * THPVariable_to_sparse(PyObject* self_, PyObject* args, PyObjec
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "to_sparse", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nto_sparse";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -10494,20 +9080,6 @@ static PyObject * THPVariable_transpose(PyObject* self_, PyObject* args, PyObjec
 
   ParsedArgs<2> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "transpose", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\ntranspose";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -10735,20 +9307,6 @@ static PyObject * THPVariable_unbind(PyObject* self_, PyObject* args, PyObject* 
 
   ParsedArgs<1> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "unbind", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nunbind";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -10785,20 +9343,6 @@ static PyObject * THPVariable_unflatten(PyObject* self_, PyObject* args, PyObjec
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "unflatten", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nunflatten";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
@@ -10938,20 +9482,6 @@ static PyObject * THPVariable_var(PyObject* self_, PyObject* args, PyObject* kwa
 
   ParsedArgs<3> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
-  if (_r.signature.deprecated) {
-    auto msg = c10::str(
-        "This overload of ", _r.signature.name, " is deprecated:\n",
-        "var", _r.signature.toString());
-    auto signatures = parser.get_signatures();
-    if (!signatures.empty()) {
-      msg += "\nConsider using one of the following signatures instead:";
-      for (const auto & sig : signatures) {
-        msg += "\nvar";
-        msg += sig;
-      }
-    }
-    TORCH_WARN_ONCE(msg);
-  }
 
   switch (_r.idx) {
     case 0: {
