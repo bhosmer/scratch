@@ -31,7 +31,6 @@ struct Quantizer;
 // to frontend
 using ConstQuantizerPtr = const c10::intrusive_ptr<Quantizer>&;
 
-#ifdef USE_STATIC_DISPATCH
 namespace CPUType {
   Tensor add(const Tensor & self, const Tensor & other, Scalar alpha);
   Tensor & add_(Tensor & self, const Tensor & other, Scalar alpha);
@@ -48,6 +47,10 @@ namespace CPUType {
   Tensor & baddbmm_out(Tensor & out, const Tensor & self, const Tensor & batch1, const Tensor & batch2, Scalar beta, Scalar alpha);
   Tensor & bernoulli_(Tensor & self, const Tensor & p, Generator * generator);
   Tensor & bernoulli_(Tensor & self, double p, Generator * generator);
+  Tensor binary_cross_entropy(const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction);
+  Tensor & binary_cross_entropy_out(Tensor & out, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction);
+  Tensor binary_cross_entropy_backward(const Tensor & grad_output, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction);
+  Tensor & binary_cross_entropy_backward_out(Tensor & grad_input, const Tensor & grad_output, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction);
   Tensor bincount(const Tensor & self, const Tensor & weights, int64_t minlength);
   Tensor & bitwise_not_out(Tensor & out, const Tensor & self);
   Tensor & logical_not_out(Tensor & out, const Tensor & self);
@@ -76,7 +79,7 @@ namespace CPUType {
   Tensor dot(const Tensor & self, const Tensor & tensor);
   Tensor embedding_dense_backward(const Tensor & grad_output, const Tensor & indices, int64_t num_weights, int64_t padding_idx, bool scale_grad_by_freq);
   Tensor & embedding_renorm_(Tensor & self, const Tensor & indices, double max_norm, double norm_type);
-  std::tuple<Tensor,Tensor,Tensor,Tensor> _embedding_bag(const Tensor & weight, const Tensor & indices, const Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights);
+  std::tuple<Tensor,Tensor,Tensor,Tensor> _embedding_bag(const Tensor & weight, const Tensor & indices, const Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights, bool include_last_offset);
   Tensor _embedding_bag_dense_backward(const Tensor & grad, const Tensor & indices, const Tensor & offsets, const Tensor & offset2bag, const Tensor & bag_size, const Tensor & maximum_indices, int64_t num_weights, bool scale_grad_by_freq, int64_t mode, const Tensor & per_sample_weights);
   Tensor _embedding_bag_per_sample_weights_backward(const Tensor & grad, const Tensor & weight, const Tensor & indices, const Tensor & offsets, const Tensor & offset2bag, int64_t mode);
   Tensor empty(IntArrayRef size, const TensorOptions & options, c10::optional<MemoryFormat> memory_format);
@@ -243,8 +246,6 @@ namespace CPUType {
   Tensor & random_(Tensor & self, Generator * generator);
   Tensor & uniform_(Tensor & self, double from, double to, Generator * generator);
   Tensor & normal_(Tensor & self, double mean, double std, Generator * generator);
-  Tensor & log_normal_(Tensor & self, double mean, double std, Generator * generator);
-  Tensor & exponential_(Tensor & self, double lambd, Generator * generator);
   Tensor & diag_out(Tensor & out, const Tensor & self, int64_t diagonal);
   Tensor diag(const Tensor & self, int64_t diagonal);
   Tensor & triu_out(Tensor & out, const Tensor & self, int64_t diagonal);
@@ -332,11 +333,7 @@ namespace CPUType {
   Tensor remainder(const Tensor & self, Scalar other);
   Tensor & remainder_out(Tensor & out, const Tensor & self, const Tensor & other);
   Tensor remainder(const Tensor & self, const Tensor & other);
-  Tensor & min_out(Tensor & out, const Tensor & self, const Tensor & other);
-  Tensor min(const Tensor & self, const Tensor & other);
   Tensor min(const Tensor & self);
-  Tensor & max_out(Tensor & out, const Tensor & self, const Tensor & other);
-  Tensor max(const Tensor & self, const Tensor & other);
   Tensor max(const Tensor & self);
   Tensor median(const Tensor & self);
   std::tuple<Tensor &,Tensor &> sort_out(Tensor & values, Tensor & indices, const Tensor & self, int64_t dim, bool descending);
@@ -376,10 +373,6 @@ namespace CPUType {
   std::tuple<Tensor &,Tensor &> _max_out(Tensor & max, Tensor & max_indices, const Tensor & self, int64_t dim, bool keepdim);
   std::tuple<Tensor,Tensor> _min(const Tensor & self, int64_t dim, bool keepdim);
   std::tuple<Tensor &,Tensor &> _min_out(Tensor & min, Tensor & min_indices, const Tensor & self, int64_t dim, bool keepdim);
-  Tensor & binary_cross_entropy_out(Tensor & out, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction);
-  Tensor binary_cross_entropy(const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction);
-  Tensor & binary_cross_entropy_backward_out(Tensor & grad_input, const Tensor & grad_output, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction);
-  Tensor binary_cross_entropy_backward(const Tensor & grad_output, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction);
   Tensor & mse_loss_backward_out(Tensor & grad_input, const Tensor & grad_output, const Tensor & self, const Tensor & target, int64_t reduction);
   Tensor mse_loss_backward(const Tensor & grad_output, const Tensor & self, const Tensor & target, int64_t reduction);
   Tensor & l1_loss_backward_out(Tensor & grad_input, const Tensor & grad_output, const Tensor & self, const Tensor & target, int64_t reduction);
@@ -544,6 +537,5 @@ namespace CPUType {
   Tensor & im2col_backward_out(Tensor & grad_input, const Tensor & grad_output, IntArrayRef input_size, IntArrayRef kernel_size, IntArrayRef dilation, IntArrayRef padding, IntArrayRef stride);
   Tensor im2col_backward(const Tensor & grad_output, IntArrayRef input_size, IntArrayRef kernel_size, IntArrayRef dilation, IntArrayRef padding, IntArrayRef stride);
 }
-#endif
 
 } // namespace at

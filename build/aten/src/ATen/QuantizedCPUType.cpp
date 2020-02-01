@@ -41,9 +41,6 @@ Tensor * QuantizedCPUType::add(Tensor & a, Tensor & b) {
 */
 
 namespace QuantizedCPUType {
-#ifndef USE_STATIC_DISPATCH
-namespace {
-#endif
 
 Tensor as_strided(const Tensor & self, IntArrayRef size, IntArrayRef stride, c10::optional<int64_t> storage_offset) {
 
@@ -104,6 +101,11 @@ Tensor & relu_(Tensor & self) {
 
     const OptionalDeviceGuard device_guard(device_of(self));
     return at::native::quantized_relu_(self);
+}
+Tensor sigmoid(const Tensor & self) {
+
+    const OptionalDeviceGuard device_guard(device_of(self));
+    return at::native::quantized_sigmoid(self);
 }
 Tensor tanh(const Tensor & self) {
 
@@ -380,6 +382,26 @@ bool equal(const Tensor & self, const Tensor & other) {
     const OptionalDeviceGuard device_guard(device_of(self));
     return at::native::quantized_equal(self, other);
 }
+Tensor _cat(TensorList tensors, int64_t dim) {
+    if (at::has_names(tensors)) {
+        AT_ERROR(
+            "_cat is not yet supported with named tensors. Please drop names via "
+            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
+            "and set names on the result of the operation.");
+    }
+    const OptionalDeviceGuard device_guard(device_of(tensors));
+    return at::native::quantized_cat(tensors, dim);
+}
+Tensor & _cat_out(Tensor & out, TensorList tensors, int64_t dim) {
+    if (out.has_names() || at::has_names(tensors)) {
+        AT_ERROR(
+            "_cat_out is not yet supported with named tensors. Please drop names via "
+            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
+            "and set names on the result of the operation.");
+    }
+    const OptionalDeviceGuard device_guard(device_of(out));
+    return at::native::quantized_cat_out(out, tensors, dim);
+}
 Tensor _adaptive_avg_pool2d(const Tensor & self, IntArrayRef output_size) {
     if (self.has_names()) {
         AT_ERROR(
@@ -421,9 +443,6 @@ Tensor upsample_nearest2d(const Tensor & self, IntArrayRef output_size, c10::opt
     return at::native::quantized_upsample_nearest2d_cpu(self, output_size, scales_h, scales_w);
 }
 
-#ifndef USE_STATIC_DISPATCH
-}
-#endif
 }  // namespace QuantizedCPUType
 
 #ifndef USE_STATIC_DISPATCH
@@ -468,6 +487,10 @@ auto registerer = torch::RegisterOperators()
   .op(torch::RegisterOperators::options()
     .schema("aten::relu_(Tensor(a!) self) -> Tensor(a!)")
     .impl_unboxedOnlyKernel<Tensor & (Tensor &), &QuantizedCPUType::relu_>(DispatchKey::QuantizedCPUTensorId)
+    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
+  .op(torch::RegisterOperators::options()
+    .schema("aten::sigmoid(Tensor self) -> Tensor")
+    .kernel<Tensor (const Tensor &)>(DispatchKey::QuantizedCPUTensorId, &QuantizedCPUType::sigmoid)
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
   .op(torch::RegisterOperators::options()
     .schema("aten::tanh(Tensor self) -> Tensor")
@@ -636,6 +659,14 @@ auto registerer = torch::RegisterOperators()
   .op(torch::RegisterOperators::options()
     .schema("aten::equal(Tensor self, Tensor other) -> bool")
     .kernel<bool (const Tensor &, const Tensor &)>(DispatchKey::QuantizedCPUTensorId, &QuantizedCPUType::equal)
+    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
+  .op(torch::RegisterOperators::options()
+    .schema("aten::_cat(Tensor[] tensors, int dim=0) -> Tensor")
+    .impl_unboxedOnlyKernel<Tensor (TensorList, int64_t), &QuantizedCPUType::_cat>(DispatchKey::QuantizedCPUTensorId)
+    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
+  .op(torch::RegisterOperators::options()
+    .schema("aten::_cat.out(Tensor[] tensors, int dim=0, *, Tensor(a!) out) -> Tensor(a!)")
+    .impl_unboxedOnlyKernel<Tensor & (Tensor &, TensorList, int64_t), &QuantizedCPUType::_cat_out>(DispatchKey::QuantizedCPUTensorId)
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
   .op(torch::RegisterOperators::options()
     .schema("aten::_adaptive_avg_pool2d(Tensor self, int[2] output_size) -> Tensor")

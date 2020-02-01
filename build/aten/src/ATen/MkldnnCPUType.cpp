@@ -41,9 +41,6 @@ Tensor * MkldnnCPUType::add(Tensor & a, Tensor & b) {
 */
 
 namespace MkldnnCPUType {
-#ifndef USE_STATIC_DISPATCH
-namespace {
-#endif
 
 Tensor add(const Tensor & self, const Tensor & other, Scalar alpha) {
 
@@ -251,9 +248,6 @@ Tensor avg_pool2d(const Tensor & self, IntArrayRef kernel_size, IntArrayRef stri
     return at::native::mkldnn_avg_pool2d(self, kernel_size, stride, padding, ceil_mode, count_include_pad, divisor_override);
 }
 
-#ifndef USE_STATIC_DISPATCH
-}
-#endif
 }  // namespace MkldnnCPUType
 
 #ifndef USE_STATIC_DISPATCH

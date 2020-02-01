@@ -201,7 +201,7 @@ namespace TypeDefault {
   Tensor embedding(const Tensor & weight, const Tensor & indices, int64_t padding_idx, bool scale_grad_by_freq, bool sparse);
   Tensor embedding_backward(const Tensor & grad, const Tensor & indices, int64_t num_weights, int64_t padding_idx, bool scale_grad_by_freq, bool sparse);
   Tensor embedding_sparse_backward(const Tensor & grad, const Tensor & indices, int64_t num_weights, int64_t padding_idx, bool scale_grad_by_freq);
-  std::tuple<Tensor,Tensor,Tensor,Tensor> embedding_bag(const Tensor & weight, const Tensor & indices, const Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights);
+  std::tuple<Tensor,Tensor,Tensor,Tensor> embedding_bag(const Tensor & weight, const Tensor & indices, const Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights, bool include_last_offset);
   Tensor _embedding_bag_backward(const Tensor & grad, const Tensor & indices, const Tensor & offsets, const Tensor & offset2bag, const Tensor & bag_size, const Tensor & maximum_indices, int64_t num_weights, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights);
   Tensor _embedding_bag_sparse_backward(const Tensor & grad, const Tensor & indices, const Tensor & offsets, const Tensor & offset2bag, const Tensor & bag_size, int64_t num_weights, bool scale_grad_by_freq, int64_t mode, const Tensor & per_sample_weights);
   Tensor empty(IntArrayRef size, c10::optional<DimnameList> names, const TensorOptions & options, c10::optional<MemoryFormat> memory_format);
@@ -652,6 +652,8 @@ namespace TypeDefault {
   Tensor & polygamma_(Tensor & self, int64_t n);
   Tensor & addcdiv_(Tensor & self, const Tensor & tensor1, const Tensor & tensor2, Scalar value);
   Tensor & cauchy_(Tensor & self, double median, double sigma, Generator * generator);
+  Tensor & log_normal_(Tensor & self, double mean, double std, Generator * generator);
+  Tensor & exponential_(Tensor & self, double lambd, Generator * generator);
   Tensor & geometric_(Tensor & self, double p, Generator * generator);
   Tensor & cross_out(Tensor & out, const Tensor & self, const Tensor & other, c10::optional<int64_t> dim);
   Tensor cross(const Tensor & self, const Tensor & other, c10::optional<int64_t> dim);
@@ -692,6 +694,10 @@ namespace TypeDefault {
   Tensor & sign_(Tensor & self);
   Tensor & atan2_out(Tensor & out, const Tensor & self, const Tensor & other);
   Tensor atan2(const Tensor & self, const Tensor & other);
+  Tensor & min_out(Tensor & out, const Tensor & self, const Tensor & other);
+  Tensor min(const Tensor & self, const Tensor & other);
+  Tensor & max_out(Tensor & out, const Tensor & self, const Tensor & other);
+  Tensor max(const Tensor & self, const Tensor & other);
   std::tuple<Tensor &,Tensor &> sort_out(Tensor & values, Tensor & indices, const Tensor & self, Dimname dim, bool descending);
   std::tuple<Tensor,Tensor> sort(const Tensor & self, Dimname dim, bool descending);
   Tensor argsort(const Tensor & self, int64_t dim, bool descending);

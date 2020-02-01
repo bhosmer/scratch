@@ -2453,20 +2453,20 @@ static PyObject * THPVariable__embedding_bag(PyObject* self_, PyObject* args, Py
 {
   HANDLE_TH_ERRORS
   static PythonArgParser parser({
-    "_embedding_bag(Tensor weight, Tensor indices, Tensor offsets, bool scale_grad_by_freq=False, int64_t mode=0, bool sparse=False, Tensor? per_sample_weights=None)",
+    "_embedding_bag(Tensor weight, Tensor indices, Tensor offsets, bool scale_grad_by_freq=False, int64_t mode=0, bool sparse=False, Tensor? per_sample_weights=None, bool include_last_offset=False)",
   }, /*traceable=*/true);
 
-  ParsedArgs<7> parsed_args;
+  ParsedArgs<8> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
   if (_r.has_torch_function()) {
     return handle_torch_function(_r, args, kwargs, THPVariableFunctions);
   }
-  // aten::_embedding_bag(Tensor weight, Tensor indices, Tensor offsets, bool scale_grad_by_freq=False, int mode=0, bool sparse=False, Tensor? per_sample_weights=None) -> (Tensor, Tensor, Tensor, Tensor)
-  auto dispatch__embedding_bag = [](const Tensor & weight, const Tensor & indices, const Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights) -> std::tuple<Tensor,Tensor,Tensor,Tensor> {
+  // aten::_embedding_bag(Tensor weight, Tensor indices, Tensor offsets, bool scale_grad_by_freq=False, int mode=0, bool sparse=False, Tensor? per_sample_weights=None, bool include_last_offset=False) -> (Tensor, Tensor, Tensor, Tensor)
+  auto dispatch__embedding_bag = [](const Tensor & weight, const Tensor & indices, const Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights, bool include_last_offset) -> std::tuple<Tensor,Tensor,Tensor,Tensor> {
     pybind11::gil_scoped_release no_gil;
-    return at::_embedding_bag(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights);
+    return at::_embedding_bag(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights, include_last_offset);
   };
-  return wrap(dispatch__embedding_bag(_r.tensor(0), _r.tensor(1), _r.tensor(2), _r.toBool(3), _r.toInt64(4), _r.toBool(5), _r.tensor(6)));
+  return wrap(dispatch__embedding_bag(_r.tensor(0), _r.tensor(1), _r.tensor(2), _r.toBool(3), _r.toInt64(4), _r.toBool(5), _r.tensor(6), _r.toBool(7)));
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }
@@ -7958,20 +7958,20 @@ static PyObject * THPVariable_embedding_bag(PyObject* self_, PyObject* args, PyO
 {
   HANDLE_TH_ERRORS
   static PythonArgParser parser({
-    "embedding_bag(Tensor weight, Tensor indices, Tensor offsets, bool scale_grad_by_freq=False, int64_t mode=0, bool sparse=False, Tensor? per_sample_weights=None)",
+    "embedding_bag(Tensor weight, Tensor indices, Tensor offsets, bool scale_grad_by_freq=False, int64_t mode=0, bool sparse=False, Tensor? per_sample_weights=None, bool include_last_offset=False)",
   }, /*traceable=*/true);
 
-  ParsedArgs<7> parsed_args;
+  ParsedArgs<8> parsed_args;
   auto _r = parser.parse(args, kwargs, parsed_args);
   if (_r.has_torch_function()) {
     return handle_torch_function(_r, args, kwargs, THPVariableFunctions);
   }
-  // aten::embedding_bag(Tensor weight, Tensor indices, Tensor offsets, bool scale_grad_by_freq=False, int mode=0, bool sparse=False, Tensor? per_sample_weights=None) -> (Tensor, Tensor, Tensor, Tensor)
-  auto dispatch_embedding_bag = [](const Tensor & weight, const Tensor & indices, const Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights) -> std::tuple<Tensor,Tensor,Tensor,Tensor> {
+  // aten::embedding_bag(Tensor weight, Tensor indices, Tensor offsets, bool scale_grad_by_freq=False, int mode=0, bool sparse=False, Tensor? per_sample_weights=None, bool include_last_offset=False) -> (Tensor, Tensor, Tensor, Tensor)
+  auto dispatch_embedding_bag = [](const Tensor & weight, const Tensor & indices, const Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights, bool include_last_offset) -> std::tuple<Tensor,Tensor,Tensor,Tensor> {
     pybind11::gil_scoped_release no_gil;
-    return at::embedding_bag(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights);
+    return at::embedding_bag(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights, include_last_offset);
   };
-  return wrap(dispatch_embedding_bag(_r.tensor(0), _r.tensor(1), _r.tensor(2), _r.toBool(3), _r.toInt64(4), _r.toBool(5), _r.tensor(6)));
+  return wrap(dispatch_embedding_bag(_r.tensor(0), _r.tensor(1), _r.tensor(2), _r.toBool(3), _r.toInt64(4), _r.toBool(5), _r.tensor(6), _r.toBool(7)));
   Py_RETURN_NONE;
   END_HANDLE_TH_ERRORS
 }

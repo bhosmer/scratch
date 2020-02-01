@@ -1303,7 +1303,7 @@ Tensor embedding_sparse_backward(const Tensor & grad, const Tensor & indices, in
     const OptionalDeviceGuard device_guard(device_of(grad));
     return at::native::embedding_sparse_backward(grad, indices, num_weights, padding_idx, scale_grad_by_freq);
 }
-std::tuple<Tensor,Tensor,Tensor,Tensor> embedding_bag(const Tensor & weight, const Tensor & indices, const Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights) {
+std::tuple<Tensor,Tensor,Tensor,Tensor> embedding_bag(const Tensor & weight, const Tensor & indices, const Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights, bool include_last_offset) {
     if (weight.has_names() || indices.has_names() || offsets.has_names() || per_sample_weights.has_names()) {
         AT_ERROR(
             "embedding_bag is not yet supported with named tensors. Please drop names via "
@@ -1311,7 +1311,7 @@ std::tuple<Tensor,Tensor,Tensor,Tensor> embedding_bag(const Tensor & weight, con
             "and set names on the result of the operation.");
     }
     const OptionalDeviceGuard device_guard(device_of(weight));
-    return at::native::embedding_bag(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights);
+    return at::native::embedding_bag(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights, include_last_offset);
 }
 Tensor _embedding_bag_backward(const Tensor & grad, const Tensor & indices, const Tensor & offsets, const Tensor & offset2bag, const Tensor & bag_size, const Tensor & maximum_indices, int64_t num_weights, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights) {
     if (grad.has_names() || indices.has_names() || offsets.has_names() || offset2bag.has_names() || bag_size.has_names() || maximum_indices.has_names() || per_sample_weights.has_names()) {
@@ -4733,6 +4733,16 @@ Tensor & cauchy_(Tensor & self, double median, double sigma, Generator * generat
     const OptionalDeviceGuard device_guard(device_of(self));
     return at::native::cauchy_(self, median, sigma, generator);
 }
+Tensor & log_normal_(Tensor & self, double mean, double std, Generator * generator) {
+
+    const OptionalDeviceGuard device_guard(device_of(self));
+    return at::native::log_normal_(self, mean, std, generator);
+}
+Tensor & exponential_(Tensor & self, double lambd, Generator * generator) {
+
+    const OptionalDeviceGuard device_guard(device_of(self));
+    return at::native::exponential_(self, lambd, generator);
+}
 Tensor & geometric_(Tensor & self, double p, Generator * generator) {
 
     const OptionalDeviceGuard device_guard(device_of(self));
@@ -5062,6 +5072,46 @@ Tensor atan2(const Tensor & self, const Tensor & other) {
 
     const OptionalDeviceGuard device_guard(device_of(self));
     return at::native::atan2(self, other);
+}
+Tensor & min_out(Tensor & out, const Tensor & self, const Tensor & other) {
+    if (out.has_names() || self.has_names() || other.has_names()) {
+        AT_ERROR(
+            "min_out is not yet supported with named tensors. Please drop names via "
+            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
+            "and set names on the result of the operation.");
+    }
+    const OptionalDeviceGuard device_guard(device_of(self));
+    return at::native::min_out(out, self, other);
+}
+Tensor min(const Tensor & self, const Tensor & other) {
+    if (self.has_names() || other.has_names()) {
+        AT_ERROR(
+            "min is not yet supported with named tensors. Please drop names via "
+            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
+            "and set names on the result of the operation.");
+    }
+    const OptionalDeviceGuard device_guard(device_of(self));
+    return at::native::min(self, other);
+}
+Tensor & max_out(Tensor & out, const Tensor & self, const Tensor & other) {
+    if (out.has_names() || self.has_names() || other.has_names()) {
+        AT_ERROR(
+            "max_out is not yet supported with named tensors. Please drop names via "
+            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
+            "and set names on the result of the operation.");
+    }
+    const OptionalDeviceGuard device_guard(device_of(self));
+    return at::native::max_out(out, self, other);
+}
+Tensor max(const Tensor & self, const Tensor & other) {
+    if (self.has_names() || other.has_names()) {
+        AT_ERROR(
+            "max is not yet supported with named tensors. Please drop names via "
+            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
+            "and set names on the result of the operation.");
+    }
+    const OptionalDeviceGuard device_guard(device_of(self));
+    return at::native::max(self, other);
 }
 std::tuple<Tensor &,Tensor &> sort_out(Tensor & values, Tensor & indices, const Tensor & self, Dimname dim, bool descending) {
     if (values.has_names() || indices.has_names() || self.has_names()) {
@@ -6291,8 +6341,8 @@ auto registerer = torch::RegisterOperators()
     .catchAllKernel<Tensor (const Tensor &, const Tensor &, int64_t, int64_t, bool)>(&TypeDefault::embedding_sparse_backward)
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
   .op(torch::RegisterOperators::options()
-    .schema("aten::embedding_bag(Tensor weight, Tensor indices, Tensor offsets, bool scale_grad_by_freq=False, int mode=0, bool sparse=False, Tensor? per_sample_weights=None) -> (Tensor, Tensor, Tensor, Tensor)")
-    .impl_unboxedOnlyCatchAllKernel<std::tuple<Tensor,Tensor,Tensor,Tensor> (const Tensor &, const Tensor &, const Tensor &, bool, int64_t, bool, const Tensor &), &TypeDefault::embedding_bag>()
+    .schema("aten::embedding_bag(Tensor weight, Tensor indices, Tensor offsets, bool scale_grad_by_freq=False, int mode=0, bool sparse=False, Tensor? per_sample_weights=None, bool include_last_offset=False) -> (Tensor, Tensor, Tensor, Tensor)")
+    .impl_unboxedOnlyCatchAllKernel<std::tuple<Tensor,Tensor,Tensor,Tensor> (const Tensor &, const Tensor &, const Tensor &, bool, int64_t, bool, const Tensor &, bool), &TypeDefault::embedding_bag>()
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
   .op(torch::RegisterOperators::options()
     .schema("aten::_embedding_bag_backward(Tensor grad, Tensor indices, Tensor offsets, Tensor offset2bag, Tensor bag_size, Tensor maximum_indices, int num_weights, bool scale_grad_by_freq, int mode, bool sparse, Tensor? per_sample_weights) -> Tensor")
@@ -8091,6 +8141,14 @@ auto registerer = torch::RegisterOperators()
     .impl_unboxedOnlyCatchAllKernel<Tensor & (Tensor &, double, double, Generator *), &TypeDefault::cauchy_>()
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
   .op(torch::RegisterOperators::options()
+    .schema("aten::log_normal_(Tensor(a!) self, float mean=1, float std=2, *, Generator? generator=None) -> Tensor(a!)")
+    .impl_unboxedOnlyCatchAllKernel<Tensor & (Tensor &, double, double, Generator *), &TypeDefault::log_normal_>()
+    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
+  .op(torch::RegisterOperators::options()
+    .schema("aten::exponential_(Tensor(a!) self, float lambd=1, *, Generator? generator=None) -> Tensor(a!)")
+    .impl_unboxedOnlyCatchAllKernel<Tensor & (Tensor &, double, Generator *), &TypeDefault::exponential_>()
+    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
+  .op(torch::RegisterOperators::options()
     .schema("aten::geometric_(Tensor(a!) self, float p, *, Generator? generator=None) -> Tensor(a!)")
     .impl_unboxedOnlyCatchAllKernel<Tensor & (Tensor &, double, Generator *), &TypeDefault::geometric_>()
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
@@ -8249,6 +8307,22 @@ auto registerer = torch::RegisterOperators()
   .op(torch::RegisterOperators::options()
     .schema("aten::atan2(Tensor self, Tensor other) -> Tensor")
     .catchAllKernel<Tensor (const Tensor &, const Tensor &)>(&TypeDefault::atan2)
+    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
+  .op(torch::RegisterOperators::options()
+    .schema("aten::min.out(Tensor self, Tensor other, *, Tensor(a!) out) -> Tensor(a!)")
+    .impl_unboxedOnlyCatchAllKernel<Tensor & (Tensor &, const Tensor &, const Tensor &), &TypeDefault::min_out>()
+    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
+  .op(torch::RegisterOperators::options()
+    .schema("aten::min.other(Tensor self, Tensor other) -> Tensor")
+    .catchAllKernel<Tensor (const Tensor &, const Tensor &)>(&TypeDefault::min)
+    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
+  .op(torch::RegisterOperators::options()
+    .schema("aten::max.out(Tensor self, Tensor other, *, Tensor(a!) out) -> Tensor(a!)")
+    .impl_unboxedOnlyCatchAllKernel<Tensor & (Tensor &, const Tensor &, const Tensor &), &TypeDefault::max_out>()
+    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
+  .op(torch::RegisterOperators::options()
+    .schema("aten::max.other(Tensor self, Tensor other) -> Tensor")
+    .catchAllKernel<Tensor (const Tensor &, const Tensor &)>(&TypeDefault::max)
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
   .op(torch::RegisterOperators::options()
     .schema("aten::sort.dimname_values(Tensor self, Dimname dim, bool descending=False, *, Tensor(a!) values, Tensor(b!) indices) -> (Tensor(a!) values, Tensor(b!) indices)")

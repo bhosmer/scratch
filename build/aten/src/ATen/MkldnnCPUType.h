@@ -31,7 +31,6 @@ struct Quantizer;
 // to frontend
 using ConstQuantizerPtr = const c10::intrusive_ptr<Quantizer>&;
 
-#ifdef USE_STATIC_DISPATCH
 namespace MkldnnCPUType {
   Tensor add(const Tensor & self, const Tensor & other, Scalar alpha);
   Tensor & add_(Tensor & self, const Tensor & other, Scalar alpha);
@@ -61,6 +60,5 @@ namespace MkldnnCPUType {
   Tensor & avg_pool2d_out(Tensor & out, const Tensor & self, IntArrayRef kernel_size, IntArrayRef stride, IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override);
   Tensor avg_pool2d(const Tensor & self, IntArrayRef kernel_size, IntArrayRef stride, IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override);
 }
-#endif
 
 } // namespace at

@@ -34,7 +34,6 @@ struct Quantizer;
 // to frontend
 using ConstQuantizerPtr = const c10::intrusive_ptr<Quantizer>&;
 
-#ifdef USE_STATIC_DISPATCH
 namespace SparseCUDAType {
   Tensor add(const Tensor & self, const Tensor & other, Scalar alpha);
   Tensor & add_(Tensor & self, const Tensor & other, Scalar alpha);
@@ -89,6 +88,5 @@ namespace SparseCUDAType {
   Tensor index_select(const Tensor & self, int64_t dim, const Tensor & index);
   Tensor any(const Tensor & self);
 }
-#endif
 
 } // namespace at

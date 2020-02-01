@@ -31,7 +31,6 @@ struct Quantizer;
 // to frontend
 using ConstQuantizerPtr = const c10::intrusive_ptr<Quantizer>&;
 
-#ifdef USE_STATIC_DISPATCH
 namespace QuantizedCPUType {
   Tensor as_strided(const Tensor & self, IntArrayRef size, IntArrayRef stride, c10::optional<int64_t> storage_offset);
   Tensor clamp(const Tensor & self, c10::optional<Scalar> min, c10::optional<Scalar> max);
@@ -43,6 +42,7 @@ namespace QuantizedCPUType {
   Tensor & mean_out(Tensor & out, const Tensor & self, IntArrayRef dim, bool keepdim, c10::optional<ScalarType> dtype);
   Tensor relu(const Tensor & self);
   Tensor & relu_(Tensor & self);
+  Tensor sigmoid(const Tensor & self);
   Tensor tanh(const Tensor & self);
   Tensor clone(const Tensor & self, c10::optional<MemoryFormat> memory_format);
   Tensor dequantize(const Tensor & self);
@@ -85,11 +85,12 @@ namespace QuantizedCPUType {
   std::tuple<Tensor,Tensor> sort(const Tensor & self, int64_t dim, bool descending);
   std::tuple<Tensor,Tensor> topk(const Tensor & self, int64_t k, int64_t dim, bool largest, bool sorted);
   bool equal(const Tensor & self, const Tensor & other);
+  Tensor _cat(TensorList tensors, int64_t dim);
+  Tensor & _cat_out(Tensor & out, TensorList tensors, int64_t dim);
   Tensor _adaptive_avg_pool2d(const Tensor & self, IntArrayRef output_size);
   Tensor avg_pool2d(const Tensor & self, IntArrayRef kernel_size, IntArrayRef stride, IntArrayRef padding, bool ceil_mode, bool count_include_pad, c10::optional<int64_t> divisor_override);
   Tensor upsample_bilinear2d(const Tensor & self, IntArrayRef output_size, bool align_corners, c10::optional<double> scales_h, c10::optional<double> scales_w);
   Tensor upsample_nearest2d(const Tensor & self, IntArrayRef output_size, c10::optional<double> scales_h, c10::optional<double> scales_w);
 }
-#endif
 
 } // namespace at

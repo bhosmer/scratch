@@ -2719,7 +2719,7 @@ Tensor _dirichlet_grad(const Tensor & x, const Tensor & alpha, const Tensor & to
   }
   return result;
 }
-std::tuple<Tensor,Tensor,Tensor,Tensor> _embedding_bag(const Tensor & weight, const Tensor & indices, const Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights) {
+std::tuple<Tensor,Tensor,Tensor,Tensor> _embedding_bag(const Tensor & weight, const Tensor & indices, const Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights, bool include_last_offset) {
   RECORD_FUNCTION("_embedding_bag", std::vector<c10::IValue>({weight, indices, offsets, per_sample_weights}), Node::peek_at_next_sequence_nr());
   auto& weight_ = unpack(weight, "weight", 0);
   auto& indices_ = unpack(indices, "indices", 1);
@@ -2761,6 +2761,7 @@ std::tuple<Tensor,Tensor,Tensor,Tensor> _embedding_bag(const Tensor & weight, co
     jit::tracer::addInputs(node, "mode", mode);
     jit::tracer::addInputs(node, "sparse", sparse);
     jit::tracer::addInputs(node, "per_sample_weights", per_sample_weights);
+    jit::tracer::addInputs(node, "include_last_offset", include_last_offset);
     tracer_state->graph->insertNode(node);
   
     jit::tracer::setTracingState(nullptr);
@@ -2785,7 +2786,7 @@ std::tuple<Tensor,Tensor,Tensor,Tensor> _embedding_bag(const Tensor & weight, co
   #endif
   auto tmp = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
-    return at::_embedding_bag(weight_, indices_, offsets_, scale_grad_by_freq, mode, sparse, per_sample_weights_);
+    return at::_embedding_bag(weight_, indices_, offsets_, scale_grad_by_freq, mode, sparse, per_sample_weights_, include_last_offset);
   })();
   std::tie(result0, result1, result2, result3) = std::move(tmp);
   #ifndef NDEBUG
@@ -21537,7 +21538,7 @@ Tensor embedding_backward(const Tensor & grad, const Tensor & indices, int64_t n
   }
   return result;
 }
-std::tuple<Tensor,Tensor,Tensor,Tensor> embedding_bag(const Tensor & weight, const Tensor & indices, const Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights) {
+std::tuple<Tensor,Tensor,Tensor,Tensor> embedding_bag(const Tensor & weight, const Tensor & indices, const Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights, bool include_last_offset) {
   RECORD_FUNCTION("embedding_bag", std::vector<c10::IValue>({weight, indices, offsets, per_sample_weights}), Node::peek_at_next_sequence_nr());
   Tensor result0;
   Tensor result1;
@@ -21558,11 +21559,12 @@ std::tuple<Tensor,Tensor,Tensor,Tensor> embedding_bag(const Tensor & weight, con
     jit::tracer::addInputs(node, "mode", mode);
     jit::tracer::addInputs(node, "sparse", sparse);
     jit::tracer::addInputs(node, "per_sample_weights", per_sample_weights);
+    jit::tracer::addInputs(node, "include_last_offset", include_last_offset);
     tracer_state->graph->insertNode(node);
   
     jit::tracer::setTracingState(nullptr);
   }
-  std::tie(result0, result1, result2, result3) = TypeDefault::embedding_bag(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights);
+  std::tie(result0, result1, result2, result3) = TypeDefault::embedding_bag(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights, include_last_offset);
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result0);
@@ -65119,8 +65121,8 @@ auto registerer = torch::RegisterOperators()
     .kernel<Tensor (const Tensor &, const Tensor &, const Tensor &)>(DispatchKey::VariableTensorId, &VariableType::_dirichlet_grad)
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
   .op(torch::RegisterOperators::options()
-    .schema("aten::_embedding_bag(Tensor weight, Tensor indices, Tensor offsets, bool scale_grad_by_freq=False, int mode=0, bool sparse=False, Tensor? per_sample_weights=None) -> (Tensor, Tensor, Tensor, Tensor)")
-    .impl_unboxedOnlyKernel<std::tuple<Tensor,Tensor,Tensor,Tensor> (const Tensor &, const Tensor &, const Tensor &, bool, int64_t, bool, const Tensor &), &VariableType::_embedding_bag>(DispatchKey::VariableTensorId)
+    .schema("aten::_embedding_bag(Tensor weight, Tensor indices, Tensor offsets, bool scale_grad_by_freq=False, int mode=0, bool sparse=False, Tensor? per_sample_weights=None, bool include_last_offset=False) -> (Tensor, Tensor, Tensor, Tensor)")
+    .impl_unboxedOnlyKernel<std::tuple<Tensor,Tensor,Tensor,Tensor> (const Tensor &, const Tensor &, const Tensor &, bool, int64_t, bool, const Tensor &, bool), &VariableType::_embedding_bag>(DispatchKey::VariableTensorId)
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
   .op(torch::RegisterOperators::options()
     .schema("aten::_embedding_bag_backward(Tensor grad, Tensor indices, Tensor offsets, Tensor offset2bag, Tensor bag_size, Tensor maximum_indices, int num_weights, bool scale_grad_by_freq, int mode, bool sparse, Tensor? per_sample_weights) -> Tensor")
@@ -66595,8 +66597,8 @@ auto registerer = torch::RegisterOperators()
     .kernel<Tensor (const Tensor &, const Tensor &, int64_t, int64_t, bool, bool)>(DispatchKey::VariableTensorId, &VariableType::embedding_backward)
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
   .op(torch::RegisterOperators::options()
-    .schema("aten::embedding_bag(Tensor weight, Tensor indices, Tensor offsets, bool scale_grad_by_freq=False, int mode=0, bool sparse=False, Tensor? per_sample_weights=None) -> (Tensor, Tensor, Tensor, Tensor)")
-    .impl_unboxedOnlyKernel<std::tuple<Tensor,Tensor,Tensor,Tensor> (const Tensor &, const Tensor &, const Tensor &, bool, int64_t, bool, const Tensor &), &VariableType::embedding_bag>(DispatchKey::VariableTensorId)
+    .schema("aten::embedding_bag(Tensor weight, Tensor indices, Tensor offsets, bool scale_grad_by_freq=False, int mode=0, bool sparse=False, Tensor? per_sample_weights=None, bool include_last_offset=False) -> (Tensor, Tensor, Tensor, Tensor)")
+    .impl_unboxedOnlyKernel<std::tuple<Tensor,Tensor,Tensor,Tensor> (const Tensor &, const Tensor &, const Tensor &, bool, int64_t, bool, const Tensor &, bool), &VariableType::embedding_bag>(DispatchKey::VariableTensorId)
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
   .op(torch::RegisterOperators::options()
     .schema("aten::embedding_dense_backward(Tensor grad_output, Tensor indices, int num_weights, int padding_idx, bool scale_grad_by_freq) -> Tensor")

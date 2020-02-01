@@ -33,9 +33,6 @@
 namespace at {
 
 namespace SparseCUDAType {
-#ifndef USE_STATIC_DISPATCH
-namespace {
-#endif
 
 Tensor add(const Tensor & self, const Tensor & other, Scalar alpha) {
 
@@ -418,9 +415,6 @@ Tensor any(const Tensor & self) {
     return at::native::any_sparse(self);
 }
 
-#ifndef USE_STATIC_DISPATCH
-}
-#endif
 }  // namespace SparseCUDAType
 
 #ifndef USE_STATIC_DISPATCH

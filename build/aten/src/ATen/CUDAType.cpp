@@ -44,9 +44,6 @@ Tensor * CUDAType::add(Tensor & a, Tensor & b) {
 */
 
 namespace CUDAType {
-#ifndef USE_STATIC_DISPATCH
-namespace {
-#endif
 
 bool _use_cudnn_ctc_loss(const Tensor & log_probs, const Tensor & targets, IntArrayRef input_lengths, IntArrayRef target_lengths, int64_t blank) {
     if (log_probs.has_names() || targets.has_names()) {
@@ -212,6 +209,46 @@ Tensor & bernoulli_(Tensor & self, double p, Generator * generator) {
 
     const OptionalDeviceGuard device_guard(device_of(self));
     return at::native::bernoulli_scalar_cuda_(self, p, generator);
+}
+Tensor binary_cross_entropy(const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction) {
+    if (self.has_names() || target.has_names() || weight.has_names()) {
+        AT_ERROR(
+            "binary_cross_entropy is not yet supported with named tensors. Please drop names via "
+            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
+            "and set names on the result of the operation.");
+    }
+    const OptionalDeviceGuard device_guard(device_of(self));
+    return at::native::binary_cross_entropy_cuda(self, target, weight, reduction);
+}
+Tensor & binary_cross_entropy_out(Tensor & out, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction) {
+    if (out.has_names() || self.has_names() || target.has_names() || weight.has_names()) {
+        AT_ERROR(
+            "binary_cross_entropy_out is not yet supported with named tensors. Please drop names via "
+            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
+            "and set names on the result of the operation.");
+    }
+    const OptionalDeviceGuard device_guard(device_of(self));
+    return at::native::binary_cross_entropy_out_cuda(out, self, target, weight, reduction);
+}
+Tensor binary_cross_entropy_backward(const Tensor & grad_output, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction) {
+    if (grad_output.has_names() || self.has_names() || target.has_names() || weight.has_names()) {
+        AT_ERROR(
+            "binary_cross_entropy_backward is not yet supported with named tensors. Please drop names via "
+            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
+            "and set names on the result of the operation.");
+    }
+    const OptionalDeviceGuard device_guard(device_of(self));
+    return at::native::binary_cross_entropy_backward_cuda(grad_output, self, target, weight, reduction);
+}
+Tensor & binary_cross_entropy_backward_out(Tensor & grad_input, const Tensor & grad_output, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction) {
+    if (grad_input.has_names() || grad_output.has_names() || self.has_names() || target.has_names() || weight.has_names()) {
+        AT_ERROR(
+            "binary_cross_entropy_backward_out is not yet supported with named tensors. Please drop names via "
+            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
+            "and set names on the result of the operation.");
+    }
+    const OptionalDeviceGuard device_guard(device_of(self));
+    return at::native::binary_cross_entropy_backward_out_cuda(grad_input, grad_output, self, target, weight, reduction);
 }
 Tensor bincount(const Tensor & self, const Tensor & weights, int64_t minlength) {
     if (self.has_names() || weights.has_names()) {
@@ -538,7 +575,7 @@ Tensor & embedding_renorm_(Tensor & self, const Tensor & indices, double max_nor
     const OptionalDeviceGuard device_guard(device_of(self));
     return at::native::embedding_renorm_cuda_(self, indices, max_norm, norm_type);
 }
-std::tuple<Tensor,Tensor,Tensor,Tensor> _embedding_bag(const Tensor & weight, const Tensor & indices, const Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights) {
+std::tuple<Tensor,Tensor,Tensor,Tensor> _embedding_bag(const Tensor & weight, const Tensor & indices, const Tensor & offsets, bool scale_grad_by_freq, int64_t mode, bool sparse, const Tensor & per_sample_weights, bool include_last_offset) {
     if (weight.has_names() || indices.has_names() || offsets.has_names() || per_sample_weights.has_names()) {
         AT_ERROR(
             "_embedding_bag is not yet supported with named tensors. Please drop names via "
@@ -546,7 +583,7 @@ std::tuple<Tensor,Tensor,Tensor,Tensor> _embedding_bag(const Tensor & weight, co
             "and set names on the result of the operation.");
     }
     const OptionalDeviceGuard device_guard(device_of(weight));
-    return at::native::_embedding_bag_cuda(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights);
+    return at::native::_embedding_bag_cuda(weight, indices, offsets, scale_grad_by_freq, mode, sparse, per_sample_weights, include_last_offset);
 }
 Tensor _embedding_bag_dense_backward(const Tensor & grad, const Tensor & indices, const Tensor & offsets, const Tensor & offset2bag, const Tensor & bag_size, const Tensor & maximum_indices, int64_t num_weights, bool scale_grad_by_freq, int64_t mode, const Tensor & per_sample_weights) {
     if (grad.has_names() || indices.has_names() || offsets.has_names() || offset2bag.has_names() || bag_size.has_names() || maximum_indices.has_names() || per_sample_weights.has_names()) {
@@ -2103,16 +2140,6 @@ Tensor & normal_(Tensor & self, double mean, double std, Generator * generator) 
     const OptionalDeviceGuard device_guard(device_of(self));
     return at::native::normal_cuda_(self, mean, std, generator);
 }
-Tensor & log_normal_(Tensor & self, double mean, double std, Generator * generator) {
-
-    const OptionalDeviceGuard device_guard(device_of(self));
-    return at::native::log_normal_cuda_(self, mean, std, generator);
-}
-Tensor & exponential_(Tensor & self, double lambd, Generator * generator) {
-
-    const OptionalDeviceGuard device_guard(device_of(self));
-    return at::native::exponential_cuda_(self, lambd, generator);
-}
 Tensor & diag_out(Tensor & out, const Tensor & self, int64_t diagonal) {
     if (out.has_names() || self.has_names()) {
         AT_ERROR(
@@ -2773,50 +2800,10 @@ Tensor remainder(const Tensor & self, const Tensor & other) {
     const OptionalDeviceGuard device_guard(device_of(self));
     return at::native::legacy::cuda::_th_remainder(self, other);
 }
-Tensor & min_out(Tensor & out, const Tensor & self, const Tensor & other) {
-    if (out.has_names() || self.has_names() || other.has_names()) {
-        AT_ERROR(
-            "min_out is not yet supported with named tensors. Please drop names via "
-            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
-            "and set names on the result of the operation.");
-    }
-    const OptionalDeviceGuard device_guard(device_of(self));
-    return at::native::legacy::cuda::_th_min_out(out, self, other);
-}
-Tensor min(const Tensor & self, const Tensor & other) {
-    if (self.has_names() || other.has_names()) {
-        AT_ERROR(
-            "min is not yet supported with named tensors. Please drop names via "
-            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
-            "and set names on the result of the operation.");
-    }
-    const OptionalDeviceGuard device_guard(device_of(self));
-    return at::native::legacy::cuda::_th_min(self, other);
-}
 Tensor min(const Tensor & self) {
 
     const OptionalDeviceGuard device_guard(device_of(self));
     return at::native::legacy::cuda::_th_min(self);
-}
-Tensor & max_out(Tensor & out, const Tensor & self, const Tensor & other) {
-    if (out.has_names() || self.has_names() || other.has_names()) {
-        AT_ERROR(
-            "max_out is not yet supported with named tensors. Please drop names via "
-            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
-            "and set names on the result of the operation.");
-    }
-    const OptionalDeviceGuard device_guard(device_of(self));
-    return at::native::legacy::cuda::_th_max_out(out, self, other);
-}
-Tensor max(const Tensor & self, const Tensor & other) {
-    if (self.has_names() || other.has_names()) {
-        AT_ERROR(
-            "max is not yet supported with named tensors. Please drop names via "
-            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
-            "and set names on the result of the operation.");
-    }
-    const OptionalDeviceGuard device_guard(device_of(self));
-    return at::native::legacy::cuda::_th_max(self, other);
 }
 Tensor max(const Tensor & self) {
 
@@ -3157,46 +3144,6 @@ std::tuple<Tensor &,Tensor &> _min_out(Tensor & min, Tensor & min_indices, const
     }
     const OptionalDeviceGuard device_guard(device_of(self));
     return at::native::legacy::cuda::_th_min_out(min, min_indices, self, dim, keepdim);
-}
-Tensor & binary_cross_entropy_out(Tensor & out, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction) {
-    if (out.has_names() || self.has_names() || target.has_names() || weight.has_names()) {
-        AT_ERROR(
-            "binary_cross_entropy_out is not yet supported with named tensors. Please drop names via "
-            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
-            "and set names on the result of the operation.");
-    }
-    const OptionalDeviceGuard device_guard(device_of(self));
-    return at::native::legacy::cuda::_thnn_binary_cross_entropy_forward_out(out, self, target, weight, reduction);
-}
-Tensor binary_cross_entropy(const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction) {
-    if (self.has_names() || target.has_names() || weight.has_names()) {
-        AT_ERROR(
-            "binary_cross_entropy is not yet supported with named tensors. Please drop names via "
-            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
-            "and set names on the result of the operation.");
-    }
-    const OptionalDeviceGuard device_guard(device_of(self));
-    return at::native::legacy::cuda::_thnn_binary_cross_entropy_forward(self, target, weight, reduction);
-}
-Tensor & binary_cross_entropy_backward_out(Tensor & grad_input, const Tensor & grad_output, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction) {
-    if (grad_input.has_names() || grad_output.has_names() || self.has_names() || target.has_names() || weight.has_names()) {
-        AT_ERROR(
-            "binary_cross_entropy_backward_out is not yet supported with named tensors. Please drop names via "
-            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
-            "and set names on the result of the operation.");
-    }
-    const OptionalDeviceGuard device_guard(device_of(self));
-    return at::native::legacy::cuda::_thnn_binary_cross_entropy_backward_out(grad_input, grad_output, self, target, weight, reduction);
-}
-Tensor binary_cross_entropy_backward(const Tensor & grad_output, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction) {
-    if (grad_output.has_names() || self.has_names() || target.has_names() || weight.has_names()) {
-        AT_ERROR(
-            "binary_cross_entropy_backward is not yet supported with named tensors. Please drop names via "
-            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
-            "and set names on the result of the operation.");
-    }
-    const OptionalDeviceGuard device_guard(device_of(self));
-    return at::native::legacy::cuda::_thnn_binary_cross_entropy_backward(grad_output, self, target, weight, reduction);
 }
 Tensor & mse_loss_backward_out(Tensor & grad_input, const Tensor & grad_output, const Tensor & self, const Tensor & target, int64_t reduction) {
     if (grad_input.has_names() || grad_output.has_names() || self.has_names() || target.has_names()) {
@@ -4819,9 +4766,6 @@ Tensor im2col_backward(const Tensor & grad_output, IntArrayRef input_size, IntAr
     return at::native::im2col_backward_cuda(grad_output, input_size, kernel_size, dilation, padding, stride);
 }
 
-#ifndef USE_STATIC_DISPATCH
-}
-#endif
 }  // namespace CUDAType
 
 #ifndef USE_STATIC_DISPATCH
@@ -4918,6 +4862,22 @@ auto registerer = torch::RegisterOperators()
   .op(torch::RegisterOperators::options()
     .schema("aten::bernoulli_.float(Tensor(a!) self, float p=0.5, *, Generator? generator=None) -> Tensor(a!)")
     .impl_unboxedOnlyKernel<Tensor & (Tensor &, double, Generator *), &CUDAType::bernoulli_>(DispatchKey::CUDATensorId)
+    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
+  .op(torch::RegisterOperators::options()
+    .schema("aten::binary_cross_entropy(Tensor self, Tensor target, Tensor? weight=None, int reduction=Mean) -> Tensor")
+    .impl_unboxedOnlyKernel<Tensor (const Tensor &, const Tensor &, const Tensor &, int64_t), &CUDAType::binary_cross_entropy>(DispatchKey::CUDATensorId)
+    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
+  .op(torch::RegisterOperators::options()
+    .schema("aten::binary_cross_entropy.out(Tensor self, Tensor target, Tensor? weight=None, int reduction=Mean, *, Tensor(a!) out) -> Tensor(a!)")
+    .impl_unboxedOnlyKernel<Tensor & (Tensor &, const Tensor &, const Tensor &, const Tensor &, int64_t), &CUDAType::binary_cross_entropy_out>(DispatchKey::CUDATensorId)
+    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
+  .op(torch::RegisterOperators::options()
+    .schema("aten::binary_cross_entropy_backward(Tensor grad_output, Tensor self, Tensor target, Tensor? weight=None, int reduction=Mean) -> Tensor")
+    .impl_unboxedOnlyKernel<Tensor (const Tensor &, const Tensor &, const Tensor &, const Tensor &, int64_t), &CUDAType::binary_cross_entropy_backward>(DispatchKey::CUDATensorId)
+    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
+  .op(torch::RegisterOperators::options()
+    .schema("aten::binary_cross_entropy_backward.grad_input(Tensor grad_output, Tensor self, Tensor target, Tensor? weight=None, int reduction=Mean, *, Tensor(a!) grad_input) -> Tensor(a!)")
+    .impl_unboxedOnlyKernel<Tensor & (Tensor &, const Tensor &, const Tensor &, const Tensor &, const Tensor &, int64_t), &CUDAType::binary_cross_entropy_backward_out>(DispatchKey::CUDATensorId)
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
   .op(torch::RegisterOperators::options()
     .schema("aten::bincount(Tensor self, Tensor? weights=None, int minlength=0) -> Tensor")
@@ -5096,8 +5056,8 @@ auto registerer = torch::RegisterOperators()
     .impl_unboxedOnlyKernel<Tensor & (Tensor &, const Tensor &, double, double), &CUDAType::embedding_renorm_>(DispatchKey::CUDATensorId)
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
   .op(torch::RegisterOperators::options()
-    .schema("aten::_embedding_bag(Tensor weight, Tensor indices, Tensor offsets, bool scale_grad_by_freq=False, int mode=0, bool sparse=False, Tensor? per_sample_weights=None) -> (Tensor, Tensor, Tensor, Tensor)")
-    .impl_unboxedOnlyKernel<std::tuple<Tensor,Tensor,Tensor,Tensor> (const Tensor &, const Tensor &, const Tensor &, bool, int64_t, bool, const Tensor &), &CUDAType::_embedding_bag>(DispatchKey::CUDATensorId)
+    .schema("aten::_embedding_bag(Tensor weight, Tensor indices, Tensor offsets, bool scale_grad_by_freq=False, int mode=0, bool sparse=False, Tensor? per_sample_weights=None, bool include_last_offset=False) -> (Tensor, Tensor, Tensor, Tensor)")
+    .impl_unboxedOnlyKernel<std::tuple<Tensor,Tensor,Tensor,Tensor> (const Tensor &, const Tensor &, const Tensor &, bool, int64_t, bool, const Tensor &, bool), &CUDAType::_embedding_bag>(DispatchKey::CUDATensorId)
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
   .op(torch::RegisterOperators::options()
     .schema("aten::_embedding_bag_dense_backward(Tensor grad, Tensor indices, Tensor offsets, Tensor offset2bag, Tensor bag_size, Tensor maximum_indices, int num_weights, bool scale_grad_by_freq, int mode, Tensor? per_sample_weights) -> Tensor")
@@ -5856,14 +5816,6 @@ auto registerer = torch::RegisterOperators()
     .impl_unboxedOnlyKernel<Tensor & (Tensor &, double, double, Generator *), &CUDAType::normal_>(DispatchKey::CUDATensorId)
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
   .op(torch::RegisterOperators::options()
-    .schema("aten::log_normal_(Tensor(a!) self, float mean=1, float std=2, *, Generator? generator=None) -> Tensor(a!)")
-    .impl_unboxedOnlyKernel<Tensor & (Tensor &, double, double, Generator *), &CUDAType::log_normal_>(DispatchKey::CUDATensorId)
-    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
-  .op(torch::RegisterOperators::options()
-    .schema("aten::exponential_(Tensor(a!) self, float lambd=1, *, Generator? generator=None) -> Tensor(a!)")
-    .impl_unboxedOnlyKernel<Tensor & (Tensor &, double, Generator *), &CUDAType::exponential_>(DispatchKey::CUDATensorId)
-    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
-  .op(torch::RegisterOperators::options()
     .schema("aten::diag.out(Tensor self, int diagonal=0, *, Tensor(a!) out) -> Tensor(a!)")
     .impl_unboxedOnlyKernel<Tensor & (Tensor &, const Tensor &, int64_t), &CUDAType::diag_out>(DispatchKey::CUDATensorId)
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
@@ -6196,24 +6148,8 @@ auto registerer = torch::RegisterOperators()
     .kernel<Tensor (const Tensor &, const Tensor &)>(DispatchKey::CUDATensorId, &CUDAType::remainder)
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
   .op(torch::RegisterOperators::options()
-    .schema("aten::min.out(Tensor self, Tensor other, *, Tensor(a!) out) -> Tensor(a!)")
-    .impl_unboxedOnlyKernel<Tensor & (Tensor &, const Tensor &, const Tensor &), &CUDAType::min_out>(DispatchKey::CUDATensorId)
-    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
-  .op(torch::RegisterOperators::options()
-    .schema("aten::min.other(Tensor self, Tensor other) -> Tensor")
-    .kernel<Tensor (const Tensor &, const Tensor &)>(DispatchKey::CUDATensorId, &CUDAType::min)
-    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
-  .op(torch::RegisterOperators::options()
     .schema("aten::min(Tensor self) -> Tensor")
     .kernel<Tensor (const Tensor &)>(DispatchKey::CUDATensorId, &CUDAType::min)
-    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
-  .op(torch::RegisterOperators::options()
-    .schema("aten::max.out(Tensor self, Tensor other, *, Tensor(a!) out) -> Tensor(a!)")
-    .impl_unboxedOnlyKernel<Tensor & (Tensor &, const Tensor &, const Tensor &), &CUDAType::max_out>(DispatchKey::CUDATensorId)
-    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
-  .op(torch::RegisterOperators::options()
-    .schema("aten::max.other(Tensor self, Tensor other) -> Tensor")
-    .kernel<Tensor (const Tensor &, const Tensor &)>(DispatchKey::CUDATensorId, &CUDAType::max)
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
   .op(torch::RegisterOperators::options()
     .schema("aten::max(Tensor self) -> Tensor")
@@ -6370,22 +6306,6 @@ auto registerer = torch::RegisterOperators()
   .op(torch::RegisterOperators::options()
     .schema("aten::_min.min(Tensor self, int dim, bool keepdim=False, *, Tensor(a!) min, Tensor(b!) min_indices) -> (Tensor(a!), Tensor(b!))")
     .impl_unboxedOnlyKernel<std::tuple<Tensor &,Tensor &> (Tensor &, Tensor &, const Tensor &, int64_t, bool), &CUDAType::_min_out>(DispatchKey::CUDATensorId)
-    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
-  .op(torch::RegisterOperators::options()
-    .schema("aten::binary_cross_entropy.out(Tensor self, Tensor target, Tensor? weight=None, int reduction=Mean, *, Tensor(a!) out) -> Tensor(a!)")
-    .impl_unboxedOnlyKernel<Tensor & (Tensor &, const Tensor &, const Tensor &, const Tensor &, int64_t), &CUDAType::binary_cross_entropy_out>(DispatchKey::CUDATensorId)
-    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
-  .op(torch::RegisterOperators::options()
-    .schema("aten::binary_cross_entropy(Tensor self, Tensor target, Tensor? weight=None, int reduction=Mean) -> Tensor")
-    .impl_unboxedOnlyKernel<Tensor (const Tensor &, const Tensor &, const Tensor &, int64_t), &CUDAType::binary_cross_entropy>(DispatchKey::CUDATensorId)
-    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
-  .op(torch::RegisterOperators::options()
-    .schema("aten::binary_cross_entropy_backward.grad_input(Tensor grad_output, Tensor self, Tensor target, Tensor? weight=None, int reduction=Mean, *, Tensor(a!) grad_input) -> Tensor(a!)")
-    .impl_unboxedOnlyKernel<Tensor & (Tensor &, const Tensor &, const Tensor &, const Tensor &, const Tensor &, int64_t), &CUDAType::binary_cross_entropy_backward_out>(DispatchKey::CUDATensorId)
-    .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
-  .op(torch::RegisterOperators::options()
-    .schema("aten::binary_cross_entropy_backward(Tensor grad_output, Tensor self, Tensor target, Tensor? weight=None, int reduction=Mean) -> Tensor")
-    .impl_unboxedOnlyKernel<Tensor (const Tensor &, const Tensor &, const Tensor &, const Tensor &, int64_t), &CUDAType::binary_cross_entropy_backward>(DispatchKey::CUDATensorId)
     .aliasAnalysis(c10::AliasAnalysisKind::FROM_SCHEMA))
   .op(torch::RegisterOperators::options()
     .schema("aten::mse_loss_backward.grad_input(Tensor grad_output, Tensor self, Tensor target, int reduction, *, Tensor(a!) grad_input) -> Tensor(a!)")

@@ -1152,7 +1152,6 @@ Tensor & _th_index_copy_(Tensor & self, int64_t dim, const Tensor & index, const
     switch (dispatch_scalar_type) {
         case ScalarType::Bool: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Bool);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Long);
             auto source_ = checked_dense_tensor_unwrap(source, "source", 4, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Bool);
             THBoolTensor_indexCopy(self_, dim, index_, source_);
@@ -1161,7 +1160,6 @@ Tensor & _th_index_copy_(Tensor & self, int64_t dim, const Tensor & index, const
         }
         case ScalarType::Byte: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Long);
             auto source_ = checked_dense_tensor_unwrap(source, "source", 4, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Byte);
             THByteTensor_indexCopy(self_, dim, index_, source_);
@@ -1170,7 +1168,6 @@ Tensor & _th_index_copy_(Tensor & self, int64_t dim, const Tensor & index, const
         }
         case ScalarType::Char: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Long);
             auto source_ = checked_dense_tensor_unwrap(source, "source", 4, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Char);
             THCharTensor_indexCopy(self_, dim, index_, source_);
@@ -1179,7 +1176,6 @@ Tensor & _th_index_copy_(Tensor & self, int64_t dim, const Tensor & index, const
         }
         case ScalarType::Double: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Long);
             auto source_ = checked_dense_tensor_unwrap(source, "source", 4, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Double);
             THDoubleTensor_indexCopy(self_, dim, index_, source_);
@@ -1188,7 +1184,6 @@ Tensor & _th_index_copy_(Tensor & self, int64_t dim, const Tensor & index, const
         }
         case ScalarType::Float: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Long);
             auto source_ = checked_dense_tensor_unwrap(source, "source", 4, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Float);
             THFloatTensor_indexCopy(self_, dim, index_, source_);
@@ -1197,7 +1192,6 @@ Tensor & _th_index_copy_(Tensor & self, int64_t dim, const Tensor & index, const
         }
         case ScalarType::Int: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Long);
             auto source_ = checked_dense_tensor_unwrap(source, "source", 4, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Int);
             THIntTensor_indexCopy(self_, dim, index_, source_);
@@ -1206,7 +1200,6 @@ Tensor & _th_index_copy_(Tensor & self, int64_t dim, const Tensor & index, const
         }
         case ScalarType::Long: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Long);
             auto source_ = checked_dense_tensor_unwrap(source, "source", 4, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Long);
             THLongTensor_indexCopy(self_, dim, index_, source_);
@@ -1215,7 +1208,6 @@ Tensor & _th_index_copy_(Tensor & self, int64_t dim, const Tensor & index, const
         }
         case ScalarType::Short: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Long);
             auto source_ = checked_dense_tensor_unwrap(source, "source", 4, "_th_index_copy_", false, DeviceType::CPU, ScalarType::Short);
             THShortTensor_indexCopy(self_, dim, index_, source_);
@@ -1460,7 +1452,6 @@ Tensor & _th_index_fill_(Tensor & self, int64_t dim, const Tensor & index, Scala
     switch (dispatch_scalar_type) {
         case ScalarType::Bool: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_index_fill_", false, DeviceType::CPU, ScalarType::Bool);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_index_fill_", false, DeviceType::CPU, ScalarType::Long);
             auto value_ = value.toBool();
             THBoolTensor_indexFill(self_, dim, index_, value_);
@@ -1469,7 +1460,6 @@ Tensor & _th_index_fill_(Tensor & self, int64_t dim, const Tensor & index, Scala
         }
         case ScalarType::Byte: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_index_fill_", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_index_fill_", false, DeviceType::CPU, ScalarType::Long);
             auto value_ = value.toByte();
             THByteTensor_indexFill(self_, dim, index_, value_);
@@ -1478,7 +1468,6 @@ Tensor & _th_index_fill_(Tensor & self, int64_t dim, const Tensor & index, Scala
         }
         case ScalarType::Char: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_index_fill_", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_index_fill_", false, DeviceType::CPU, ScalarType::Long);
             auto value_ = value.toChar();
             THCharTensor_indexFill(self_, dim, index_, value_);
@@ -1487,7 +1476,6 @@ Tensor & _th_index_fill_(Tensor & self, int64_t dim, const Tensor & index, Scala
         }
         case ScalarType::Double: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_index_fill_", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_index_fill_", false, DeviceType::CPU, ScalarType::Long);
             auto value_ = value.toDouble();
             THDoubleTensor_indexFill(self_, dim, index_, value_);
@@ -1496,7 +1484,6 @@ Tensor & _th_index_fill_(Tensor & self, int64_t dim, const Tensor & index, Scala
         }
         case ScalarType::Float: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_index_fill_", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_index_fill_", false, DeviceType::CPU, ScalarType::Long);
             auto value_ = value.toFloat();
             THFloatTensor_indexFill(self_, dim, index_, value_);
@@ -1505,7 +1492,6 @@ Tensor & _th_index_fill_(Tensor & self, int64_t dim, const Tensor & index, Scala
         }
         case ScalarType::Int: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_index_fill_", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_index_fill_", false, DeviceType::CPU, ScalarType::Long);
             auto value_ = value.toInt();
             THIntTensor_indexFill(self_, dim, index_, value_);
@@ -1514,7 +1500,6 @@ Tensor & _th_index_fill_(Tensor & self, int64_t dim, const Tensor & index, Scala
         }
         case ScalarType::Long: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_index_fill_", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_index_fill_", false, DeviceType::CPU, ScalarType::Long);
             auto value_ = value.toLong();
             THLongTensor_indexFill(self_, dim, index_, value_);
@@ -1523,7 +1508,6 @@ Tensor & _th_index_fill_(Tensor & self, int64_t dim, const Tensor & index, Scala
         }
         case ScalarType::Short: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_index_fill_", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_index_fill_", false, DeviceType::CPU, ScalarType::Long);
             auto value_ = value.toShort();
             THShortTensor_indexFill(self_, dim, index_, value_);
@@ -1544,7 +1528,6 @@ Tensor & _th_scatter_(Tensor & self, int64_t dim, const Tensor & index, const Te
     switch (dispatch_scalar_type) {
         case ScalarType::Bool: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_scatter_", false, DeviceType::CPU, ScalarType::Bool);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
             auto src_ = checked_dense_tensor_unwrap(src, "src", 4, "_th_scatter_", false, DeviceType::CPU, ScalarType::Bool);
             THBoolTensor_scatter(self_, dim, index_, src_);
@@ -1553,7 +1536,6 @@ Tensor & _th_scatter_(Tensor & self, int64_t dim, const Tensor & index, const Te
         }
         case ScalarType::Byte: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_scatter_", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
             auto src_ = checked_dense_tensor_unwrap(src, "src", 4, "_th_scatter_", false, DeviceType::CPU, ScalarType::Byte);
             THByteTensor_scatter(self_, dim, index_, src_);
@@ -1562,7 +1544,6 @@ Tensor & _th_scatter_(Tensor & self, int64_t dim, const Tensor & index, const Te
         }
         case ScalarType::Char: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_scatter_", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
             auto src_ = checked_dense_tensor_unwrap(src, "src", 4, "_th_scatter_", false, DeviceType::CPU, ScalarType::Char);
             THCharTensor_scatter(self_, dim, index_, src_);
@@ -1571,7 +1552,6 @@ Tensor & _th_scatter_(Tensor & self, int64_t dim, const Tensor & index, const Te
         }
         case ScalarType::Double: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_scatter_", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
             auto src_ = checked_dense_tensor_unwrap(src, "src", 4, "_th_scatter_", false, DeviceType::CPU, ScalarType::Double);
             THDoubleTensor_scatter(self_, dim, index_, src_);
@@ -1580,7 +1560,6 @@ Tensor & _th_scatter_(Tensor & self, int64_t dim, const Tensor & index, const Te
         }
         case ScalarType::Float: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_scatter_", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
             auto src_ = checked_dense_tensor_unwrap(src, "src", 4, "_th_scatter_", false, DeviceType::CPU, ScalarType::Float);
             THFloatTensor_scatter(self_, dim, index_, src_);
@@ -1589,7 +1568,6 @@ Tensor & _th_scatter_(Tensor & self, int64_t dim, const Tensor & index, const Te
         }
         case ScalarType::Int: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_scatter_", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
             auto src_ = checked_dense_tensor_unwrap(src, "src", 4, "_th_scatter_", false, DeviceType::CPU, ScalarType::Int);
             THIntTensor_scatter(self_, dim, index_, src_);
@@ -1598,7 +1576,6 @@ Tensor & _th_scatter_(Tensor & self, int64_t dim, const Tensor & index, const Te
         }
         case ScalarType::Long: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
             auto src_ = checked_dense_tensor_unwrap(src, "src", 4, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
             THLongTensor_scatter(self_, dim, index_, src_);
@@ -1607,7 +1584,6 @@ Tensor & _th_scatter_(Tensor & self, int64_t dim, const Tensor & index, const Te
         }
         case ScalarType::Short: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_scatter_", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
             auto src_ = checked_dense_tensor_unwrap(src, "src", 4, "_th_scatter_", false, DeviceType::CPU, ScalarType::Short);
             THShortTensor_scatter(self_, dim, index_, src_);
@@ -1625,7 +1601,6 @@ Tensor & _th_scatter_(Tensor & self, int64_t dim, const Tensor & index, Scalar v
     switch (dispatch_scalar_type) {
         case ScalarType::Bool: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_scatter_", false, DeviceType::CPU, ScalarType::Bool);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
             auto value_ = value.toBool();
             THBoolTensor_scatterFill(self_, dim, index_, value_);
@@ -1634,7 +1609,6 @@ Tensor & _th_scatter_(Tensor & self, int64_t dim, const Tensor & index, Scalar v
         }
         case ScalarType::Byte: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_scatter_", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
             auto value_ = value.toByte();
             THByteTensor_scatterFill(self_, dim, index_, value_);
@@ -1643,7 +1617,6 @@ Tensor & _th_scatter_(Tensor & self, int64_t dim, const Tensor & index, Scalar v
         }
         case ScalarType::Char: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_scatter_", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
             auto value_ = value.toChar();
             THCharTensor_scatterFill(self_, dim, index_, value_);
@@ -1652,7 +1625,6 @@ Tensor & _th_scatter_(Tensor & self, int64_t dim, const Tensor & index, Scalar v
         }
         case ScalarType::Double: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_scatter_", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
             auto value_ = value.toDouble();
             THDoubleTensor_scatterFill(self_, dim, index_, value_);
@@ -1661,7 +1633,6 @@ Tensor & _th_scatter_(Tensor & self, int64_t dim, const Tensor & index, Scalar v
         }
         case ScalarType::Float: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_scatter_", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
             auto value_ = value.toFloat();
             THFloatTensor_scatterFill(self_, dim, index_, value_);
@@ -1670,7 +1641,6 @@ Tensor & _th_scatter_(Tensor & self, int64_t dim, const Tensor & index, Scalar v
         }
         case ScalarType::Int: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_scatter_", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
             auto value_ = value.toInt();
             THIntTensor_scatterFill(self_, dim, index_, value_);
@@ -1679,7 +1649,6 @@ Tensor & _th_scatter_(Tensor & self, int64_t dim, const Tensor & index, Scalar v
         }
         case ScalarType::Long: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
             auto value_ = value.toLong();
             THLongTensor_scatterFill(self_, dim, index_, value_);
@@ -1688,7 +1657,6 @@ Tensor & _th_scatter_(Tensor & self, int64_t dim, const Tensor & index, Scalar v
         }
         case ScalarType::Short: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_scatter_", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
             auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_scatter_", false, DeviceType::CPU, ScalarType::Long);
             auto value_ = value.toShort();
             THShortTensor_scatterFill(self_, dim, index_, value_);
@@ -1697,192 +1665,6 @@ Tensor & _th_scatter_(Tensor & self, int64_t dim, const Tensor & index, Scalar v
         }
         default:
             AT_ERROR("_th_scatter_ not supported on CPUType for ", dispatch_scalar_type);
-    }
-}
-Tensor & _th_gather_out(Tensor & result, const Tensor & self, int64_t dim, const Tensor & index) {
-
-    // DeviceGuard omitted
-    auto dispatch_scalar_type = infer_scalar_type(self);
-    switch (dispatch_scalar_type) {
-        case ScalarType::Bool: {
-            auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_gather_out", false, DeviceType::CPU, ScalarType::Bool);
-            result.resize_(index.sizes());
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_gather_out", false, DeviceType::CPU, ScalarType::Bool);
-            dim = maybe_wrap_dim(dim, self_);
-            auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_gather_out", false, DeviceType::CPU, ScalarType::Long);
-            THBoolTensor_gather(result_, self_, dim, index_);
-            return result;
-            break;
-        }
-        case ScalarType::Byte: {
-            auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_gather_out", false, DeviceType::CPU, ScalarType::Byte);
-            result.resize_(index.sizes());
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_gather_out", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
-            auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_gather_out", false, DeviceType::CPU, ScalarType::Long);
-            THByteTensor_gather(result_, self_, dim, index_);
-            return result;
-            break;
-        }
-        case ScalarType::Char: {
-            auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_gather_out", false, DeviceType::CPU, ScalarType::Char);
-            result.resize_(index.sizes());
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_gather_out", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
-            auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_gather_out", false, DeviceType::CPU, ScalarType::Long);
-            THCharTensor_gather(result_, self_, dim, index_);
-            return result;
-            break;
-        }
-        case ScalarType::Double: {
-            auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_gather_out", false, DeviceType::CPU, ScalarType::Double);
-            result.resize_(index.sizes());
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_gather_out", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
-            auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_gather_out", false, DeviceType::CPU, ScalarType::Long);
-            THDoubleTensor_gather(result_, self_, dim, index_);
-            return result;
-            break;
-        }
-        case ScalarType::Float: {
-            auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_gather_out", false, DeviceType::CPU, ScalarType::Float);
-            result.resize_(index.sizes());
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_gather_out", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
-            auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_gather_out", false, DeviceType::CPU, ScalarType::Long);
-            THFloatTensor_gather(result_, self_, dim, index_);
-            return result;
-            break;
-        }
-        case ScalarType::Int: {
-            auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_gather_out", false, DeviceType::CPU, ScalarType::Int);
-            result.resize_(index.sizes());
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_gather_out", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
-            auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_gather_out", false, DeviceType::CPU, ScalarType::Long);
-            THIntTensor_gather(result_, self_, dim, index_);
-            return result;
-            break;
-        }
-        case ScalarType::Long: {
-            auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_gather_out", false, DeviceType::CPU, ScalarType::Long);
-            result.resize_(index.sizes());
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_gather_out", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
-            auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_gather_out", false, DeviceType::CPU, ScalarType::Long);
-            THLongTensor_gather(result_, self_, dim, index_);
-            return result;
-            break;
-        }
-        case ScalarType::Short: {
-            auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_gather_out", false, DeviceType::CPU, ScalarType::Short);
-            result.resize_(index.sizes());
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_gather_out", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
-            auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_gather_out", false, DeviceType::CPU, ScalarType::Long);
-            THShortTensor_gather(result_, self_, dim, index_);
-            return result;
-            break;
-        }
-        default:
-            AT_ERROR("_th_gather_out not supported on CPUType for ", dispatch_scalar_type);
-    }
-}
-Tensor _th_gather(const Tensor & self, int64_t dim, const Tensor & index) {
-
-    // DeviceGuard omitted
-    auto dispatch_scalar_type = infer_scalar_type(self);
-    switch (dispatch_scalar_type) {
-        case ScalarType::Bool: {
-            auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<bool>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
-            auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
-            result.resize_(index.sizes());
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_gather", false, DeviceType::CPU, ScalarType::Bool);
-            dim = maybe_wrap_dim(dim, self_);
-            auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_gather", false, DeviceType::CPU, ScalarType::Long);
-            THBoolTensor_gather(result_, self_, dim, index_);
-            return result;
-            break;
-        }
-        case ScalarType::Byte: {
-            auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<uint8_t>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
-            auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
-            result.resize_(index.sizes());
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_gather", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
-            auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_gather", false, DeviceType::CPU, ScalarType::Long);
-            THByteTensor_gather(result_, self_, dim, index_);
-            return result;
-            break;
-        }
-        case ScalarType::Char: {
-            auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<int8_t>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
-            auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
-            result.resize_(index.sizes());
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_gather", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
-            auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_gather", false, DeviceType::CPU, ScalarType::Long);
-            THCharTensor_gather(result_, self_, dim, index_);
-            return result;
-            break;
-        }
-        case ScalarType::Double: {
-            auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<double>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
-            auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
-            result.resize_(index.sizes());
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_gather", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
-            auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_gather", false, DeviceType::CPU, ScalarType::Long);
-            THDoubleTensor_gather(result_, self_, dim, index_);
-            return result;
-            break;
-        }
-        case ScalarType::Float: {
-            auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<float>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
-            auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
-            result.resize_(index.sizes());
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_gather", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
-            auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_gather", false, DeviceType::CPU, ScalarType::Long);
-            THFloatTensor_gather(result_, self_, dim, index_);
-            return result;
-            break;
-        }
-        case ScalarType::Int: {
-            auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<int>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
-            auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
-            result.resize_(index.sizes());
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_gather", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
-            auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_gather", false, DeviceType::CPU, ScalarType::Long);
-            THIntTensor_gather(result_, self_, dim, index_);
-            return result;
-            break;
-        }
-        case ScalarType::Long: {
-            auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<int64_t>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
-            auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
-            result.resize_(index.sizes());
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_gather", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
-            auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_gather", false, DeviceType::CPU, ScalarType::Long);
-            THLongTensor_gather(result_, self_, dim, index_);
-            return result;
-            break;
-        }
-        case ScalarType::Short: {
-            auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<int16_t>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
-            auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
-            result.resize_(index.sizes());
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_gather", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
-            auto index_ = checked_dense_tensor_unwrap(index, "index", 3, "_th_gather", false, DeviceType::CPU, ScalarType::Long);
-            THShortTensor_gather(result_, self_, dim, index_);
-            return result;
-            break;
-        }
-        default:
-            AT_ERROR("_th_gather not supported on CPUType for ", dispatch_scalar_type);
     }
 }
 bool _th_equal(const Tensor & self, const Tensor & other) {
@@ -2174,7 +1956,6 @@ std::tuple<Tensor &,Tensor &> _th_min_out(Tensor & min, Tensor & min_indices, co
             auto min_ = checked_dense_tensor_unwrap(min, "min", 0, "_th_min_out", false, DeviceType::CPU, ScalarType::Bool);
             auto min_indices_ = checked_dense_tensor_unwrap(min_indices, "min_indices", 0, "_th_min_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_min_out", false, DeviceType::CPU, ScalarType::Bool);
-            dim = maybe_wrap_dim(dim, self_);
             THBoolTensor_min(min_, min_indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(min, min_indices);
             break;
@@ -2183,7 +1964,6 @@ std::tuple<Tensor &,Tensor &> _th_min_out(Tensor & min, Tensor & min_indices, co
             auto min_ = checked_dense_tensor_unwrap(min, "min", 0, "_th_min_out", false, DeviceType::CPU, ScalarType::Byte);
             auto min_indices_ = checked_dense_tensor_unwrap(min_indices, "min_indices", 0, "_th_min_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_min_out", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
             THByteTensor_min(min_, min_indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(min, min_indices);
             break;
@@ -2192,7 +1972,6 @@ std::tuple<Tensor &,Tensor &> _th_min_out(Tensor & min, Tensor & min_indices, co
             auto min_ = checked_dense_tensor_unwrap(min, "min", 0, "_th_min_out", false, DeviceType::CPU, ScalarType::Char);
             auto min_indices_ = checked_dense_tensor_unwrap(min_indices, "min_indices", 0, "_th_min_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_min_out", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
             THCharTensor_min(min_, min_indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(min, min_indices);
             break;
@@ -2201,7 +1980,6 @@ std::tuple<Tensor &,Tensor &> _th_min_out(Tensor & min, Tensor & min_indices, co
             auto min_ = checked_dense_tensor_unwrap(min, "min", 0, "_th_min_out", false, DeviceType::CPU, ScalarType::Double);
             auto min_indices_ = checked_dense_tensor_unwrap(min_indices, "min_indices", 0, "_th_min_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_min_out", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             THDoubleTensor_min(min_, min_indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(min, min_indices);
             break;
@@ -2210,7 +1988,6 @@ std::tuple<Tensor &,Tensor &> _th_min_out(Tensor & min, Tensor & min_indices, co
             auto min_ = checked_dense_tensor_unwrap(min, "min", 0, "_th_min_out", false, DeviceType::CPU, ScalarType::Float);
             auto min_indices_ = checked_dense_tensor_unwrap(min_indices, "min_indices", 0, "_th_min_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_min_out", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             THFloatTensor_min(min_, min_indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(min, min_indices);
             break;
@@ -2219,7 +1996,6 @@ std::tuple<Tensor &,Tensor &> _th_min_out(Tensor & min, Tensor & min_indices, co
             auto min_ = checked_dense_tensor_unwrap(min, "min", 0, "_th_min_out", false, DeviceType::CPU, ScalarType::Int);
             auto min_indices_ = checked_dense_tensor_unwrap(min_indices, "min_indices", 0, "_th_min_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_min_out", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
             THIntTensor_min(min_, min_indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(min, min_indices);
             break;
@@ -2228,7 +2004,6 @@ std::tuple<Tensor &,Tensor &> _th_min_out(Tensor & min, Tensor & min_indices, co
             auto min_ = checked_dense_tensor_unwrap(min, "min", 0, "_th_min_out", false, DeviceType::CPU, ScalarType::Long);
             auto min_indices_ = checked_dense_tensor_unwrap(min_indices, "min_indices", 0, "_th_min_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_min_out", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
             THLongTensor_min(min_, min_indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(min, min_indices);
             break;
@@ -2237,7 +2012,6 @@ std::tuple<Tensor &,Tensor &> _th_min_out(Tensor & min, Tensor & min_indices, co
             auto min_ = checked_dense_tensor_unwrap(min, "min", 0, "_th_min_out", false, DeviceType::CPU, ScalarType::Short);
             auto min_indices_ = checked_dense_tensor_unwrap(min_indices, "min_indices", 0, "_th_min_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_min_out", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
             THShortTensor_min(min_, min_indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(min, min_indices);
             break;
@@ -2257,7 +2031,6 @@ std::tuple<Tensor,Tensor> _th_min(const Tensor & self, int64_t dim, bool keepdim
             auto min_indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto min_indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(min_indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_min", false, DeviceType::CPU, ScalarType::Bool);
-            dim = maybe_wrap_dim(dim, self_);
             THBoolTensor_min(min_, min_indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(min, min_indices);
             break;
@@ -2268,7 +2041,6 @@ std::tuple<Tensor,Tensor> _th_min(const Tensor & self, int64_t dim, bool keepdim
             auto min_indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto min_indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(min_indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_min", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
             THByteTensor_min(min_, min_indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(min, min_indices);
             break;
@@ -2279,7 +2051,6 @@ std::tuple<Tensor,Tensor> _th_min(const Tensor & self, int64_t dim, bool keepdim
             auto min_indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto min_indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(min_indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_min", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
             THCharTensor_min(min_, min_indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(min, min_indices);
             break;
@@ -2290,7 +2061,6 @@ std::tuple<Tensor,Tensor> _th_min(const Tensor & self, int64_t dim, bool keepdim
             auto min_indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto min_indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(min_indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_min", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             THDoubleTensor_min(min_, min_indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(min, min_indices);
             break;
@@ -2301,7 +2071,6 @@ std::tuple<Tensor,Tensor> _th_min(const Tensor & self, int64_t dim, bool keepdim
             auto min_indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto min_indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(min_indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_min", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             THFloatTensor_min(min_, min_indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(min, min_indices);
             break;
@@ -2312,7 +2081,6 @@ std::tuple<Tensor,Tensor> _th_min(const Tensor & self, int64_t dim, bool keepdim
             auto min_indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto min_indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(min_indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_min", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
             THIntTensor_min(min_, min_indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(min, min_indices);
             break;
@@ -2323,7 +2091,6 @@ std::tuple<Tensor,Tensor> _th_min(const Tensor & self, int64_t dim, bool keepdim
             auto min_indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto min_indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(min_indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_min", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
             THLongTensor_min(min_, min_indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(min, min_indices);
             break;
@@ -2334,7 +2101,6 @@ std::tuple<Tensor,Tensor> _th_min(const Tensor & self, int64_t dim, bool keepdim
             auto min_indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto min_indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(min_indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_min", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
             THShortTensor_min(min_, min_indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(min, min_indices);
             break;
@@ -2569,7 +2335,6 @@ std::tuple<Tensor &,Tensor &> _th_max_out(Tensor & max, Tensor & max_indices, co
             auto max_ = checked_dense_tensor_unwrap(max, "max", 0, "_th_max_out", false, DeviceType::CPU, ScalarType::Bool);
             auto max_indices_ = checked_dense_tensor_unwrap(max_indices, "max_indices", 0, "_th_max_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_max_out", false, DeviceType::CPU, ScalarType::Bool);
-            dim = maybe_wrap_dim(dim, self_);
             THBoolTensor_max(max_, max_indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(max, max_indices);
             break;
@@ -2578,7 +2343,6 @@ std::tuple<Tensor &,Tensor &> _th_max_out(Tensor & max, Tensor & max_indices, co
             auto max_ = checked_dense_tensor_unwrap(max, "max", 0, "_th_max_out", false, DeviceType::CPU, ScalarType::Byte);
             auto max_indices_ = checked_dense_tensor_unwrap(max_indices, "max_indices", 0, "_th_max_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_max_out", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
             THByteTensor_max(max_, max_indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(max, max_indices);
             break;
@@ -2587,7 +2351,6 @@ std::tuple<Tensor &,Tensor &> _th_max_out(Tensor & max, Tensor & max_indices, co
             auto max_ = checked_dense_tensor_unwrap(max, "max", 0, "_th_max_out", false, DeviceType::CPU, ScalarType::Char);
             auto max_indices_ = checked_dense_tensor_unwrap(max_indices, "max_indices", 0, "_th_max_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_max_out", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
             THCharTensor_max(max_, max_indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(max, max_indices);
             break;
@@ -2596,7 +2359,6 @@ std::tuple<Tensor &,Tensor &> _th_max_out(Tensor & max, Tensor & max_indices, co
             auto max_ = checked_dense_tensor_unwrap(max, "max", 0, "_th_max_out", false, DeviceType::CPU, ScalarType::Double);
             auto max_indices_ = checked_dense_tensor_unwrap(max_indices, "max_indices", 0, "_th_max_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_max_out", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             THDoubleTensor_max(max_, max_indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(max, max_indices);
             break;
@@ -2605,7 +2367,6 @@ std::tuple<Tensor &,Tensor &> _th_max_out(Tensor & max, Tensor & max_indices, co
             auto max_ = checked_dense_tensor_unwrap(max, "max", 0, "_th_max_out", false, DeviceType::CPU, ScalarType::Float);
             auto max_indices_ = checked_dense_tensor_unwrap(max_indices, "max_indices", 0, "_th_max_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_max_out", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             THFloatTensor_max(max_, max_indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(max, max_indices);
             break;
@@ -2614,7 +2375,6 @@ std::tuple<Tensor &,Tensor &> _th_max_out(Tensor & max, Tensor & max_indices, co
             auto max_ = checked_dense_tensor_unwrap(max, "max", 0, "_th_max_out", false, DeviceType::CPU, ScalarType::Int);
             auto max_indices_ = checked_dense_tensor_unwrap(max_indices, "max_indices", 0, "_th_max_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_max_out", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
             THIntTensor_max(max_, max_indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(max, max_indices);
             break;
@@ -2623,7 +2383,6 @@ std::tuple<Tensor &,Tensor &> _th_max_out(Tensor & max, Tensor & max_indices, co
             auto max_ = checked_dense_tensor_unwrap(max, "max", 0, "_th_max_out", false, DeviceType::CPU, ScalarType::Long);
             auto max_indices_ = checked_dense_tensor_unwrap(max_indices, "max_indices", 0, "_th_max_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_max_out", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
             THLongTensor_max(max_, max_indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(max, max_indices);
             break;
@@ -2632,7 +2391,6 @@ std::tuple<Tensor &,Tensor &> _th_max_out(Tensor & max, Tensor & max_indices, co
             auto max_ = checked_dense_tensor_unwrap(max, "max", 0, "_th_max_out", false, DeviceType::CPU, ScalarType::Short);
             auto max_indices_ = checked_dense_tensor_unwrap(max_indices, "max_indices", 0, "_th_max_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_max_out", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
             THShortTensor_max(max_, max_indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(max, max_indices);
             break;
@@ -2652,7 +2410,6 @@ std::tuple<Tensor,Tensor> _th_max(const Tensor & self, int64_t dim, bool keepdim
             auto max_indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto max_indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(max_indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_max", false, DeviceType::CPU, ScalarType::Bool);
-            dim = maybe_wrap_dim(dim, self_);
             THBoolTensor_max(max_, max_indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(max, max_indices);
             break;
@@ -2663,7 +2420,6 @@ std::tuple<Tensor,Tensor> _th_max(const Tensor & self, int64_t dim, bool keepdim
             auto max_indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto max_indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(max_indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_max", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
             THByteTensor_max(max_, max_indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(max, max_indices);
             break;
@@ -2674,7 +2430,6 @@ std::tuple<Tensor,Tensor> _th_max(const Tensor & self, int64_t dim, bool keepdim
             auto max_indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto max_indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(max_indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_max", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
             THCharTensor_max(max_, max_indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(max, max_indices);
             break;
@@ -2685,7 +2440,6 @@ std::tuple<Tensor,Tensor> _th_max(const Tensor & self, int64_t dim, bool keepdim
             auto max_indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto max_indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(max_indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_max", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             THDoubleTensor_max(max_, max_indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(max, max_indices);
             break;
@@ -2696,7 +2450,6 @@ std::tuple<Tensor,Tensor> _th_max(const Tensor & self, int64_t dim, bool keepdim
             auto max_indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto max_indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(max_indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_max", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             THFloatTensor_max(max_, max_indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(max, max_indices);
             break;
@@ -2707,7 +2460,6 @@ std::tuple<Tensor,Tensor> _th_max(const Tensor & self, int64_t dim, bool keepdim
             auto max_indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto max_indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(max_indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_max", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
             THIntTensor_max(max_, max_indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(max, max_indices);
             break;
@@ -2718,7 +2470,6 @@ std::tuple<Tensor,Tensor> _th_max(const Tensor & self, int64_t dim, bool keepdim
             auto max_indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto max_indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(max_indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_max", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
             THLongTensor_max(max_, max_indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(max, max_indices);
             break;
@@ -2729,7 +2480,6 @@ std::tuple<Tensor,Tensor> _th_max(const Tensor & self, int64_t dim, bool keepdim
             auto max_indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto max_indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(max_indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_max", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
             THShortTensor_max(max_, max_indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(max, max_indices);
             break;
@@ -2747,7 +2497,6 @@ std::tuple<Tensor &,Tensor &> _th_mode_out(Tensor & values, Tensor & indices, co
             auto values_ = checked_dense_tensor_unwrap(values, "values", 0, "_th_mode_out", false, DeviceType::CPU, ScalarType::Byte);
             auto indices_ = checked_dense_tensor_unwrap(indices, "indices", 0, "_th_mode_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_mode_out", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
             THByteTensor_mode(values_, indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(values, indices);
             break;
@@ -2756,7 +2505,6 @@ std::tuple<Tensor &,Tensor &> _th_mode_out(Tensor & values, Tensor & indices, co
             auto values_ = checked_dense_tensor_unwrap(values, "values", 0, "_th_mode_out", false, DeviceType::CPU, ScalarType::Char);
             auto indices_ = checked_dense_tensor_unwrap(indices, "indices", 0, "_th_mode_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_mode_out", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
             THCharTensor_mode(values_, indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(values, indices);
             break;
@@ -2765,7 +2513,6 @@ std::tuple<Tensor &,Tensor &> _th_mode_out(Tensor & values, Tensor & indices, co
             auto values_ = checked_dense_tensor_unwrap(values, "values", 0, "_th_mode_out", false, DeviceType::CPU, ScalarType::Double);
             auto indices_ = checked_dense_tensor_unwrap(indices, "indices", 0, "_th_mode_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_mode_out", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             THDoubleTensor_mode(values_, indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(values, indices);
             break;
@@ -2774,7 +2521,6 @@ std::tuple<Tensor &,Tensor &> _th_mode_out(Tensor & values, Tensor & indices, co
             auto values_ = checked_dense_tensor_unwrap(values, "values", 0, "_th_mode_out", false, DeviceType::CPU, ScalarType::Float);
             auto indices_ = checked_dense_tensor_unwrap(indices, "indices", 0, "_th_mode_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_mode_out", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             THFloatTensor_mode(values_, indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(values, indices);
             break;
@@ -2783,7 +2529,6 @@ std::tuple<Tensor &,Tensor &> _th_mode_out(Tensor & values, Tensor & indices, co
             auto values_ = checked_dense_tensor_unwrap(values, "values", 0, "_th_mode_out", false, DeviceType::CPU, ScalarType::Int);
             auto indices_ = checked_dense_tensor_unwrap(indices, "indices", 0, "_th_mode_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_mode_out", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
             THIntTensor_mode(values_, indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(values, indices);
             break;
@@ -2792,7 +2537,6 @@ std::tuple<Tensor &,Tensor &> _th_mode_out(Tensor & values, Tensor & indices, co
             auto values_ = checked_dense_tensor_unwrap(values, "values", 0, "_th_mode_out", false, DeviceType::CPU, ScalarType::Long);
             auto indices_ = checked_dense_tensor_unwrap(indices, "indices", 0, "_th_mode_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_mode_out", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
             THLongTensor_mode(values_, indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(values, indices);
             break;
@@ -2801,7 +2545,6 @@ std::tuple<Tensor &,Tensor &> _th_mode_out(Tensor & values, Tensor & indices, co
             auto values_ = checked_dense_tensor_unwrap(values, "values", 0, "_th_mode_out", false, DeviceType::CPU, ScalarType::Short);
             auto indices_ = checked_dense_tensor_unwrap(indices, "indices", 0, "_th_mode_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_mode_out", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
             THShortTensor_mode(values_, indices_, self_, dim, keepdim);
             return std::tuple<Tensor &, Tensor &>(values, indices);
             break;
@@ -2821,7 +2564,6 @@ std::tuple<Tensor,Tensor> _th_mode(const Tensor & self, int64_t dim, bool keepdi
             auto indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_mode", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
             THByteTensor_mode(values_, indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(values, indices);
             break;
@@ -2832,7 +2574,6 @@ std::tuple<Tensor,Tensor> _th_mode(const Tensor & self, int64_t dim, bool keepdi
             auto indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_mode", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
             THCharTensor_mode(values_, indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(values, indices);
             break;
@@ -2843,7 +2584,6 @@ std::tuple<Tensor,Tensor> _th_mode(const Tensor & self, int64_t dim, bool keepdi
             auto indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_mode", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             THDoubleTensor_mode(values_, indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(values, indices);
             break;
@@ -2854,7 +2594,6 @@ std::tuple<Tensor,Tensor> _th_mode(const Tensor & self, int64_t dim, bool keepdi
             auto indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_mode", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             THFloatTensor_mode(values_, indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(values, indices);
             break;
@@ -2865,7 +2604,6 @@ std::tuple<Tensor,Tensor> _th_mode(const Tensor & self, int64_t dim, bool keepdi
             auto indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_mode", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
             THIntTensor_mode(values_, indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(values, indices);
             break;
@@ -2876,7 +2614,6 @@ std::tuple<Tensor,Tensor> _th_mode(const Tensor & self, int64_t dim, bool keepdi
             auto indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_mode", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
             THLongTensor_mode(values_, indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(values, indices);
             break;
@@ -2887,7 +2624,6 @@ std::tuple<Tensor,Tensor> _th_mode(const Tensor & self, int64_t dim, bool keepdi
             auto indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_mode", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
             THShortTensor_mode(values_, indices_, self_, dim, keepdim);
             return std::tuple<Tensor, Tensor>(values, indices);
             break;
@@ -2905,7 +2641,6 @@ std::tuple<Tensor &,Tensor &> _th_sort_out(Tensor & values, Tensor & indices, co
             auto values_ = checked_dense_tensor_unwrap(values, "values", 0, "_th_sort_out", false, DeviceType::CPU, ScalarType::Byte);
             auto indices_ = checked_dense_tensor_unwrap(indices, "indices", 0, "_th_sort_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_sort_out", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
             THByteTensor_sort(values_, indices_, self_, dim, descending);
             return std::tuple<Tensor &, Tensor &>(values, indices);
             break;
@@ -2914,7 +2649,6 @@ std::tuple<Tensor &,Tensor &> _th_sort_out(Tensor & values, Tensor & indices, co
             auto values_ = checked_dense_tensor_unwrap(values, "values", 0, "_th_sort_out", false, DeviceType::CPU, ScalarType::Char);
             auto indices_ = checked_dense_tensor_unwrap(indices, "indices", 0, "_th_sort_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_sort_out", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
             THCharTensor_sort(values_, indices_, self_, dim, descending);
             return std::tuple<Tensor &, Tensor &>(values, indices);
             break;
@@ -2923,7 +2657,6 @@ std::tuple<Tensor &,Tensor &> _th_sort_out(Tensor & values, Tensor & indices, co
             auto values_ = checked_dense_tensor_unwrap(values, "values", 0, "_th_sort_out", false, DeviceType::CPU, ScalarType::Double);
             auto indices_ = checked_dense_tensor_unwrap(indices, "indices", 0, "_th_sort_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_sort_out", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             THDoubleTensor_sort(values_, indices_, self_, dim, descending);
             return std::tuple<Tensor &, Tensor &>(values, indices);
             break;
@@ -2932,7 +2665,6 @@ std::tuple<Tensor &,Tensor &> _th_sort_out(Tensor & values, Tensor & indices, co
             auto values_ = checked_dense_tensor_unwrap(values, "values", 0, "_th_sort_out", false, DeviceType::CPU, ScalarType::Float);
             auto indices_ = checked_dense_tensor_unwrap(indices, "indices", 0, "_th_sort_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_sort_out", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             THFloatTensor_sort(values_, indices_, self_, dim, descending);
             return std::tuple<Tensor &, Tensor &>(values, indices);
             break;
@@ -2941,7 +2673,6 @@ std::tuple<Tensor &,Tensor &> _th_sort_out(Tensor & values, Tensor & indices, co
             auto values_ = checked_dense_tensor_unwrap(values, "values", 0, "_th_sort_out", false, DeviceType::CPU, ScalarType::Int);
             auto indices_ = checked_dense_tensor_unwrap(indices, "indices", 0, "_th_sort_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_sort_out", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
             THIntTensor_sort(values_, indices_, self_, dim, descending);
             return std::tuple<Tensor &, Tensor &>(values, indices);
             break;
@@ -2950,7 +2681,6 @@ std::tuple<Tensor &,Tensor &> _th_sort_out(Tensor & values, Tensor & indices, co
             auto values_ = checked_dense_tensor_unwrap(values, "values", 0, "_th_sort_out", false, DeviceType::CPU, ScalarType::Long);
             auto indices_ = checked_dense_tensor_unwrap(indices, "indices", 0, "_th_sort_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_sort_out", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
             THLongTensor_sort(values_, indices_, self_, dim, descending);
             return std::tuple<Tensor &, Tensor &>(values, indices);
             break;
@@ -2959,7 +2689,6 @@ std::tuple<Tensor &,Tensor &> _th_sort_out(Tensor & values, Tensor & indices, co
             auto values_ = checked_dense_tensor_unwrap(values, "values", 0, "_th_sort_out", false, DeviceType::CPU, ScalarType::Short);
             auto indices_ = checked_dense_tensor_unwrap(indices, "indices", 0, "_th_sort_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_sort_out", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
             THShortTensor_sort(values_, indices_, self_, dim, descending);
             return std::tuple<Tensor &, Tensor &>(values, indices);
             break;
@@ -2979,7 +2708,6 @@ std::tuple<Tensor,Tensor> _th_sort(const Tensor & self, int64_t dim, bool descen
             auto indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_sort", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
             THByteTensor_sort(values_, indices_, self_, dim, descending);
             return std::tuple<Tensor, Tensor>(values, indices);
             break;
@@ -2990,7 +2718,6 @@ std::tuple<Tensor,Tensor> _th_sort(const Tensor & self, int64_t dim, bool descen
             auto indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_sort", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
             THCharTensor_sort(values_, indices_, self_, dim, descending);
             return std::tuple<Tensor, Tensor>(values, indices);
             break;
@@ -3001,7 +2728,6 @@ std::tuple<Tensor,Tensor> _th_sort(const Tensor & self, int64_t dim, bool descen
             auto indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_sort", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             THDoubleTensor_sort(values_, indices_, self_, dim, descending);
             return std::tuple<Tensor, Tensor>(values, indices);
             break;
@@ -3012,7 +2738,6 @@ std::tuple<Tensor,Tensor> _th_sort(const Tensor & self, int64_t dim, bool descen
             auto indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_sort", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             THFloatTensor_sort(values_, indices_, self_, dim, descending);
             return std::tuple<Tensor, Tensor>(values, indices);
             break;
@@ -3023,7 +2748,6 @@ std::tuple<Tensor,Tensor> _th_sort(const Tensor & self, int64_t dim, bool descen
             auto indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_sort", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
             THIntTensor_sort(values_, indices_, self_, dim, descending);
             return std::tuple<Tensor, Tensor>(values, indices);
             break;
@@ -3034,7 +2758,6 @@ std::tuple<Tensor,Tensor> _th_sort(const Tensor & self, int64_t dim, bool descen
             auto indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_sort", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
             THLongTensor_sort(values_, indices_, self_, dim, descending);
             return std::tuple<Tensor, Tensor>(values, indices);
             break;
@@ -3045,7 +2768,6 @@ std::tuple<Tensor,Tensor> _th_sort(const Tensor & self, int64_t dim, bool descen
             auto indices_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(scalarTypeToTypeMeta(ScalarType::Long), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto indices = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(indices_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_sort", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
             THShortTensor_sort(values_, indices_, self_, dim, descending);
             return std::tuple<Tensor, Tensor>(values, indices);
             break;
@@ -3101,7 +2823,6 @@ Tensor & _th_renorm_out(Tensor & result, const Tensor & self, Scalar p, int64_t 
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_renorm_out", false, DeviceType::CPU, ScalarType::Double);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_renorm_out", false, DeviceType::CPU, ScalarType::Double);
             auto p_ = p.toDouble();
-            dim = maybe_wrap_dim(dim, self_);
             auto maxnorm_ = maxnorm.toDouble();
             THDoubleTensor_renorm(result_, self_, p_, dim, maxnorm_);
             return result;
@@ -3111,7 +2832,6 @@ Tensor & _th_renorm_out(Tensor & result, const Tensor & self, Scalar p, int64_t 
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_renorm_out", false, DeviceType::CPU, ScalarType::Float);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_renorm_out", false, DeviceType::CPU, ScalarType::Float);
             auto p_ = p.toFloat();
-            dim = maybe_wrap_dim(dim, self_);
             auto maxnorm_ = maxnorm.toFloat();
             THFloatTensor_renorm(result_, self_, p_, dim, maxnorm_);
             return result;
@@ -3131,7 +2851,6 @@ Tensor _th_renorm(const Tensor & self, Scalar p, int64_t dim, Scalar maxnorm) {
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_renorm", false, DeviceType::CPU, ScalarType::Double);
             auto p_ = p.toDouble();
-            dim = maybe_wrap_dim(dim, self_);
             auto maxnorm_ = maxnorm.toDouble();
             THDoubleTensor_renorm(result_, self_, p_, dim, maxnorm_);
             return result;
@@ -3142,7 +2861,6 @@ Tensor _th_renorm(const Tensor & self, Scalar p, int64_t dim, Scalar maxnorm) {
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_renorm", false, DeviceType::CPU, ScalarType::Float);
             auto p_ = p.toFloat();
-            dim = maybe_wrap_dim(dim, self_);
             auto maxnorm_ = maxnorm.toFloat();
             THFloatTensor_renorm(result_, self_, p_, dim, maxnorm_);
             return result;
@@ -3160,7 +2878,6 @@ Tensor & _th_renorm_(Tensor & self, Scalar p, int64_t dim, Scalar maxnorm) {
         case ScalarType::Double: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_renorm_", false, DeviceType::CPU, ScalarType::Double);
             auto p_ = p.toDouble();
-            dim = maybe_wrap_dim(dim, self_);
             auto maxnorm_ = maxnorm.toDouble();
             THDoubleTensor_renorm(self_, self_, p_, dim, maxnorm_);
             return self;
@@ -3169,7 +2886,6 @@ Tensor & _th_renorm_(Tensor & self, Scalar p, int64_t dim, Scalar maxnorm) {
         case ScalarType::Float: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_renorm_", false, DeviceType::CPU, ScalarType::Float);
             auto p_ = p.toFloat();
-            dim = maybe_wrap_dim(dim, self_);
             auto maxnorm_ = maxnorm.toFloat();
             THFloatTensor_renorm(self_, self_, p_, dim, maxnorm_);
             return self;
@@ -3273,7 +2989,6 @@ Tensor & _th_cumsum_out(Tensor & result, const Tensor & self, int64_t dim) {
         case ScalarType::Bool: {
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_cumsum_out", false, DeviceType::CPU, ScalarType::Bool);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumsum_out", false, DeviceType::CPU, ScalarType::Bool);
-            dim = maybe_wrap_dim(dim, self_);
             THBoolTensor_cumsum(result_, self_, dim);
             return result;
             break;
@@ -3281,7 +2996,6 @@ Tensor & _th_cumsum_out(Tensor & result, const Tensor & self, int64_t dim) {
         case ScalarType::Byte: {
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_cumsum_out", false, DeviceType::CPU, ScalarType::Byte);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumsum_out", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
             THByteTensor_cumsum(result_, self_, dim);
             return result;
             break;
@@ -3289,7 +3003,6 @@ Tensor & _th_cumsum_out(Tensor & result, const Tensor & self, int64_t dim) {
         case ScalarType::Char: {
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_cumsum_out", false, DeviceType::CPU, ScalarType::Char);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumsum_out", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
             THCharTensor_cumsum(result_, self_, dim);
             return result;
             break;
@@ -3297,7 +3010,6 @@ Tensor & _th_cumsum_out(Tensor & result, const Tensor & self, int64_t dim) {
         case ScalarType::Double: {
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_cumsum_out", false, DeviceType::CPU, ScalarType::Double);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumsum_out", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             THDoubleTensor_cumsum(result_, self_, dim);
             return result;
             break;
@@ -3305,7 +3017,6 @@ Tensor & _th_cumsum_out(Tensor & result, const Tensor & self, int64_t dim) {
         case ScalarType::Float: {
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_cumsum_out", false, DeviceType::CPU, ScalarType::Float);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumsum_out", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             THFloatTensor_cumsum(result_, self_, dim);
             return result;
             break;
@@ -3313,7 +3024,6 @@ Tensor & _th_cumsum_out(Tensor & result, const Tensor & self, int64_t dim) {
         case ScalarType::Int: {
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_cumsum_out", false, DeviceType::CPU, ScalarType::Int);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumsum_out", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
             THIntTensor_cumsum(result_, self_, dim);
             return result;
             break;
@@ -3321,7 +3031,6 @@ Tensor & _th_cumsum_out(Tensor & result, const Tensor & self, int64_t dim) {
         case ScalarType::Long: {
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_cumsum_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumsum_out", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
             THLongTensor_cumsum(result_, self_, dim);
             return result;
             break;
@@ -3329,7 +3038,6 @@ Tensor & _th_cumsum_out(Tensor & result, const Tensor & self, int64_t dim) {
         case ScalarType::Short: {
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_cumsum_out", false, DeviceType::CPU, ScalarType::Short);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumsum_out", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
             THShortTensor_cumsum(result_, self_, dim);
             return result;
             break;
@@ -3347,7 +3055,6 @@ Tensor _th_cumsum(const Tensor & self, int64_t dim) {
             auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<bool>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumsum", false, DeviceType::CPU, ScalarType::Bool);
-            dim = maybe_wrap_dim(dim, self_);
             THBoolTensor_cumsum(result_, self_, dim);
             return result;
             break;
@@ -3356,7 +3063,6 @@ Tensor _th_cumsum(const Tensor & self, int64_t dim) {
             auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<uint8_t>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumsum", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
             THByteTensor_cumsum(result_, self_, dim);
             return result;
             break;
@@ -3365,7 +3071,6 @@ Tensor _th_cumsum(const Tensor & self, int64_t dim) {
             auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<int8_t>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumsum", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
             THCharTensor_cumsum(result_, self_, dim);
             return result;
             break;
@@ -3374,7 +3079,6 @@ Tensor _th_cumsum(const Tensor & self, int64_t dim) {
             auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<double>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumsum", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             THDoubleTensor_cumsum(result_, self_, dim);
             return result;
             break;
@@ -3383,7 +3087,6 @@ Tensor _th_cumsum(const Tensor & self, int64_t dim) {
             auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<float>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumsum", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             THFloatTensor_cumsum(result_, self_, dim);
             return result;
             break;
@@ -3392,7 +3095,6 @@ Tensor _th_cumsum(const Tensor & self, int64_t dim) {
             auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<int>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumsum", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
             THIntTensor_cumsum(result_, self_, dim);
             return result;
             break;
@@ -3401,7 +3103,6 @@ Tensor _th_cumsum(const Tensor & self, int64_t dim) {
             auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<int64_t>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumsum", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
             THLongTensor_cumsum(result_, self_, dim);
             return result;
             break;
@@ -3410,7 +3111,6 @@ Tensor _th_cumsum(const Tensor & self, int64_t dim) {
             auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<int16_t>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumsum", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
             THShortTensor_cumsum(result_, self_, dim);
             return result;
             break;
@@ -3427,7 +3127,6 @@ Tensor & _th_cumprod_out(Tensor & result, const Tensor & self, int64_t dim) {
         case ScalarType::Bool: {
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_cumprod_out", false, DeviceType::CPU, ScalarType::Bool);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumprod_out", false, DeviceType::CPU, ScalarType::Bool);
-            dim = maybe_wrap_dim(dim, self_);
             THBoolTensor_cumprod(result_, self_, dim);
             return result;
             break;
@@ -3435,7 +3134,6 @@ Tensor & _th_cumprod_out(Tensor & result, const Tensor & self, int64_t dim) {
         case ScalarType::Byte: {
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_cumprod_out", false, DeviceType::CPU, ScalarType::Byte);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumprod_out", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
             THByteTensor_cumprod(result_, self_, dim);
             return result;
             break;
@@ -3443,7 +3141,6 @@ Tensor & _th_cumprod_out(Tensor & result, const Tensor & self, int64_t dim) {
         case ScalarType::Char: {
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_cumprod_out", false, DeviceType::CPU, ScalarType::Char);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumprod_out", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
             THCharTensor_cumprod(result_, self_, dim);
             return result;
             break;
@@ -3451,7 +3148,6 @@ Tensor & _th_cumprod_out(Tensor & result, const Tensor & self, int64_t dim) {
         case ScalarType::Double: {
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_cumprod_out", false, DeviceType::CPU, ScalarType::Double);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumprod_out", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             THDoubleTensor_cumprod(result_, self_, dim);
             return result;
             break;
@@ -3459,7 +3155,6 @@ Tensor & _th_cumprod_out(Tensor & result, const Tensor & self, int64_t dim) {
         case ScalarType::Float: {
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_cumprod_out", false, DeviceType::CPU, ScalarType::Float);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumprod_out", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             THFloatTensor_cumprod(result_, self_, dim);
             return result;
             break;
@@ -3467,7 +3162,6 @@ Tensor & _th_cumprod_out(Tensor & result, const Tensor & self, int64_t dim) {
         case ScalarType::Int: {
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_cumprod_out", false, DeviceType::CPU, ScalarType::Int);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumprod_out", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
             THIntTensor_cumprod(result_, self_, dim);
             return result;
             break;
@@ -3475,7 +3169,6 @@ Tensor & _th_cumprod_out(Tensor & result, const Tensor & self, int64_t dim) {
         case ScalarType::Long: {
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_cumprod_out", false, DeviceType::CPU, ScalarType::Long);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumprod_out", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
             THLongTensor_cumprod(result_, self_, dim);
             return result;
             break;
@@ -3483,7 +3176,6 @@ Tensor & _th_cumprod_out(Tensor & result, const Tensor & self, int64_t dim) {
         case ScalarType::Short: {
             auto result_ = checked_dense_tensor_unwrap(result, "result", 0, "_th_cumprod_out", false, DeviceType::CPU, ScalarType::Short);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumprod_out", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
             THShortTensor_cumprod(result_, self_, dim);
             return result;
             break;
@@ -3501,7 +3193,6 @@ Tensor _th_cumprod(const Tensor & self, int64_t dim) {
             auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<bool>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumprod", false, DeviceType::CPU, ScalarType::Bool);
-            dim = maybe_wrap_dim(dim, self_);
             THBoolTensor_cumprod(result_, self_, dim);
             return result;
             break;
@@ -3510,7 +3201,6 @@ Tensor _th_cumprod(const Tensor & self, int64_t dim) {
             auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<uint8_t>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumprod", false, DeviceType::CPU, ScalarType::Byte);
-            dim = maybe_wrap_dim(dim, self_);
             THByteTensor_cumprod(result_, self_, dim);
             return result;
             break;
@@ -3519,7 +3209,6 @@ Tensor _th_cumprod(const Tensor & self, int64_t dim) {
             auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<int8_t>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumprod", false, DeviceType::CPU, ScalarType::Char);
-            dim = maybe_wrap_dim(dim, self_);
             THCharTensor_cumprod(result_, self_, dim);
             return result;
             break;
@@ -3528,7 +3217,6 @@ Tensor _th_cumprod(const Tensor & self, int64_t dim) {
             auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<double>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumprod", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             THDoubleTensor_cumprod(result_, self_, dim);
             return result;
             break;
@@ -3537,7 +3225,6 @@ Tensor _th_cumprod(const Tensor & self, int64_t dim) {
             auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<float>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumprod", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             THFloatTensor_cumprod(result_, self_, dim);
             return result;
             break;
@@ -3546,7 +3233,6 @@ Tensor _th_cumprod(const Tensor & self, int64_t dim) {
             auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<int>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumprod", false, DeviceType::CPU, ScalarType::Int);
-            dim = maybe_wrap_dim(dim, self_);
             THIntTensor_cumprod(result_, self_, dim);
             return result;
             break;
@@ -3555,7 +3241,6 @@ Tensor _th_cumprod(const Tensor & self, int64_t dim) {
             auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<int64_t>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumprod", false, DeviceType::CPU, ScalarType::Long);
-            dim = maybe_wrap_dim(dim, self_);
             THLongTensor_cumprod(result_, self_, dim);
             return result;
             break;
@@ -3564,7 +3249,6 @@ Tensor _th_cumprod(const Tensor & self, int64_t dim) {
             auto result_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<int16_t>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto result = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(result_));
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_cumprod", false, DeviceType::CPU, ScalarType::Short);
-            dim = maybe_wrap_dim(dim, self_);
             THShortTensor_cumprod(result_, self_, dim);
             return result;
             break;
@@ -7131,48 +6815,6 @@ Tensor & _th_normal_(Tensor & self, double mean, double std, Generator * generat
             AT_ERROR("_th_normal_ not supported on CPUType for ", dispatch_scalar_type);
     }
 }
-Tensor & _th_log_normal_(Tensor & self, double mean, double std, Generator * generator) {
-
-    // DeviceGuard omitted
-    auto dispatch_scalar_type = infer_scalar_type(self);
-    switch (dispatch_scalar_type) {
-        case ScalarType::Double: {
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_log_normal_", false, DeviceType::CPU, ScalarType::Double);
-            THDoubleTensor_logNormal(self_, mean, std, generator);
-            return self;
-            break;
-        }
-        case ScalarType::Float: {
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_log_normal_", false, DeviceType::CPU, ScalarType::Float);
-            THFloatTensor_logNormal(self_, mean, std, generator);
-            return self;
-            break;
-        }
-        default:
-            AT_ERROR("_th_log_normal_ not supported on CPUType for ", dispatch_scalar_type);
-    }
-}
-Tensor & _th_exponential_(Tensor & self, double lambd, Generator * generator) {
-
-    // DeviceGuard omitted
-    auto dispatch_scalar_type = infer_scalar_type(self);
-    switch (dispatch_scalar_type) {
-        case ScalarType::Double: {
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_exponential_", false, DeviceType::CPU, ScalarType::Double);
-            THDoubleTensor_exponential(self_, lambd, generator);
-            return self;
-            break;
-        }
-        case ScalarType::Float: {
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_th_exponential_", false, DeviceType::CPU, ScalarType::Float);
-            THFloatTensor_exponential(self_, lambd, generator);
-            return self;
-            break;
-        }
-        default:
-            AT_ERROR("_th_exponential_ not supported on CPUType for ", dispatch_scalar_type);
-    }
-}
 Tensor & _th_cat_out(Tensor & self, TensorList tensors, int64_t dim) {
 
     // DeviceGuard omitted
@@ -7341,142 +6983,6 @@ Tensor _th_cat(TensorList tensors, int64_t dim) {
             AT_ERROR("_th_cat not supported on CPUType for ", dispatch_scalar_type);
     }
 }
-Tensor & _thnn_binary_cross_entropy_forward_out(Tensor & output, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction) {
-    if (output.has_names() || self.has_names() || target.has_names() || weight.has_names()) {
-        AT_ERROR(
-            "_thnn_binary_cross_entropy_forward is not yet supported with named tensors. Please drop names via "
-            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
-            "and set names on the result of the operation.");
-    }
-    const OptionalDeviceGuard device_guard(device_of(self));
-    auto dispatch_scalar_type = infer_scalar_type(self);
-    switch (dispatch_scalar_type) {
-        case ScalarType::Double: {
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_thnn_binary_cross_entropy_forward_out", false, DeviceType::CPU, ScalarType::Double);
-            auto target_ = checked_dense_tensor_unwrap(target, "target", 2, "_thnn_binary_cross_entropy_forward_out", false, DeviceType::CPU, ScalarType::Double);
-            auto weight_ = checked_dense_tensor_unwrap(weight, "weight", 3, "_thnn_binary_cross_entropy_forward_out", true, DeviceType::CPU, ScalarType::Double);
-            auto output_ = checked_dense_tensor_unwrap(output, "output", 4, "_thnn_binary_cross_entropy_forward_out", false, DeviceType::CPU, ScalarType::Double);
-            THNN_DoubleBCECriterion_updateOutput(globalContext().getTHCState(), self_, target_, output_, reduction, weight_ ? weight_ : NULL);
-            return output;
-            break;
-        }
-        case ScalarType::Float: {
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_thnn_binary_cross_entropy_forward_out", false, DeviceType::CPU, ScalarType::Float);
-            auto target_ = checked_dense_tensor_unwrap(target, "target", 2, "_thnn_binary_cross_entropy_forward_out", false, DeviceType::CPU, ScalarType::Float);
-            auto weight_ = checked_dense_tensor_unwrap(weight, "weight", 3, "_thnn_binary_cross_entropy_forward_out", true, DeviceType::CPU, ScalarType::Float);
-            auto output_ = checked_dense_tensor_unwrap(output, "output", 4, "_thnn_binary_cross_entropy_forward_out", false, DeviceType::CPU, ScalarType::Float);
-            THNN_FloatBCECriterion_updateOutput(globalContext().getTHCState(), self_, target_, output_, reduction, weight_ ? weight_ : NULL);
-            return output;
-            break;
-        }
-        default:
-            AT_ERROR("_thnn_binary_cross_entropy_forward_out not supported on CPUType for ", dispatch_scalar_type);
-    }
-}
-Tensor _thnn_binary_cross_entropy_forward(const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction) {
-    if (self.has_names() || target.has_names() || weight.has_names()) {
-        AT_ERROR(
-            "_thnn_binary_cross_entropy_forward is not yet supported with named tensors. Please drop names via "
-            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
-            "and set names on the result of the operation.");
-    }
-    const OptionalDeviceGuard device_guard(device_of(self));
-    auto dispatch_scalar_type = infer_scalar_type(self);
-    switch (dispatch_scalar_type) {
-        case ScalarType::Double: {
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_thnn_binary_cross_entropy_forward", false, DeviceType::CPU, ScalarType::Double);
-            auto target_ = checked_dense_tensor_unwrap(target, "target", 2, "_thnn_binary_cross_entropy_forward", false, DeviceType::CPU, ScalarType::Double);
-            auto weight_ = checked_dense_tensor_unwrap(weight, "weight", 3, "_thnn_binary_cross_entropy_forward", true, DeviceType::CPU, ScalarType::Double);
-            auto output_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<double>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
-            auto output = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(output_));
-            THNN_DoubleBCECriterion_updateOutput(globalContext().getTHCState(), self_, target_, output_, reduction, weight_ ? weight_ : NULL);
-            return output;
-            break;
-        }
-        case ScalarType::Float: {
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_thnn_binary_cross_entropy_forward", false, DeviceType::CPU, ScalarType::Float);
-            auto target_ = checked_dense_tensor_unwrap(target, "target", 2, "_thnn_binary_cross_entropy_forward", false, DeviceType::CPU, ScalarType::Float);
-            auto weight_ = checked_dense_tensor_unwrap(weight, "weight", 3, "_thnn_binary_cross_entropy_forward", true, DeviceType::CPU, ScalarType::Float);
-            auto output_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<float>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
-            auto output = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(output_));
-            THNN_FloatBCECriterion_updateOutput(globalContext().getTHCState(), self_, target_, output_, reduction, weight_ ? weight_ : NULL);
-            return output;
-            break;
-        }
-        default:
-            AT_ERROR("_thnn_binary_cross_entropy_forward not supported on CPUType for ", dispatch_scalar_type);
-    }
-}
-Tensor & _thnn_binary_cross_entropy_backward_out(Tensor & grad_input, const Tensor & grad_output, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction) {
-    if (grad_input.has_names() || grad_output.has_names() || self.has_names() || target.has_names() || weight.has_names()) {
-        AT_ERROR(
-            "_thnn_binary_cross_entropy_backward is not yet supported with named tensors. Please drop names via "
-            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
-            "and set names on the result of the operation.");
-    }
-    const OptionalDeviceGuard device_guard(device_of(self));
-    auto dispatch_scalar_type = infer_scalar_type(self);
-    switch (dispatch_scalar_type) {
-        case ScalarType::Double: {
-            auto grad_output_ = checked_dense_tensor_unwrap(grad_output, "grad_output", 1, "_thnn_binary_cross_entropy_backward_out", false, DeviceType::CPU, ScalarType::Double);
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 2, "_thnn_binary_cross_entropy_backward_out", false, DeviceType::CPU, ScalarType::Double);
-            auto target_ = checked_dense_tensor_unwrap(target, "target", 3, "_thnn_binary_cross_entropy_backward_out", false, DeviceType::CPU, ScalarType::Double);
-            auto weight_ = checked_dense_tensor_unwrap(weight, "weight", 4, "_thnn_binary_cross_entropy_backward_out", true, DeviceType::CPU, ScalarType::Double);
-            auto grad_input_ = checked_dense_tensor_unwrap(grad_input, "grad_input", 5, "_thnn_binary_cross_entropy_backward_out", false, DeviceType::CPU, ScalarType::Double);
-            THNN_DoubleBCECriterion_updateGradInput(globalContext().getTHCState(), self_, target_, grad_output_, grad_input_, reduction, weight_ ? weight_ : NULL);
-            return grad_input;
-            break;
-        }
-        case ScalarType::Float: {
-            auto grad_output_ = checked_dense_tensor_unwrap(grad_output, "grad_output", 1, "_thnn_binary_cross_entropy_backward_out", false, DeviceType::CPU, ScalarType::Float);
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 2, "_thnn_binary_cross_entropy_backward_out", false, DeviceType::CPU, ScalarType::Float);
-            auto target_ = checked_dense_tensor_unwrap(target, "target", 3, "_thnn_binary_cross_entropy_backward_out", false, DeviceType::CPU, ScalarType::Float);
-            auto weight_ = checked_dense_tensor_unwrap(weight, "weight", 4, "_thnn_binary_cross_entropy_backward_out", true, DeviceType::CPU, ScalarType::Float);
-            auto grad_input_ = checked_dense_tensor_unwrap(grad_input, "grad_input", 5, "_thnn_binary_cross_entropy_backward_out", false, DeviceType::CPU, ScalarType::Float);
-            THNN_FloatBCECriterion_updateGradInput(globalContext().getTHCState(), self_, target_, grad_output_, grad_input_, reduction, weight_ ? weight_ : NULL);
-            return grad_input;
-            break;
-        }
-        default:
-            AT_ERROR("_thnn_binary_cross_entropy_backward_out not supported on CPUType for ", dispatch_scalar_type);
-    }
-}
-Tensor _thnn_binary_cross_entropy_backward(const Tensor & grad_output, const Tensor & self, const Tensor & target, const Tensor & weight, int64_t reduction) {
-    if (grad_output.has_names() || self.has_names() || target.has_names() || weight.has_names()) {
-        AT_ERROR(
-            "_thnn_binary_cross_entropy_backward is not yet supported with named tensors. Please drop names via "
-            "`tensor = tensor.rename(None)`, call the op with an unnamed tensor, "
-            "and set names on the result of the operation.");
-    }
-    const OptionalDeviceGuard device_guard(device_of(self));
-    auto dispatch_scalar_type = infer_scalar_type(self);
-    switch (dispatch_scalar_type) {
-        case ScalarType::Double: {
-            auto grad_output_ = checked_dense_tensor_unwrap(grad_output, "grad_output", 1, "_thnn_binary_cross_entropy_backward", false, DeviceType::CPU, ScalarType::Double);
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 2, "_thnn_binary_cross_entropy_backward", false, DeviceType::CPU, ScalarType::Double);
-            auto target_ = checked_dense_tensor_unwrap(target, "target", 3, "_thnn_binary_cross_entropy_backward", false, DeviceType::CPU, ScalarType::Double);
-            auto weight_ = checked_dense_tensor_unwrap(weight, "weight", 4, "_thnn_binary_cross_entropy_backward", true, DeviceType::CPU, ScalarType::Double);
-            auto grad_input_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<double>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
-            auto grad_input = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(grad_input_));
-            THNN_DoubleBCECriterion_updateGradInput(globalContext().getTHCState(), self_, target_, grad_output_, grad_input_, reduction, weight_ ? weight_ : NULL);
-            return grad_input;
-            break;
-        }
-        case ScalarType::Float: {
-            auto grad_output_ = checked_dense_tensor_unwrap(grad_output, "grad_output", 1, "_thnn_binary_cross_entropy_backward", false, DeviceType::CPU, ScalarType::Float);
-            auto self_ = checked_dense_tensor_unwrap(self, "self", 2, "_thnn_binary_cross_entropy_backward", false, DeviceType::CPU, ScalarType::Float);
-            auto target_ = checked_dense_tensor_unwrap(target, "target", 3, "_thnn_binary_cross_entropy_backward", false, DeviceType::CPU, ScalarType::Float);
-            auto weight_ = checked_dense_tensor_unwrap(weight, "weight", 4, "_thnn_binary_cross_entropy_backward", true, DeviceType::CPU, ScalarType::Float);
-            auto grad_input_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<float>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
-            auto grad_input = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(grad_input_));
-            THNN_FloatBCECriterion_updateGradInput(globalContext().getTHCState(), self_, target_, grad_output_, grad_input_, reduction, weight_ ? weight_ : NULL);
-            return grad_input;
-            break;
-        }
-        default:
-            AT_ERROR("_thnn_binary_cross_entropy_backward not supported on CPUType for ", dispatch_scalar_type);
-    }
-}
 Tensor & _thnn_glu_forward_out(Tensor & output, const Tensor & self, int64_t dim) {
     if (output.has_names() || self.has_names()) {
         AT_ERROR(
@@ -7489,7 +6995,6 @@ Tensor & _thnn_glu_forward_out(Tensor & output, const Tensor & self, int64_t dim
     switch (dispatch_scalar_type) {
         case ScalarType::Double: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_thnn_glu_forward_out", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             auto output_ = checked_dense_tensor_unwrap(output, "output", 2, "_thnn_glu_forward_out", false, DeviceType::CPU, ScalarType::Double);
             THNN_DoubleGatedLinear_updateOutput(globalContext().getTHCState(), self_, output_, dim);
             return output;
@@ -7497,7 +7002,6 @@ Tensor & _thnn_glu_forward_out(Tensor & output, const Tensor & self, int64_t dim
         }
         case ScalarType::Float: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_thnn_glu_forward_out", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             auto output_ = checked_dense_tensor_unwrap(output, "output", 2, "_thnn_glu_forward_out", false, DeviceType::CPU, ScalarType::Float);
             THNN_FloatGatedLinear_updateOutput(globalContext().getTHCState(), self_, output_, dim);
             return output;
@@ -7519,7 +7023,6 @@ Tensor _thnn_glu_forward(const Tensor & self, int64_t dim) {
     switch (dispatch_scalar_type) {
         case ScalarType::Double: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_thnn_glu_forward", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             auto output_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<double>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto output = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(output_));
             THNN_DoubleGatedLinear_updateOutput(globalContext().getTHCState(), self_, output_, dim);
@@ -7528,7 +7031,6 @@ Tensor _thnn_glu_forward(const Tensor & self, int64_t dim) {
         }
         case ScalarType::Float: {
             auto self_ = checked_dense_tensor_unwrap(self, "self", 1, "_thnn_glu_forward", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             auto output_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<float>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto output = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(output_));
             THNN_FloatGatedLinear_updateOutput(globalContext().getTHCState(), self_, output_, dim);
@@ -7552,7 +7054,6 @@ Tensor & _thnn_glu_backward_out(Tensor & grad_input, const Tensor & grad_output,
         case ScalarType::Double: {
             auto grad_output_ = checked_dense_tensor_unwrap(grad_output, "grad_output", 1, "_thnn_glu_backward_out", false, DeviceType::CPU, ScalarType::Double);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 2, "_thnn_glu_backward_out", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             auto grad_input_ = checked_dense_tensor_unwrap(grad_input, "grad_input", 3, "_thnn_glu_backward_out", false, DeviceType::CPU, ScalarType::Double);
             THNN_DoubleGatedLinear_updateGradInput(globalContext().getTHCState(), self_, grad_output_, grad_input_, dim);
             return grad_input;
@@ -7561,7 +7062,6 @@ Tensor & _thnn_glu_backward_out(Tensor & grad_input, const Tensor & grad_output,
         case ScalarType::Float: {
             auto grad_output_ = checked_dense_tensor_unwrap(grad_output, "grad_output", 1, "_thnn_glu_backward_out", false, DeviceType::CPU, ScalarType::Float);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 2, "_thnn_glu_backward_out", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             auto grad_input_ = checked_dense_tensor_unwrap(grad_input, "grad_input", 3, "_thnn_glu_backward_out", false, DeviceType::CPU, ScalarType::Float);
             THNN_FloatGatedLinear_updateGradInput(globalContext().getTHCState(), self_, grad_output_, grad_input_, dim);
             return grad_input;
@@ -7584,7 +7084,6 @@ Tensor _thnn_glu_backward(const Tensor & grad_output, const Tensor & self, int64
         case ScalarType::Double: {
             auto grad_output_ = checked_dense_tensor_unwrap(grad_output, "grad_output", 1, "_thnn_glu_backward", false, DeviceType::CPU, ScalarType::Double);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 2, "_thnn_glu_backward", false, DeviceType::CPU, ScalarType::Double);
-            dim = maybe_wrap_dim(dim, self_);
             auto grad_input_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<double>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto grad_input = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(grad_input_));
             THNN_DoubleGatedLinear_updateGradInput(globalContext().getTHCState(), self_, grad_output_, grad_input_, dim);
@@ -7594,7 +7093,6 @@ Tensor _thnn_glu_backward(const Tensor & grad_output, const Tensor & self, int64
         case ScalarType::Float: {
             auto grad_output_ = checked_dense_tensor_unwrap(grad_output, "grad_output", 1, "_thnn_glu_backward", false, DeviceType::CPU, ScalarType::Float);
             auto self_ = checked_dense_tensor_unwrap(self, "self", 2, "_thnn_glu_backward", false, DeviceType::CPU, ScalarType::Float);
-            dim = maybe_wrap_dim(dim, self_);
             auto grad_input_ = c10::make_intrusive<TensorImpl, UndefinedTensorImpl>(c10::Storage(caffe2::TypeMeta::Make<float>(), 0, allocator(), true),DispatchKey::CPUTensorId).release();
             auto grad_input = Tensor(c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl>::reclaim(grad_input_));
             THNN_FloatGatedLinear_updateGradInput(globalContext().getTHCState(), self_, grad_output_, grad_input_, dim);
