@@ -1,11 +1,13 @@
 // NB: Must be at the top of file to avoid including the deprecated "math.h".
 // https://stackoverflow.com/questions/6563810/m-pi-works-with-math-h-but-not-with-cmath-in-visual-studio
 #ifdef _MSC_VER
+#ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
+#endif
 #include <cmath>
 #endif
 
-#include "Functions.h"
+#include "torch/csrc/autograd/generated/Functions.h"
 #include <ATen/Utils.h>
 #include <c10/core/TensorOptions.h>
 #include <ATen/WrapDimUtils.h>
@@ -877,8 +879,8 @@ Tensor infinitely_differentiable_gelu_backward(
   return cdf.addcmul_(self, pdf, kAlpha).mul_(grad);
 }
 
-Tensor kl_div_double_backward_grad_output(const Tensor & grad, const Tensor & input, const Tensor & target, int64_t reduction) {
-  auto result = kl_div_backward(grad, input, target, at::Reduction::None);
+Tensor kl_div_double_backward_grad_output(const Tensor & grad, const Tensor & input, const Tensor & target, int64_t reduction, bool log_target) {
+  auto result = kl_div_backward(grad, input, target, at::Reduction::None, log_target);
   if (reduction == at::Reduction::Mean) {
     return result.mean();
   } else if (reduction == at::Reduction::Sum) {
@@ -888,15 +890,20 @@ Tensor kl_div_double_backward_grad_output(const Tensor & grad, const Tensor & in
 }
 
 // Compute derivatives for targets.
-// Assume targets are given as probabilities (i.e. without taking the logarithm).
-Tensor kl_div_target_backward(Tensor grad_output, Tensor self, Tensor target, int64_t reduction) {
-  if (reduction == at::Reduction::None) {
-    return grad_output.mul(target.log().add_(1).sub_(self)).masked_fill_(target == 0, 0.);
+Tensor kl_div_target_backward(Tensor grad_output, Tensor self, Tensor target, int64_t reduction, bool log_target) {
+  Tensor grad_target;
+  if (!log_target) {
+    grad_target = grad_output.mul(target.log().add_(1).sub_(self)).masked_fill_(target == 0, 0.);
   }
+  else {
+    grad_target = grad_output.mul(target.add(1).sub_(self).mul_(target.exp()));
+  }
+
   if (reduction == at::Reduction::Mean) {
-    return grad_output.mul(target.log().add_(1).sub_(self)).div_(target.numel()).masked_fill_(target == 0, 0.);
+    grad_target.div_(target.numel());
   }
-  return grad_output.mul(target.log().add_(1).sub_(self)).masked_fill_(target == 0, 0.);
+
+  return grad_target;
 }
 
 Tensor binary_cross_entropy_with_logits_target_backward(const Tensor& grad_output, const Tensor& self, const Tensor& target, const Tensor& weight, const Tensor& pos_weight, int64_t reduction) {
@@ -1792,6 +1799,55 @@ Tensor svd_backward(const std::vector<torch::autograd::Variable> &grads, const T
   return u_term + sigma_term + v_term;
 }
 
+// "An extended collection of matrix derivative results for forward and reverse mode algorithmic differentiation"
+// https://people.maths.ox.ac.uk/gilesm/files/NA-08-01.pdf
+Tensor eig_backward(const std::vector<torch::autograd::Variable> &grads, const Tensor& self,
+                    bool eigenvectors, const Tensor& lambda, const Tensor& v) {
+  // This gradient only works for real eigenvalues at the moment.
+  TORCH_CHECK(eigenvectors,
+           "eig_backward: Setting eigenvectors to false in torch.eig doesn't compute eigenvectors ",
+           "and hence we cannot compute backward. Please use torch.eig(eigenvectors=True)");
+  auto zeros = at::zeros({1}, lambda.options());
+  TORCH_CHECK(
+      at::allclose(lambda.slice(/*dim=*/-1, /*start=*/1, /*end=*/2), zeros),
+      "eig_backward: Backward calculation does not support complex eigenvalues at the moment.");
+
+  auto glambda = grads[0];
+  auto gv = grads[1];
+  auto vt = v.transpose(-2, -1);
+
+  Tensor result;
+  // contribution from the eigenvectors
+  if (gv.defined()) {
+    auto rlambda = lambda.slice(/*dim=*/-1, /*start=*/0, /*end=*/1);
+
+    auto hm = rlambda.transpose(-2,-1) - rlambda;
+    hm.diagonal(/*offset=*/0, /*dim1=*/-2, /*dim2=*/-1).fill_(INFINITY);
+    hm.pow_(-1.0);
+
+    auto gvortho = gv - at::sum(gv * v, /*dim=*/-2, /*keepdim=*/true) * v;
+    auto B = hm * at::matmul(vt, gvortho);
+    auto A = at::matmul(B, vt);
+
+    std::tie(result, std::ignore) = at::solve(A, vt);
+  }
+  // contribution from eigenvalues
+  if (glambda.defined()) {
+    auto grlambda = glambda.slice(/*dim=*/-1, /*start=*/0, /*end=*/1) * vt;
+    auto A = at::matmul(v, grlambda);
+    auto vvt = at::matmul(v, vt);
+    if (result.defined()) {
+      Tensor result1;
+      std::tie(result1, std::ignore) = at::solve(A, vvt);
+      result = result.add(result1);
+    }
+    else {
+      std::tie(result, std::ignore) = at::solve(A, vvt);
+    }
+  }
+  return result;
+}
+
 // http://eprints.maths.ox.ac.uk/1079/1/NA-08-01.pdf
 Tensor symeig_backward(const std::vector<torch::autograd::Variable> &grads, const Tensor& self,
                     bool eigenvectors, bool upper, const Tensor& lambda, const Tensor& v) {
@@ -2528,6 +2584,7 @@ Tensor _cudnn_ctc_loss_backward(const Tensor& grad_out, const Tensor& loss, cons
 } // anonymous namespace
 
 variable_list AbsBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2541,6 +2598,7 @@ variable_list AbsBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AcosBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2554,6 +2612,7 @@ variable_list AcosBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AddBackward0::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2572,6 +2631,7 @@ variable_list AddBackward0::apply(variable_list&& grads) {
 }
 variable_list AddBackward1::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -2583,6 +2643,7 @@ variable_list AddBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AddbmmBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2607,6 +2668,7 @@ variable_list AddbmmBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AddcdivBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2631,6 +2693,7 @@ variable_list AddcdivBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AddcmulBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2655,6 +2718,7 @@ variable_list AddcmulBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AddmmBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2679,6 +2743,7 @@ variable_list AddmmBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SparseAddmmBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2703,6 +2768,7 @@ variable_list SparseAddmmBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AddmvBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2727,6 +2793,7 @@ variable_list AddmvBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AddrBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2752,6 +2819,7 @@ variable_list AddrBackward::apply(variable_list&& grads) {
 }
 variable_list AffineGridGeneratorBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto theta_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -2764,6 +2832,7 @@ variable_list AffineGridGeneratorBackward::apply(variable_list&& grads) {
 }
 variable_list AliasBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -2775,6 +2844,7 @@ variable_list AliasBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AngleBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2789,6 +2859,7 @@ variable_list AngleBackward::apply(variable_list&& grads) {
 }
 variable_list AnyBackward0::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -2799,6 +2870,7 @@ variable_list AnyBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AnyBackward1::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2811,6 +2883,7 @@ variable_list AnyBackward1::apply(variable_list&& grads) {
 }
 variable_list AllBackward0::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -2821,6 +2894,7 @@ variable_list AllBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AllBackward1::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2833,6 +2907,7 @@ variable_list AllBackward1::apply(variable_list&& grads) {
 }
 variable_list AsStridedBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -2844,6 +2919,7 @@ variable_list AsStridedBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AsinBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2857,6 +2933,7 @@ variable_list AsinBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AtanBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2870,6 +2947,7 @@ variable_list AtanBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list Atan2Backward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2894,6 +2972,7 @@ variable_list Atan2Backward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list BaddbmmBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2919,6 +2998,7 @@ variable_list BaddbmmBackward::apply(variable_list&& grads) {
 }
 variable_list BernoulliBackward0::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -2930,6 +3010,7 @@ variable_list BernoulliBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list BernoulliBackward1::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2948,6 +3029,7 @@ variable_list BernoulliBackward1::apply(variable_list&& grads) {
 }
 variable_list BernoulliBackward2::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -2959,6 +3041,7 @@ variable_list BernoulliBackward2::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list BmmBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -2979,6 +3062,7 @@ variable_list BmmBackward::apply(variable_list&& grads) {
 }
 variable_list CatBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto tensors_ix = gen.range(tensors_size_);
   variable_list grad_inputs(gen.size());
@@ -2990,6 +3074,7 @@ variable_list CatBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CauchyBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3003,6 +3088,7 @@ variable_list CauchyBackward::apply(variable_list&& grads) {
 }
 variable_list CeilBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3014,6 +3100,7 @@ variable_list CeilBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CholeskyBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3027,6 +3114,7 @@ variable_list CholeskyBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CholeskySolveBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3049,6 +3137,7 @@ variable_list CholeskySolveBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CholeskyInverseBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3063,6 +3152,7 @@ variable_list CholeskyInverseBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ClampBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3076,6 +3166,7 @@ variable_list ClampBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ClampMinBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3089,6 +3180,7 @@ variable_list ClampMinBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ClampMaxBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3103,6 +3195,7 @@ variable_list ClampMaxBackward::apply(variable_list&& grads) {
 }
 variable_list CloneBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3114,6 +3207,7 @@ variable_list CloneBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CoalesceBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3127,6 +3221,7 @@ variable_list CoalesceBackward::apply(variable_list&& grads) {
 }
 variable_list ConjBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3138,6 +3233,7 @@ variable_list ConjBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CosBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3151,6 +3247,7 @@ variable_list CosBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CoshBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3164,6 +3261,7 @@ variable_list CoshBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CrossBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3183,6 +3281,7 @@ variable_list CrossBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CumprodBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3197,6 +3296,7 @@ variable_list CumprodBackward::apply(variable_list&& grads) {
 }
 variable_list CumsumBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3208,6 +3308,7 @@ variable_list CumsumBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CummaxBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3216,12 +3317,13 @@ variable_list CummaxBackward::apply(variable_list&& grads) {
   auto self = self_.unpack();
   auto indices = indices_.unpack(shared_from_this());
   if (should_compute_output({ self_ix })) {
-    auto grad_result = cummax_backward(indices, grad.to(self_scalar_type), self, dim);
+    auto grad_result = cummax_backward(indices, grad, self, dim);
     copy_range(grad_inputs, self_ix, grad_result);
   }
   return grad_inputs;
 }
 variable_list CumminBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3230,12 +3332,13 @@ variable_list CumminBackward::apply(variable_list&& grads) {
   auto self = self_.unpack();
   auto indices = indices_.unpack(shared_from_this());
   if (should_compute_output({ self_ix })) {
-    auto grad_result = cummin_backward(indices, grad.to(self_scalar_type), self, dim);
+    auto grad_result = cummin_backward(indices, grad, self, dim);
     copy_range(grad_inputs, self_ix, grad_result);
   }
   return grad_inputs;
 }
 variable_list ConvTbcBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3262,6 +3365,7 @@ variable_list ConvTbcBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CtcLossBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto log_probs_ix = gen.range(1);
@@ -3278,6 +3382,7 @@ variable_list CtcLossBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list DetBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3293,6 +3398,7 @@ variable_list DetBackward::apply(variable_list&& grads) {
 }
 variable_list DiagBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3305,6 +3411,7 @@ variable_list DiagBackward::apply(variable_list&& grads) {
 }
 variable_list DiagonalBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3316,6 +3423,7 @@ variable_list DiagonalBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list DistBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3336,6 +3444,7 @@ variable_list DistBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list DivBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3356,6 +3465,7 @@ variable_list DivBackward0::apply(variable_list&& grads) {
 }
 variable_list DivBackward1::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3367,6 +3477,7 @@ variable_list DivBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list DotBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3386,6 +3497,7 @@ variable_list DotBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list FusedDropoutBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3399,17 +3511,22 @@ variable_list FusedDropoutBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list EigBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
+  auto self = self_.unpack();
+  auto eigenvalues = eigenvalues_.unpack(shared_from_this());
+  auto eigenvectors_return = eigenvectors_return_.unpack(shared_from_this());
   if (should_compute_output({ self_ix })) {
-    auto grad_result = not_implemented("eig");
+    auto grad_result = eig_backward(grads, self, eigenvectors, eigenvalues, eigenvectors_return);
     copy_range(grad_inputs, self_ix, grad_result);
   }
   return grad_inputs;
 }
 variable_list EqBackward0::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3421,6 +3538,7 @@ variable_list EqBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list EqBackward1::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3437,6 +3555,7 @@ variable_list EqBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ErfBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3450,6 +3569,7 @@ variable_list ErfBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ErfcBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3463,6 +3583,7 @@ variable_list ErfcBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ErfinvBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3476,6 +3597,7 @@ variable_list ErfinvBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ExpBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3489,6 +3611,7 @@ variable_list ExpBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list Expm1Backward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3503,6 +3626,7 @@ variable_list Expm1Backward::apply(variable_list&& grads) {
 }
 variable_list ExpandBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3515,6 +3639,7 @@ variable_list ExpandBackward::apply(variable_list&& grads) {
 }
 variable_list ExponentialBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3526,6 +3651,7 @@ variable_list ExponentialBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list FakeQuantizePerTensorAffineBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3539,6 +3665,7 @@ variable_list FakeQuantizePerTensorAffineBackward::apply(variable_list&& grads) 
   return grad_inputs;
 }
 variable_list FakeQuantizePerChannelAffineBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3555,6 +3682,7 @@ variable_list FakeQuantizePerChannelAffineBackward::apply(variable_list&& grads)
 }
 variable_list FillBackward0::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3566,6 +3694,7 @@ variable_list FillBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list FillBackward1::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3584,6 +3713,7 @@ variable_list FillBackward1::apply(variable_list&& grads) {
 }
 variable_list FloorBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3596,6 +3726,7 @@ variable_list FloorBackward::apply(variable_list&& grads) {
 }
 variable_list FmodBackward0::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3607,6 +3738,7 @@ variable_list FmodBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list FmodBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3626,6 +3758,7 @@ variable_list FmodBackward1::apply(variable_list&& grads) {
 }
 variable_list FracBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3637,6 +3770,7 @@ variable_list FracBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list GatherBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3652,6 +3786,7 @@ variable_list GatherBackward::apply(variable_list&& grads) {
 }
 variable_list GeBackward0::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3662,6 +3797,7 @@ variable_list GeBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list GeBackward1::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3679,6 +3815,7 @@ variable_list GeBackward1::apply(variable_list&& grads) {
 }
 variable_list GeometricBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3691,6 +3828,7 @@ variable_list GeometricBackward::apply(variable_list&& grads) {
 }
 variable_list GeqrfBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3701,6 +3839,7 @@ variable_list GeqrfBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list GerBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3720,6 +3859,7 @@ variable_list GerBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list GridSampler2DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto input_ix = gen.range(1);
@@ -3741,6 +3881,7 @@ variable_list GridSampler2DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list GridSampler3DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto input_ix = gen.range(1);
@@ -3763,6 +3904,7 @@ variable_list GridSampler3DBackward::apply(variable_list&& grads) {
 }
 variable_list GtBackward0::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3773,6 +3915,7 @@ variable_list GtBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list GtBackward1::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3788,7 +3931,22 @@ variable_list GtBackward1::apply(variable_list&& grads) {
   }
   return grad_inputs;
 }
+variable_list HardsigmoidBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
+
+  IndexRangeGenerator gen;
+  auto self_ix = gen.range(1);
+  variable_list grad_inputs(gen.size());
+  auto& grad = grads[0];
+  auto result = result_.unpack(shared_from_this());
+  if (should_compute_output({ self_ix })) {
+    auto grad_result = hardsigmoid_backward(grad, result);
+    copy_range(grad_inputs, self_ix, grad_result);
+  }
+  return grad_inputs;
+}
 variable_list HistcBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3799,7 +3957,35 @@ variable_list HistcBackward::apply(variable_list&& grads) {
   }
   return grad_inputs;
 }
+variable_list HardswishBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
+
+  IndexRangeGenerator gen;
+  auto self_ix = gen.range(1);
+  variable_list grad_inputs(gen.size());
+  auto& grad = grads[0];
+  auto self = self_.unpack();
+  if (should_compute_output({ self_ix })) {
+    auto grad_result = hardswish_backward(grad, self);
+    copy_range(grad_inputs, self_ix, grad_result);
+  }
+  return grad_inputs;
+}
 variable_list ImagBackward::apply(variable_list&& grads) {
+
+
+  IndexRangeGenerator gen;
+  auto self_ix = gen.range(1);
+  variable_list grad_inputs(gen.size());
+  auto& grad = grads[0];
+  if (should_compute_output({ self_ix })) {
+    auto grad_result = Scalar(std::complex<double>{0.0, 1.0})*grad.to(self_scalar_type);
+    copy_range(grad_inputs, self_ix, grad_result);
+  }
+  return grad_inputs;
+}
+variable_list CopyImagBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3812,6 +3998,7 @@ variable_list ImagBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list IndexBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
   TORCH_CHECK(!indices_released_, ERR_BACKWARD_TWICE);
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3830,6 +4017,7 @@ variable_list IndexBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list IndexAddBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3849,6 +4037,7 @@ variable_list IndexAddBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list IndexCopyBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3868,6 +4057,7 @@ variable_list IndexCopyBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list IndexFillBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3881,6 +4071,7 @@ variable_list IndexFillBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list IndexFillBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3899,6 +4090,7 @@ variable_list IndexFillBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list IndexPutBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
   TORCH_CHECK(!indices_released_, ERR_BACKWARD_TWICE);
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3917,6 +4109,7 @@ variable_list IndexPutBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list IndexPutImplBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
   TORCH_CHECK(!indices_released_, ERR_BACKWARD_TWICE);
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3935,6 +4128,7 @@ variable_list IndexPutImplBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list IndexSelectBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3948,6 +4142,7 @@ variable_list IndexSelectBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list InverseBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3961,6 +4156,7 @@ variable_list InverseBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list KthvalueBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -3975,6 +4171,7 @@ variable_list KthvalueBackward::apply(variable_list&& grads) {
 }
 variable_list LeBackward0::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -3985,6 +4182,7 @@ variable_list LeBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list LeBackward1::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4002,6 +4200,7 @@ variable_list LeBackward1::apply(variable_list&& grads) {
 }
 variable_list LerpBackward0::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   auto end_ix = gen.range(1);
@@ -4018,6 +4217,7 @@ variable_list LerpBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list LerpBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4043,6 +4243,7 @@ variable_list LerpBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list LgammaBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4056,6 +4257,7 @@ variable_list LgammaBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list DigammaBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4069,6 +4271,7 @@ variable_list DigammaBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list PolygammaBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4082,6 +4285,7 @@ variable_list PolygammaBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list LogBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4095,6 +4299,7 @@ variable_list LogBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list Log10Backward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4108,6 +4313,7 @@ variable_list Log10Backward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list Log1PBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4121,6 +4327,7 @@ variable_list Log1PBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list Log2Backward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4134,6 +4341,7 @@ variable_list Log2Backward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list LogdetBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4149,6 +4357,7 @@ variable_list LogdetBackward::apply(variable_list&& grads) {
 }
 variable_list LogNormalBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -4160,6 +4369,7 @@ variable_list LogNormalBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list LogsumexpBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4174,6 +4384,7 @@ variable_list LogsumexpBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list LstsqBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4191,6 +4402,7 @@ variable_list LstsqBackward::apply(variable_list&& grads) {
 }
 variable_list LtBackward0::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -4201,6 +4413,7 @@ variable_list LtBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list LtBackward1::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4218,6 +4431,7 @@ variable_list LtBackward1::apply(variable_list&& grads) {
 }
 variable_list LuWithInfoBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -4229,6 +4443,7 @@ variable_list LuWithInfoBackward::apply(variable_list&& grads) {
 }
 variable_list LuSolveBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -4239,6 +4454,7 @@ variable_list LuSolveBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MaskedFillBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4252,6 +4468,7 @@ variable_list MaskedFillBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MaskedFillBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4270,6 +4487,7 @@ variable_list MaskedFillBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MaskedScatterBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4288,6 +4506,7 @@ variable_list MaskedScatterBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MaskedSelectBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4302,6 +4521,7 @@ variable_list MaskedSelectBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MaxBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4315,6 +4535,7 @@ variable_list MaxBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MaxBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4329,6 +4550,7 @@ variable_list MaxBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MaxBackward2::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4349,6 +4571,7 @@ variable_list MaxBackward2::apply(variable_list&& grads) {
 }
 variable_list MeanBackward0::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -4361,6 +4584,7 @@ variable_list MeanBackward0::apply(variable_list&& grads) {
 }
 variable_list MeanBackward1::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -4372,6 +4596,7 @@ variable_list MeanBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MedianBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4386,6 +4611,7 @@ variable_list MedianBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MedianBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4399,6 +4625,7 @@ variable_list MedianBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MinBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4412,6 +4639,7 @@ variable_list MinBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MinBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4426,6 +4654,7 @@ variable_list MinBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MinBackward2::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4445,6 +4674,7 @@ variable_list MinBackward2::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MmBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4464,6 +4694,7 @@ variable_list MmBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ModeBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4477,6 +4708,7 @@ variable_list ModeBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MulBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4497,6 +4729,7 @@ variable_list MulBackward0::apply(variable_list&& grads) {
 }
 variable_list MulBackward1::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -4508,6 +4741,7 @@ variable_list MulBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MvBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4527,6 +4761,7 @@ variable_list MvBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MvlgammaBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4540,6 +4775,7 @@ variable_list MvlgammaBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list NativeBatchNormBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto input_ix = gen.range(1);
@@ -4573,6 +4809,7 @@ variable_list NativeBatchNormBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list NativeBatchNormBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_out_ix = gen.range(1);
@@ -4616,6 +4853,7 @@ variable_list NativeBatchNormBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list NativeLayerNormBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto input_ix = gen.range(1);
@@ -4647,6 +4885,7 @@ variable_list NativeLayerNormBackward::apply(variable_list&& grads) {
 }
 variable_list NeBackward0::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -4657,6 +4896,7 @@ variable_list NeBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list NeBackward1::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4674,6 +4914,7 @@ variable_list NeBackward1::apply(variable_list&& grads) {
 }
 variable_list NegBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -4685,6 +4926,7 @@ variable_list NegBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list NormBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4699,6 +4941,7 @@ variable_list NormBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list NormBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4713,6 +4956,7 @@ variable_list NormBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list NormBackward2::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4727,6 +4971,7 @@ variable_list NormBackward2::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list NormBackward3::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4741,6 +4986,7 @@ variable_list NormBackward3::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list PdistBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4755,6 +5001,7 @@ variable_list PdistBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list PdistBackwardBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto grad_ix = gen.range(1);
@@ -4776,6 +5023,7 @@ variable_list PdistBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CdistBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto x1_ix = gen.range(1);
@@ -4796,6 +5044,7 @@ variable_list CdistBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CdistBackwardBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto grad_ix = gen.range(1);
@@ -4823,6 +5072,7 @@ variable_list CdistBackwardBackward::apply(variable_list&& grads) {
 }
 variable_list NormalBackward0::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -4834,6 +5084,7 @@ variable_list NormalBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list NormalBackward1::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto mean_ix = gen.range(1);
@@ -4847,6 +5098,7 @@ variable_list NormalBackward1::apply(variable_list&& grads) {
 }
 variable_list NormalBackward2::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto std_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -4858,6 +5110,7 @@ variable_list NormalBackward2::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list NormalBackward3::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto mean_ix = gen.range(1);
@@ -4876,6 +5129,7 @@ variable_list NormalBackward3::apply(variable_list&& grads) {
 }
 variable_list OrgqrBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   auto input2_ix = gen.range(1);
@@ -4891,6 +5145,7 @@ variable_list OrgqrBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list OrmqrBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4913,6 +5168,7 @@ variable_list OrmqrBackward::apply(variable_list&& grads) {
 }
 variable_list PermuteBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -4925,6 +5181,7 @@ variable_list PermuteBackward::apply(variable_list&& grads) {
 }
 variable_list PoissonBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -4935,6 +5192,7 @@ variable_list PoissonBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list PowBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4948,6 +5206,7 @@ variable_list PowBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list PowBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4968,6 +5227,7 @@ variable_list PowBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list PowBackward2::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto exponent_ix = gen.range(1);
@@ -4982,6 +5242,7 @@ variable_list PowBackward2::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ProdBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -4996,6 +5257,7 @@ variable_list ProdBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ProdBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5010,6 +5272,7 @@ variable_list ProdBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list PutBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5029,6 +5292,7 @@ variable_list PutBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list QrBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5044,6 +5308,7 @@ variable_list QrBackward::apply(variable_list&& grads) {
 }
 variable_list RandomBackward0::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5055,6 +5320,7 @@ variable_list RandomBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list RandomBackward1::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5068,6 +5334,7 @@ variable_list RandomBackward1::apply(variable_list&& grads) {
 }
 variable_list RandomBackward2::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5080,17 +5347,32 @@ variable_list RandomBackward2::apply(variable_list&& grads) {
 }
 variable_list RealBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
   auto& grad = grads[0];
   if (should_compute_output({ self_ix })) {
-    auto grad_result = grad.real();
+    auto grad_result = at::real(grad);
+    copy_range(grad_inputs, self_ix, grad_result);
+  }
+  return grad_inputs;
+}
+variable_list CopyRealBackward::apply(variable_list&& grads) {
+
+
+  IndexRangeGenerator gen;
+  auto self_ix = gen.range(1);
+  variable_list grad_inputs(gen.size());
+  auto& grad = grads[0];
+  if (should_compute_output({ self_ix })) {
+    auto grad_result = grad.copy_real();
     copy_range(grad_inputs, self_ix, grad_result);
   }
   return grad_inputs;
 }
 variable_list ReciprocalBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5105,6 +5387,7 @@ variable_list ReciprocalBackward::apply(variable_list&& grads) {
 }
 variable_list RemainderBackward0::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5117,6 +5400,7 @@ variable_list RemainderBackward0::apply(variable_list&& grads) {
 }
 variable_list RemainderBackward1::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5128,6 +5412,7 @@ variable_list RemainderBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list RenormBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5141,6 +5426,7 @@ variable_list RenormBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list RepeatBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5155,6 +5441,7 @@ variable_list RepeatBackward::apply(variable_list&& grads) {
 }
 variable_list RoundBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5166,6 +5453,7 @@ variable_list RoundBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list RsqrtBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5179,6 +5467,7 @@ variable_list RsqrtBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ScatterBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5197,6 +5486,7 @@ variable_list ScatterBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ScatterBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5210,6 +5500,7 @@ variable_list ScatterBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ScatterAddBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5229,6 +5520,7 @@ variable_list ScatterAddBackward::apply(variable_list&& grads) {
 }
 variable_list SelectBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5240,6 +5532,7 @@ variable_list SelectBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SigmoidBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5254,6 +5547,7 @@ variable_list SigmoidBackward::apply(variable_list&& grads) {
 }
 variable_list SignBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5265,6 +5559,7 @@ variable_list SignBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SinBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5278,6 +5573,7 @@ variable_list SinBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SinhBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5292,6 +5588,7 @@ variable_list SinhBackward::apply(variable_list&& grads) {
 }
 variable_list SliceBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5303,6 +5600,7 @@ variable_list SliceBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SlogdetBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5318,6 +5616,7 @@ variable_list SlogdetBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SolveBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5338,6 +5637,7 @@ variable_list SolveBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SortBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5351,6 +5651,7 @@ variable_list SortBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SplitBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5363,6 +5664,7 @@ variable_list SplitBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SplitWithSizesBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5375,6 +5677,7 @@ variable_list SplitWithSizesBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SqrtBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5389,6 +5692,7 @@ variable_list SqrtBackward::apply(variable_list&& grads) {
 }
 variable_list SqueezeBackward0::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5400,6 +5704,7 @@ variable_list SqueezeBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SqueezeBackward1::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5413,6 +5718,7 @@ variable_list SqueezeBackward1::apply(variable_list&& grads) {
 }
 variable_list SqueezeBackward2::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5425,6 +5731,7 @@ variable_list SqueezeBackward2::apply(variable_list&& grads) {
 }
 variable_list SqueezeBackward3::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5436,6 +5743,7 @@ variable_list SqueezeBackward3::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list StdBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5450,6 +5758,7 @@ variable_list StdBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list StdBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5464,6 +5773,7 @@ variable_list StdBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SubBackward0::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5482,6 +5792,7 @@ variable_list SubBackward0::apply(variable_list&& grads) {
 }
 variable_list SubBackward1::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5493,6 +5804,7 @@ variable_list SubBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list RsubBackward0::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5511,6 +5823,7 @@ variable_list RsubBackward0::apply(variable_list&& grads) {
 }
 variable_list RsubBackward1::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5522,6 +5835,7 @@ variable_list RsubBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SumBackward0::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5535,6 +5849,7 @@ variable_list SumBackward0::apply(variable_list&& grads) {
 }
 variable_list SumBackward1::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5546,6 +5861,7 @@ variable_list SumBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SvdBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5561,6 +5877,7 @@ variable_list SvdBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SymeigBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5576,6 +5893,7 @@ variable_list SymeigBackward::apply(variable_list&& grads) {
 }
 variable_list TBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5587,6 +5905,7 @@ variable_list TBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list FlipBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5600,6 +5919,7 @@ variable_list FlipBackward::apply(variable_list&& grads) {
 }
 variable_list RollBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5612,6 +5932,7 @@ variable_list RollBackward::apply(variable_list&& grads) {
 }
 variable_list Rot90Backward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5623,6 +5944,7 @@ variable_list Rot90Backward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list TakeBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5636,6 +5958,7 @@ variable_list TakeBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list TanBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5649,6 +5972,7 @@ variable_list TanBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list TanhBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5662,6 +5986,7 @@ variable_list TanhBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list TopkBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5676,6 +6001,7 @@ variable_list TopkBackward::apply(variable_list&& grads) {
 }
 variable_list TraceBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5687,6 +6013,7 @@ variable_list TraceBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list TransposeBackward0::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5700,6 +6027,7 @@ variable_list TransposeBackward0::apply(variable_list&& grads) {
 }
 variable_list TransposeBackward1::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5711,6 +6039,7 @@ variable_list TransposeBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list TriangularSolveBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5736,6 +6065,7 @@ variable_list TriangularSolveBackward::apply(variable_list&& grads) {
 }
 variable_list TrilBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5748,6 +6078,7 @@ variable_list TrilBackward::apply(variable_list&& grads) {
 }
 variable_list TriuBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5758,7 +6089,41 @@ variable_list TriuBackward::apply(variable_list&& grads) {
   }
   return grad_inputs;
 }
+variable_list TrueDivideBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
+
+  IndexRangeGenerator gen;
+  auto self_ix = gen.range(1);
+  auto other_ix = gen.range(1);
+  variable_list grad_inputs(gen.size());
+  auto& grad = grads[0];
+  auto self = self_.unpack();
+  auto other = other_.unpack();
+  if (should_compute_output({ other_ix })) {
+    auto grad_result = -grad * self / (other * other);
+    copy_range(grad_inputs, other_ix, grad_result);
+  }
+  if (should_compute_output({ self_ix })) {
+    auto grad_result = grad / other;
+    copy_range(grad_inputs, self_ix, grad_result);
+  }
+  return grad_inputs;
+}
+variable_list TrueDivideBackward1::apply(variable_list&& grads) {
+
+
+  IndexRangeGenerator gen;
+  auto self_ix = gen.range(1);
+  variable_list grad_inputs(gen.size());
+  auto& grad = grads[0];
+  if (should_compute_output({ self_ix })) {
+    auto grad_result = grad / other;
+    copy_range(grad_inputs, self_ix, grad_result);
+  }
+  return grad_inputs;
+}
 variable_list TruncBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5771,6 +6136,7 @@ variable_list TruncBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ToDenseBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5785,6 +6151,7 @@ variable_list ToDenseBackward::apply(variable_list&& grads) {
 }
 variable_list ToSparseBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5796,6 +6163,7 @@ variable_list ToSparseBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ToMkldnnBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5810,6 +6178,7 @@ variable_list ToMkldnnBackward::apply(variable_list&& grads) {
 }
 variable_list UnfoldBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5821,6 +6190,7 @@ variable_list UnfoldBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list UniformBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5834,6 +6204,7 @@ variable_list UniformBackward::apply(variable_list&& grads) {
 }
 variable_list UniqueBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5844,6 +6215,7 @@ variable_list UniqueBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list UnsafeViewBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5857,6 +6229,7 @@ variable_list UnsafeViewBackward::apply(variable_list&& grads) {
 }
 variable_list UnsqueezeBackward0::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5869,6 +6242,7 @@ variable_list UnsqueezeBackward0::apply(variable_list&& grads) {
 }
 variable_list UnsqueezeBackward1::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5880,6 +6254,7 @@ variable_list UnsqueezeBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list VarBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5893,6 +6268,7 @@ variable_list VarBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list VarBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5907,6 +6283,7 @@ variable_list VarBackward1::apply(variable_list&& grads) {
 }
 variable_list ViewBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5918,6 +6295,7 @@ variable_list ViewBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SWhereBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5936,6 +6314,7 @@ variable_list SWhereBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list WeightNormCudaInterfaceBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto v_ix = gen.range(1);
@@ -5959,6 +6338,7 @@ variable_list WeightNormCudaInterfaceBackward::apply(variable_list&& grads) {
 }
 variable_list ZeroBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -5970,6 +6350,7 @@ variable_list ZeroBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SparseMaskBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -5983,6 +6364,7 @@ variable_list SparseMaskBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SparseCooTensorWithDimsAndTensorsBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto values_ix = gen.range(1);
@@ -5996,6 +6378,7 @@ variable_list SparseCooTensorWithDimsAndTensorsBackward::apply(variable_list&& g
   return grad_inputs;
 }
 variable_list SparseSumBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6009,6 +6392,7 @@ variable_list SparseSumBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list StandardGammaBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6024,6 +6408,7 @@ variable_list StandardGammaBackward::apply(variable_list&& grads) {
 }
 variable_list StandardGammaGradBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -6034,6 +6419,7 @@ variable_list StandardGammaGradBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ValuesBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6047,6 +6433,7 @@ variable_list ValuesBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list TrilinearBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto i1_ix = gen.range(1);
@@ -6078,6 +6465,7 @@ variable_list TrilinearBackward::apply(variable_list&& grads) {
 }
 variable_list ConstantPadNdBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -6089,6 +6477,7 @@ variable_list ConstantPadNdBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list BinaryCrossEntropyBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6104,6 +6493,7 @@ variable_list BinaryCrossEntropyBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list BinaryCrossEntropyBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -6125,6 +6515,7 @@ variable_list BinaryCrossEntropyBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list BinaryCrossEntropyWithLogitsBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6146,6 +6537,7 @@ variable_list BinaryCrossEntropyWithLogitsBackward::apply(variable_list&& grads)
   return grad_inputs;
 }
 variable_list EmbeddingBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto weight_ix = gen.range(1);
@@ -6159,6 +6551,7 @@ variable_list EmbeddingBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list EmbeddingDenseBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -6172,6 +6565,7 @@ variable_list EmbeddingDenseBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list EmbeddingBagBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto weight_ix = gen.range(1);
@@ -6197,6 +6591,7 @@ variable_list EmbeddingBagBackward::apply(variable_list&& grads) {
 }
 variable_list EmbeddingRenormBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -6207,6 +6602,7 @@ variable_list EmbeddingRenormBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list KlDivBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6216,16 +6612,17 @@ variable_list KlDivBackward::apply(variable_list&& grads) {
   auto self = self_.unpack();
   auto target = target_.unpack();
   if (should_compute_output({ self_ix })) {
-    auto grad_result = kl_div_backward(grad, self, target, reduction);
+    auto grad_result = kl_div_backward(grad, self, target, reduction, log_target);
     copy_range(grad_inputs, self_ix, grad_result);
   }
   if (should_compute_output({ target_ix })) {
-    auto grad_result = kl_div_target_backward(grad, self, target, reduction);
+    auto grad_result = kl_div_target_backward(grad, self, target, reduction, log_target);
     copy_range(grad_inputs, target_ix, grad_result);
   }
   return grad_inputs;
 }
 variable_list L1LossBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6240,6 +6637,7 @@ variable_list L1LossBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MseLossBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6254,6 +6652,7 @@ variable_list MseLossBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MultiMarginLossBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6269,6 +6668,7 @@ variable_list MultiMarginLossBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MultilabelMarginLossBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6284,6 +6684,7 @@ variable_list MultilabelMarginLossBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list NllLossBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6300,6 +6701,7 @@ variable_list NllLossBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list NllLoss2DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6316,6 +6718,7 @@ variable_list NllLoss2DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SmoothL1LossBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6330,6 +6733,7 @@ variable_list SmoothL1LossBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SoftMarginLossBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6344,6 +6748,7 @@ variable_list SoftMarginLossBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ReluBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6357,6 +6762,7 @@ variable_list ReluBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ReluBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6370,6 +6776,7 @@ variable_list ReluBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list EluBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6383,6 +6790,7 @@ variable_list EluBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list GeluBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6396,6 +6804,7 @@ variable_list GeluBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list GluBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6409,6 +6818,7 @@ variable_list GluBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list HardshrinkBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6422,6 +6832,7 @@ variable_list HardshrinkBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list HardshrinkBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_out_ix = gen.range(1);
@@ -6440,6 +6851,7 @@ variable_list HardshrinkBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list HardtanhBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6453,6 +6865,7 @@ variable_list HardtanhBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list HardtanhBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6466,6 +6879,7 @@ variable_list HardtanhBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list LeakyReluBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6473,12 +6887,13 @@ variable_list LeakyReluBackward0::apply(variable_list&& grads) {
   auto& grad = grads[0];
   auto self = self_.unpack();
   if (should_compute_output({ self_ix })) {
-    auto grad_result = leaky_relu_backward(grad, self, negative_slope);
+    auto grad_result = leaky_relu_backward(grad, self, negative_slope, false);
     copy_range(grad_inputs, self_ix, grad_result);
   }
   return grad_inputs;
 }
 variable_list LeakyReluBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6486,12 +6901,13 @@ variable_list LeakyReluBackward1::apply(variable_list&& grads) {
   auto& grad = grads[0];
   auto result = result_.unpack(shared_from_this());
   if (should_compute_output({ self_ix })) {
-    auto grad_result = leaky_relu_backward(grad, result, negative_slope);
+    auto grad_result = leaky_relu_backward(grad, result, negative_slope, true);
     copy_range(grad_inputs, self_ix, grad_result);
   }
   return grad_inputs;
 }
 variable_list LogSigmoidBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6506,6 +6922,7 @@ variable_list LogSigmoidBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list LogSoftmaxBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6520,6 +6937,7 @@ variable_list LogSoftmaxBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list PreluBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6541,6 +6959,7 @@ variable_list PreluBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list PreluBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -6566,6 +6985,7 @@ variable_list PreluBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list RreluWithNoiseBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6574,12 +6994,13 @@ variable_list RreluWithNoiseBackward0::apply(variable_list&& grads) {
   auto self = self_.unpack();
   auto noise = noise_.unpack();
   if (should_compute_output({ self_ix })) {
-    auto grad_result = rrelu_with_noise_backward(grad, self, noise, lower, upper, training);
+    auto grad_result = rrelu_with_noise_backward(grad, self, noise, lower, upper, training, false);
     copy_range(grad_inputs, self_ix, grad_result);
   }
   return grad_inputs;
 }
 variable_list RreluWithNoiseBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6588,12 +7009,13 @@ variable_list RreluWithNoiseBackward1::apply(variable_list&& grads) {
   auto noise = noise_.unpack();
   auto result = result_.unpack(shared_from_this());
   if (should_compute_output({ self_ix })) {
-    auto grad_result = rrelu_with_noise_backward(grad, result, noise, lower, upper, training);
+    auto grad_result = rrelu_with_noise_backward(grad, result, noise, lower, upper, training, true);
     copy_range(grad_inputs, self_ix, grad_result);
   }
   return grad_inputs;
 }
 variable_list SoftmaxBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6608,6 +7030,7 @@ variable_list SoftmaxBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SoftplusBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6622,6 +7045,7 @@ variable_list SoftplusBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SoftshrinkBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6635,6 +7059,7 @@ variable_list SoftshrinkBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ThresholdBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6648,6 +7073,7 @@ variable_list ThresholdBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ThresholdBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6661,6 +7087,7 @@ variable_list ThresholdBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ReflectionPad1DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6674,6 +7101,7 @@ variable_list ReflectionPad1DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ReflectionPad2DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6687,6 +7115,7 @@ variable_list ReflectionPad2DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ReplicationPad1DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6700,6 +7129,7 @@ variable_list ReplicationPad1DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ReplicationPad2DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6713,6 +7143,7 @@ variable_list ReplicationPad2DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ReplicationPad3DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6727,6 +7158,7 @@ variable_list ReplicationPad3DBackward::apply(variable_list&& grads) {
 }
 variable_list UpsampleLinear1DBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -6738,6 +7170,7 @@ variable_list UpsampleLinear1DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list UpsampleBilinear2DBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6751,6 +7184,7 @@ variable_list UpsampleBilinear2DBackward::apply(variable_list&& grads) {
 }
 variable_list UpsampleBicubic2DBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -6762,6 +7196,7 @@ variable_list UpsampleBicubic2DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list UpsampleTrilinear3DBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6775,6 +7210,7 @@ variable_list UpsampleTrilinear3DBackward::apply(variable_list&& grads) {
 }
 variable_list UpsampleNearest1DBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -6786,6 +7222,7 @@ variable_list UpsampleNearest1DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list UpsampleNearest2DBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6799,6 +7236,7 @@ variable_list UpsampleNearest2DBackward::apply(variable_list&& grads) {
 }
 variable_list UpsampleNearest3DBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -6810,6 +7248,7 @@ variable_list UpsampleNearest3DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AdaptiveAvgPool2DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6823,6 +7262,7 @@ variable_list AdaptiveAvgPool2DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AdaptiveAvgPool3DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6836,6 +7276,7 @@ variable_list AdaptiveAvgPool3DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AdaptiveMaxPool2DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6850,6 +7291,7 @@ variable_list AdaptiveMaxPool2DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AdaptiveMaxPool3DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6864,6 +7306,7 @@ variable_list AdaptiveMaxPool3DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AvgPool2DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6877,6 +7320,7 @@ variable_list AvgPool2DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AvgPool3DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6890,6 +7334,7 @@ variable_list AvgPool3DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list FractionalMaxPool2DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6904,6 +7349,7 @@ variable_list FractionalMaxPool2DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list FractionalMaxPool3DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6918,6 +7364,7 @@ variable_list FractionalMaxPool3DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MaxPool2DWithIndicesBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6932,6 +7379,7 @@ variable_list MaxPool2DWithIndicesBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MaxPool3DWithIndicesBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6946,6 +7394,7 @@ variable_list MaxPool3DWithIndicesBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MaxUnpool2DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6960,6 +7409,7 @@ variable_list MaxUnpool2DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MaxUnpool3DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -6974,6 +7424,7 @@ variable_list MaxUnpool3DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ConvolutionOverrideableBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto input_ix = gen.range(1);
@@ -7003,6 +7454,7 @@ variable_list ConvolutionOverrideableBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ConvolutionBackwardOverrideableBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7032,6 +7484,7 @@ variable_list ConvolutionBackwardOverrideableBackward::apply(variable_list&& gra
   return grad_inputs;
 }
 variable_list SlowConvTranspose2DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -7047,7 +7500,7 @@ variable_list SlowConvTranspose2DBackward::apply(variable_list&& grads) {
         should_compute_output({ weight_ix }),
         should_compute_output({ bias_ix }),
       };
-    auto grad_result = slow_conv_transpose2d_backward(grad, self, weight, kernel_size, stride, padding, output_padding, dilation, empty_like(grad, at::MemoryFormat::Preserve), empty_like(grad, at::MemoryFormat::Preserve), grad_input_mask);
+    auto grad_result = slow_conv_transpose2d_backward(grad, self, weight, kernel_size, stride, padding, output_padding, dilation, empty_like(grad, at::MemoryFormat::Contiguous), empty_like(grad, at::MemoryFormat::Contiguous), grad_input_mask);
       if (should_compute_output({ self_ix })) {
         copy_range(grad_inputs, self_ix, std::get<0>(grad_result));
       }
@@ -7061,6 +7514,7 @@ variable_list SlowConvTranspose2DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SlowConvTranspose2DBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7090,6 +7544,7 @@ variable_list SlowConvTranspose2DBackwardBackward::apply(variable_list&& grads) 
   return grad_inputs;
 }
 variable_list SlowConvTranspose3DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -7119,6 +7574,7 @@ variable_list SlowConvTranspose3DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SlowConvTranspose3DBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7148,6 +7604,7 @@ variable_list SlowConvTranspose3DBackwardBackward::apply(variable_list&& grads) 
   return grad_inputs;
 }
 variable_list ThnnConv2DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -7179,6 +7636,7 @@ variable_list ThnnConv2DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ThnnConv2DBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7208,6 +7666,7 @@ variable_list ThnnConv2DBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ThnnConvDepthwise2DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -7237,6 +7696,7 @@ variable_list ThnnConvDepthwise2DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ThnnConvDepthwise2DBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7266,6 +7726,7 @@ variable_list ThnnConvDepthwise2DBackwardBackward::apply(variable_list&& grads) 
   return grad_inputs;
 }
 variable_list SlowConv3DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -7297,6 +7758,7 @@ variable_list SlowConv3DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SlowConv3DBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7326,6 +7788,7 @@ variable_list SlowConv3DBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SlowConvDilated2DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -7355,6 +7818,7 @@ variable_list SlowConvDilated2DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SlowConvDilated2DBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7384,6 +7848,7 @@ variable_list SlowConvDilated2DBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SlowConvDilated3DBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -7413,6 +7878,7 @@ variable_list SlowConvDilated3DBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SlowConvDilated3DBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7443,6 +7909,7 @@ variable_list SlowConvDilated3DBackwardBackward::apply(variable_list&& grads) {
 }
 variable_list Col2ImBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -7455,6 +7922,7 @@ variable_list Col2ImBackward::apply(variable_list&& grads) {
 }
 variable_list Im2ColBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -7466,6 +7934,7 @@ variable_list Im2ColBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AdaptiveAvgPool2DBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7484,6 +7953,7 @@ variable_list AdaptiveAvgPool2DBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AdaptiveAvgPool3DBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7502,6 +7972,7 @@ variable_list AdaptiveAvgPool3DBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AdaptiveMaxPool2DBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7520,6 +7991,7 @@ variable_list AdaptiveMaxPool2DBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list AdaptiveMaxPool3DBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7539,6 +8011,7 @@ variable_list AdaptiveMaxPool3DBackwardBackward::apply(variable_list&& grads) {
 }
 variable_list AvgPool2DBackwardBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
   auto self_ix = gen.range(1);
@@ -7556,6 +8029,7 @@ variable_list AvgPool2DBackwardBackward::apply(variable_list&& grads) {
 }
 variable_list AvgPool3DBackwardBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
   auto self_ix = gen.range(1);
@@ -7572,6 +8046,7 @@ variable_list AvgPool3DBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list EluBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7591,6 +8066,7 @@ variable_list EluBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list FractionalMaxPool2DBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7609,6 +8085,7 @@ variable_list FractionalMaxPool2DBackwardBackward::apply(variable_list&& grads) 
   return grad_inputs;
 }
 variable_list FractionalMaxPool3DBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7627,6 +8104,7 @@ variable_list FractionalMaxPool3DBackwardBackward::apply(variable_list&& grads) 
   return grad_inputs;
 }
 variable_list GluBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7646,6 +8124,7 @@ variable_list GluBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list HardtanhBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7664,6 +8143,7 @@ variable_list HardtanhBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list KlDivBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7674,7 +8154,7 @@ variable_list KlDivBackwardBackward::apply(variable_list&& grads) {
   auto self = self_.unpack();
   auto target = target_.unpack();
   if (should_compute_output({ grad_output_ix })) {
-    auto grad_result = kl_div_double_backward_grad_output(grad, self, target, reduction);
+    auto grad_result = kl_div_double_backward_grad_output(grad, self, target, reduction, log_target);
     copy_range(grad_inputs, grad_output_ix, grad_result);
   }
   if (should_compute_output({ self_ix })) {
@@ -7688,6 +8168,7 @@ variable_list KlDivBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list L1LossBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7707,6 +8188,7 @@ variable_list L1LossBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list LogSigmoidBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7727,6 +8209,7 @@ variable_list LogSigmoidBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list LogSoftmaxBackwardDataBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7747,6 +8230,7 @@ variable_list LogSoftmaxBackwardDataBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list LeakyReluBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7755,7 +8239,7 @@ variable_list LeakyReluBackwardBackward::apply(variable_list&& grads) {
   auto& grad = grads[0];
   auto self = self_.unpack();
   if (should_compute_output({ grad_output_ix })) {
-    auto grad_result = leaky_relu_backward(grad, self, negative_slope);
+    auto grad_result = leaky_relu_backward(grad, self, negative_slope, false);
     copy_range(grad_inputs, grad_output_ix, grad_result);
   }
   if (should_compute_output({ self_ix })) {
@@ -7765,6 +8249,7 @@ variable_list LeakyReluBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MaxPool2DWithIndicesBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7783,6 +8268,7 @@ variable_list MaxPool2DWithIndicesBackwardBackward::apply(variable_list&& grads)
   return grad_inputs;
 }
 variable_list MaxPool3DWithIndicesBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7801,6 +8287,7 @@ variable_list MaxPool3DWithIndicesBackwardBackward::apply(variable_list&& grads)
   return grad_inputs;
 }
 variable_list MaxUnpool2DBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7819,6 +8306,7 @@ variable_list MaxUnpool2DBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MseLossBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7839,6 +8327,7 @@ variable_list MseLossBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list NllLossBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7858,6 +8347,7 @@ variable_list NllLossBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list NllLoss2DBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7877,6 +8367,7 @@ variable_list NllLoss2DBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list RreluWithNoiseBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7886,7 +8377,7 @@ variable_list RreluWithNoiseBackwardBackward::apply(variable_list&& grads) {
   auto self = self_.unpack();
   auto noise = noise_.unpack();
   if (should_compute_output({ grad_output_ix })) {
-    auto grad_result = rrelu_with_noise_backward(grad, self, noise, lower, upper, training);
+    auto grad_result = rrelu_with_noise_backward(grad, self, noise, lower, upper, training, false);
     copy_range(grad_inputs, grad_output_ix, grad_result);
   }
   if (should_compute_output({ self_ix })) {
@@ -7896,6 +8387,7 @@ variable_list RreluWithNoiseBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ReflectionPad1DBackwardBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7914,6 +8406,7 @@ variable_list ReflectionPad1DBackwardBackward::apply(variable_list&& grads) {
 }
 variable_list ReflectionPad2DBackwardBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
   auto self_ix = gen.range(1);
@@ -7930,6 +8423,7 @@ variable_list ReflectionPad2DBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ReplicationPad1DBackwardBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -7948,6 +8442,7 @@ variable_list ReplicationPad1DBackwardBackward::apply(variable_list&& grads) {
 }
 variable_list ReplicationPad2DBackwardBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
   auto self_ix = gen.range(1);
@@ -7965,6 +8460,7 @@ variable_list ReplicationPad2DBackwardBackward::apply(variable_list&& grads) {
 }
 variable_list ReplicationPad3DBackwardBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
   auto self_ix = gen.range(1);
@@ -7981,6 +8477,7 @@ variable_list ReplicationPad3DBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SmoothL1LossBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -8001,6 +8498,7 @@ variable_list SmoothL1LossBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SoftplusBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -8021,6 +8519,7 @@ variable_list SoftplusBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SoftmaxBackwardDataBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -8041,6 +8540,7 @@ variable_list SoftmaxBackwardDataBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SoftMarginLossBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -8061,6 +8561,7 @@ variable_list SoftMarginLossBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SoftshrinkBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -8079,6 +8580,7 @@ variable_list SoftshrinkBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ThresholdBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -8098,6 +8600,7 @@ variable_list ThresholdBackwardBackward::apply(variable_list&& grads) {
 }
 variable_list UpsampleLinear1DBackwardBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -8109,6 +8612,7 @@ variable_list UpsampleLinear1DBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list UpsampleBilinear2DBackwardBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -8122,6 +8626,7 @@ variable_list UpsampleBilinear2DBackwardBackward::apply(variable_list&& grads) {
 }
 variable_list UpsampleBicubic2DBackwardBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -8133,6 +8638,7 @@ variable_list UpsampleBicubic2DBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list UpsampleTrilinear3DBackwardBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -8146,6 +8652,7 @@ variable_list UpsampleTrilinear3DBackwardBackward::apply(variable_list&& grads) 
 }
 variable_list UpsampleNearest1DBackwardBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -8157,6 +8664,7 @@ variable_list UpsampleNearest1DBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list UpsampleNearest2DBackwardBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -8170,6 +8678,7 @@ variable_list UpsampleNearest2DBackwardBackward::apply(variable_list&& grads) {
 }
 variable_list UpsampleNearest3DBackwardBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -8181,6 +8690,7 @@ variable_list UpsampleNearest3DBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list SigmoidBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -8200,6 +8710,7 @@ variable_list SigmoidBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list TanhBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto grad_output_ix = gen.range(1);
@@ -8219,6 +8730,7 @@ variable_list TanhBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CudnnCtcLossBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto log_probs_ix = gen.range(1);
@@ -8233,6 +8745,7 @@ variable_list CudnnCtcLossBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CudnnConvolutionTransposeBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -8257,6 +8770,7 @@ variable_list CudnnConvolutionTransposeBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CudnnConvolutionTransposeBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -8286,6 +8800,7 @@ variable_list CudnnConvolutionTransposeBackwardBackward::apply(variable_list&& g
   return grad_inputs;
 }
 variable_list CudnnConvolutionBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -8310,6 +8825,7 @@ variable_list CudnnConvolutionBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CudnnConvolutionBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -8339,6 +8855,7 @@ variable_list CudnnConvolutionBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CudnnGridSamplerBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -8361,6 +8878,7 @@ variable_list CudnnGridSamplerBackward::apply(variable_list&& grads) {
 }
 variable_list CudnnAffineGridGeneratorBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto theta_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -8372,6 +8890,7 @@ variable_list CudnnAffineGridGeneratorBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CudnnBatchNormBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto input_ix = gen.range(1);
@@ -8406,6 +8925,7 @@ variable_list CudnnBatchNormBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CudnnBatchNormBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto input_ix = gen.range(1);
@@ -8455,6 +8975,7 @@ variable_list CudnnBatchNormBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list NnpackSpatialConvolutionBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto input_ix = gen.range(1);
@@ -8484,6 +9005,7 @@ variable_list NnpackSpatialConvolutionBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list CudnnRnnBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
   TORCH_CHECK(!weight_released_, ERR_BACKWARD_TWICE);
   IndexRangeGenerator gen;
   auto input_ix = gen.range(1);
@@ -8523,6 +9045,7 @@ variable_list CudnnRnnBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MiopenConvolutionTransposeBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -8552,6 +9075,7 @@ variable_list MiopenConvolutionTransposeBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MiopenConvolutionTransposeBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -8581,6 +9105,7 @@ variable_list MiopenConvolutionTransposeBackwardBackward::apply(variable_list&& 
   return grad_inputs;
 }
 variable_list MiopenConvolutionBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -8610,6 +9135,7 @@ variable_list MiopenConvolutionBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MiopenConvolutionBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -8639,6 +9165,7 @@ variable_list MiopenConvolutionBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MiopenDepthwiseConvolutionBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -8668,6 +9195,7 @@ variable_list MiopenDepthwiseConvolutionBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MiopenDepthwiseConvolutionBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -8697,6 +9225,7 @@ variable_list MiopenDepthwiseConvolutionBackwardBackward::apply(variable_list&& 
   return grad_inputs;
 }
 variable_list MiopenBatchNormBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto input_ix = gen.range(1);
@@ -8730,6 +9259,7 @@ variable_list MiopenBatchNormBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MiopenBatchNormBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto input_ix = gen.range(1);
@@ -8773,6 +9303,7 @@ variable_list MiopenBatchNormBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MiopenRnnBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
   TORCH_CHECK(!weight_released_, ERR_BACKWARD_TWICE);
   IndexRangeGenerator gen;
   auto input_ix = gen.range(1);
@@ -8812,6 +9343,7 @@ variable_list MiopenRnnBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MkldnnConvolutionBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -8841,6 +9373,7 @@ variable_list MkldnnConvolutionBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list MkldnnConvolutionBackwardBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -8870,6 +9403,7 @@ variable_list MkldnnConvolutionBackwardBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list FftWithSizeBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -8884,6 +9418,7 @@ variable_list FftWithSizeBackward::apply(variable_list&& grads) {
 }
 variable_list UnbindBackward::apply(variable_list&& grads) {
 
+
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
   variable_list grad_inputs(gen.size());
@@ -8894,6 +9429,7 @@ variable_list UnbindBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list StackBackward::apply(variable_list&& grads) {
+
 
   IndexRangeGenerator gen;
   auto tensors_ix = gen.range(tensors_size_);
@@ -8906,6 +9442,7 @@ variable_list StackBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ThnnFusedLstmCellBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto input_gates_ix = gen.range(1);
@@ -8943,6 +9480,7 @@ variable_list ThnnFusedLstmCellBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list ThnnFusedGruCellBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto input_gates_ix = gen.range(1);
@@ -8980,6 +9518,7 @@ variable_list ThnnFusedGruCellBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list PackPaddedSequenceBackward::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto input_ix = gen.range(1);
@@ -8993,6 +9532,7 @@ variable_list PackPaddedSequenceBackward::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list StdMeanBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -9007,6 +9547,7 @@ variable_list StdMeanBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list VarMeanBackward0::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -9021,6 +9562,7 @@ variable_list VarMeanBackward0::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list StdMeanBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);
@@ -9035,6 +9577,7 @@ variable_list StdMeanBackward1::apply(variable_list&& grads) {
   return grad_inputs;
 }
 variable_list VarMeanBackward1::apply(variable_list&& grads) {
+  std::lock_guard<std::mutex> lock(mutex_);
 
   IndexRangeGenerator gen;
   auto self_ix = gen.range(1);

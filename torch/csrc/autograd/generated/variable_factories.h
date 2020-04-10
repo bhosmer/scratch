@@ -8,14 +8,12 @@
 #include <c10/core/MemoryFormat.h>
 #include <torch/csrc/api/include/torch/detail/TensorDataContainer.h>
 #include <torch/csrc/autograd/variable.h>
-#include <torch/csrc/jit/tracer.h>
-#include <torch/csrc/jit/ir.h>
+#include <torch/csrc/jit/frontend/tracer.h>
+#include <torch/csrc/jit/ir/ir.h>
 
 #include <functional>
 #include <initializer_list>
 #include <utility>
-
-using at::DimnameList;
 
 namespace torch {
 
@@ -25,15 +23,13 @@ namespace torch {
 /// the largest data type that can represent all of the elements, or by using
 /// variadic templates.
 ///
-/// NOTE: C++ `torch::tensor` by default gives a double tensor, which is
-/// different from Python `torch.tensor` that gives a float tensor by default.
-/// We are going to fix this discrepancy by making `torch::tensor` give
-/// a float tensor by default.
-/// Tracking issue: https://github.com/pytorch/pytorch/issues/28902
+/// NOTE: C++ `torch::tensor` with a floating-point type or an `at::ArrayRef` / `std::vector` /
+/// (nested) braced-init-list of floating-point types always produces a tensor of dtype
+/// `torch::get_default_dtype()`, matching Python `torch.tensor` behavior.
 ///
-/// NOTE: C++ `torch::tensor` with an integer literal or a braced-init-list of
-/// integer literals always produces a tensor of dtype `at::kLong` (aka. int64_t),
-/// matching Python `torch.tensor` behavior.
+/// NOTE: C++ `torch::tensor` with an integer type or an `at::ArrayRef` / `std::vector` /
+/// (nested) braced-init-list of integer types always produces a tensor of dtype `at::kLong`
+/// (aka. int64_t), matching Python `torch.tensor` behavior.
 ///
 /// NOTE: The following dtypes are not supported by `torch::tensor` currently:
 /// - `unsigned int`
@@ -121,6 +117,7 @@ inline at::Tensor from_blob(
 }
 
 inline at::Tensor _cudnn_init_dropout_state(double dropout, bool train, int64_t dropout_seed, const at::TensorOptions & options) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -137,19 +134,23 @@ inline at::Tensor _cudnn_init_dropout_state(double dropout, bool train, int64_t 
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::_cudnn_init_dropout_state(dropout, train, dropout_seed, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor arange(at::Scalar end, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -164,19 +165,23 @@ inline at::Tensor arange(at::Scalar end, const at::TensorOptions & options = {})
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::arange(end, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor arange(at::Scalar start, at::Scalar end, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -192,19 +197,23 @@ inline at::Tensor arange(at::Scalar start, at::Scalar end, const at::TensorOptio
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::arange(start, end, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor arange(at::Scalar start, at::Scalar end, at::Scalar step, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -221,19 +230,23 @@ inline at::Tensor arange(at::Scalar start, at::Scalar end, at::Scalar step, cons
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::arange(start, end, step, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor bartlett_window(int64_t window_length, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -248,19 +261,23 @@ inline at::Tensor bartlett_window(int64_t window_length, const at::TensorOptions
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::bartlett_window(window_length, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor bartlett_window(int64_t window_length, bool periodic, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -276,19 +293,23 @@ inline at::Tensor bartlett_window(int64_t window_length, bool periodic, const at
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::bartlett_window(window_length, periodic, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor blackman_window(int64_t window_length, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -303,19 +324,23 @@ inline at::Tensor blackman_window(int64_t window_length, const at::TensorOptions
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::blackman_window(window_length, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor blackman_window(int64_t window_length, bool periodic, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -331,19 +356,23 @@ inline at::Tensor blackman_window(int64_t window_length, bool periodic, const at
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::blackman_window(window_length, periodic, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor empty(at::IntArrayRef size, c10::optional<DimnameList> names, const at::TensorOptions & options = {}, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
+inline at::Tensor empty(at::IntArrayRef size, c10::optional<at::DimnameList> names, const at::TensorOptions & options = {}, c10::optional<at::MemoryFormat> memory_format = c10::nullopt) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -360,19 +389,23 @@ inline at::Tensor empty(at::IntArrayRef size, c10::optional<DimnameList> names, 
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::empty(size, names, at::TensorOptions(options), memory_format);
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor empty(at::IntArrayRef size, const at::TensorOptions & options = {}, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
+inline at::Tensor empty(at::IntArrayRef size, const at::TensorOptions & options = {}, c10::optional<at::MemoryFormat> memory_format = c10::nullopt) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -388,19 +421,23 @@ inline at::Tensor empty(at::IntArrayRef size, const at::TensorOptions & options 
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::empty(size, at::TensorOptions(options), memory_format);
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor _empty_affine_quantized(at::IntArrayRef size, const at::TensorOptions & options = {}, double scale = 1, int64_t zero_point = 0, c10::optional<MemoryFormat> memory_format = MemoryFormat::Contiguous) {
+inline at::Tensor _empty_affine_quantized(at::IntArrayRef size, const at::TensorOptions & options = {}, double scale = 1, int64_t zero_point = 0, c10::optional<at::MemoryFormat> memory_format = MemoryFormat::Contiguous) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -418,19 +455,23 @@ inline at::Tensor _empty_affine_quantized(at::IntArrayRef size, const at::Tensor
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::_empty_affine_quantized(size, at::TensorOptions(options), scale, zero_point, memory_format);
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor _empty_per_channel_affine_quantized(at::IntArrayRef size, const at::Tensor & scales, const at::Tensor & zero_points, int64_t axis, const at::TensorOptions & options = {}, c10::optional<MemoryFormat> memory_format = MemoryFormat::Contiguous) {
+inline at::Tensor _empty_per_channel_affine_quantized(at::IntArrayRef size, const at::Tensor & scales, const at::Tensor & zero_points, int64_t axis, const at::TensorOptions & options = {}, c10::optional<at::MemoryFormat> memory_format = MemoryFormat::Contiguous) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -449,46 +490,23 @@ inline at::Tensor _empty_per_channel_affine_quantized(at::IntArrayRef size, cons
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::_empty_per_channel_affine_quantized(size, scales, zero_points, axis, at::TensorOptions(options), memory_format);
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor empty_like(const at::Tensor & self, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
-  torch::jit::Node* node = nullptr;
-  std::shared_ptr<jit::tracer::TracingState> tracer_state;
-  if (jit::tracer::isTracing()) {
-    tracer_state = jit::tracer::getTracingState();
-    at::Symbol op_name;
-    op_name = jit::Symbol::fromQualString("aten::empty_like");
-    node = tracer_state->graph->create(op_name, /*num_outputs=*/0);
-    jit::tracer::recordSourceLocation(node);
-    jit::tracer::addInputs(node, "self", self);
-    jit::tracer::addInputs(node, "memory_format", memory_format);
-    tracer_state->graph->insertNode(node);
-  
-    jit::tracer::setTracingState(nullptr);
-  }
-  at::Tensor tensor = ([&]() {
-    at::AutoNonVariableTypeMode non_var_type_mode(true);
-    return at::empty_like(self, self.options(), memory_format);
-  })();
-  at::Tensor result =
-    autograd::make_variable(std::move(tensor), /*requires_grad=*/false);
-  if (tracer_state) {
-    jit::tracer::setTracingState(std::move(tracer_state));
-    jit::tracer::addOutput(node, result);
-  }
-  return result;
-}
-inline at::Tensor empty_like(const at::Tensor & self, const at::TensorOptions & options, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
+inline at::Tensor empty_like(const at::Tensor & self, const at::TensorOptions & options = {}, c10::optional<at::MemoryFormat> memory_format = c10::nullopt) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -504,19 +522,23 @@ inline at::Tensor empty_like(const at::Tensor & self, const at::TensorOptions & 
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::empty_like(self, at::TensorOptions(options), memory_format);
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor empty_strided(at::IntArrayRef size, at::IntArrayRef stride, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -532,19 +554,23 @@ inline at::Tensor empty_strided(at::IntArrayRef size, at::IntArrayRef stride, co
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::empty_strided(size, stride, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor eye(int64_t n, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -559,19 +585,23 @@ inline at::Tensor eye(int64_t n, const at::TensorOptions & options = {}) {
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::eye(n, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor eye(int64_t n, int64_t m, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -587,19 +617,23 @@ inline at::Tensor eye(int64_t n, int64_t m, const at::TensorOptions & options = 
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::eye(n, m, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor full(at::IntArrayRef size, at::Scalar fill_value, c10::optional<DimnameList> names, const at::TensorOptions & options = {}) {
+inline at::Tensor full(at::IntArrayRef size, at::Scalar fill_value, c10::optional<at::DimnameList> names, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -616,19 +650,23 @@ inline at::Tensor full(at::IntArrayRef size, at::Scalar fill_value, c10::optiona
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::full(size, fill_value, names, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor full(at::IntArrayRef size, at::Scalar fill_value, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -644,47 +682,23 @@ inline at::Tensor full(at::IntArrayRef size, at::Scalar fill_value, const at::Te
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::full(size, fill_value, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor full_like(const at::Tensor & self, at::Scalar fill_value, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
-  torch::jit::Node* node = nullptr;
-  std::shared_ptr<jit::tracer::TracingState> tracer_state;
-  if (jit::tracer::isTracing()) {
-    tracer_state = jit::tracer::getTracingState();
-    at::Symbol op_name;
-    op_name = jit::Symbol::fromQualString("aten::full_like");
-    node = tracer_state->graph->create(op_name, /*num_outputs=*/0);
-    jit::tracer::recordSourceLocation(node);
-    jit::tracer::addInputs(node, "self", self);
-    jit::tracer::addInputs(node, "fill_value", fill_value);
-    jit::tracer::addInputs(node, "memory_format", memory_format);
-    tracer_state->graph->insertNode(node);
-  
-    jit::tracer::setTracingState(nullptr);
-  }
-  at::Tensor tensor = ([&]() {
-    at::AutoNonVariableTypeMode non_var_type_mode(true);
-    return at::full_like(self, fill_value, self.options(), memory_format);
-  })();
-  at::Tensor result =
-    autograd::make_variable(std::move(tensor), /*requires_grad=*/false);
-  if (tracer_state) {
-    jit::tracer::setTracingState(std::move(tracer_state));
-    jit::tracer::addOutput(node, result);
-  }
-  return result;
-}
-inline at::Tensor full_like(const at::Tensor & self, at::Scalar fill_value, const at::TensorOptions & options, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
+inline at::Tensor full_like(const at::Tensor & self, at::Scalar fill_value, const at::TensorOptions & options = {}, c10::optional<at::MemoryFormat> memory_format = c10::nullopt) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -701,19 +715,23 @@ inline at::Tensor full_like(const at::Tensor & self, at::Scalar fill_value, cons
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::full_like(self, fill_value, at::TensorOptions(options), memory_format);
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor from_file(std::string filename, c10::optional<bool> shared = c10::nullopt, c10::optional<int64_t> size = 0, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -730,19 +748,23 @@ inline at::Tensor from_file(std::string filename, c10::optional<bool> shared = c
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::from_file(filename, shared, size, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor hann_window(int64_t window_length, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -757,19 +779,23 @@ inline at::Tensor hann_window(int64_t window_length, const at::TensorOptions & o
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::hann_window(window_length, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor hann_window(int64_t window_length, bool periodic, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -785,19 +811,23 @@ inline at::Tensor hann_window(int64_t window_length, bool periodic, const at::Te
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::hann_window(window_length, periodic, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor hamming_window(int64_t window_length, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -812,19 +842,23 @@ inline at::Tensor hamming_window(int64_t window_length, const at::TensorOptions 
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::hamming_window(window_length, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor hamming_window(int64_t window_length, bool periodic, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -840,19 +874,23 @@ inline at::Tensor hamming_window(int64_t window_length, bool periodic, const at:
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::hamming_window(window_length, periodic, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor hamming_window(int64_t window_length, bool periodic, double alpha, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -869,19 +907,23 @@ inline at::Tensor hamming_window(int64_t window_length, bool periodic, double al
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::hamming_window(window_length, periodic, alpha, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor hamming_window(int64_t window_length, bool periodic, double alpha, double beta, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -899,19 +941,23 @@ inline at::Tensor hamming_window(int64_t window_length, bool periodic, double al
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::hamming_window(window_length, periodic, alpha, beta, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor linspace(at::Scalar start, at::Scalar end, int64_t steps = 100, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -928,19 +974,23 @@ inline at::Tensor linspace(at::Scalar start, at::Scalar end, int64_t steps = 100
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::linspace(start, end, steps, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor logspace(at::Scalar start, at::Scalar end, int64_t steps = 100, double base = 10.0, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -958,19 +1008,23 @@ inline at::Tensor logspace(at::Scalar start, at::Scalar end, int64_t steps = 100
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::logspace(start, end, steps, base, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor ones(at::IntArrayRef size, c10::optional<DimnameList> names, const at::TensorOptions & options = {}) {
+inline at::Tensor ones(at::IntArrayRef size, c10::optional<at::DimnameList> names, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -986,19 +1040,23 @@ inline at::Tensor ones(at::IntArrayRef size, c10::optional<DimnameList> names, c
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::ones(size, names, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor ones(at::IntArrayRef size, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1013,46 +1071,23 @@ inline at::Tensor ones(at::IntArrayRef size, const at::TensorOptions & options =
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::ones(size, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor ones_like(const at::Tensor & self, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
-  torch::jit::Node* node = nullptr;
-  std::shared_ptr<jit::tracer::TracingState> tracer_state;
-  if (jit::tracer::isTracing()) {
-    tracer_state = jit::tracer::getTracingState();
-    at::Symbol op_name;
-    op_name = jit::Symbol::fromQualString("aten::ones_like");
-    node = tracer_state->graph->create(op_name, /*num_outputs=*/0);
-    jit::tracer::recordSourceLocation(node);
-    jit::tracer::addInputs(node, "self", self);
-    jit::tracer::addInputs(node, "memory_format", memory_format);
-    tracer_state->graph->insertNode(node);
-  
-    jit::tracer::setTracingState(nullptr);
-  }
-  at::Tensor tensor = ([&]() {
-    at::AutoNonVariableTypeMode non_var_type_mode(true);
-    return at::ones_like(self, self.options(), memory_format);
-  })();
-  at::Tensor result =
-    autograd::make_variable(std::move(tensor), /*requires_grad=*/false);
-  if (tracer_state) {
-    jit::tracer::setTracingState(std::move(tracer_state));
-    jit::tracer::addOutput(node, result);
-  }
-  return result;
-}
-inline at::Tensor ones_like(const at::Tensor & self, const at::TensorOptions & options, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
+inline at::Tensor ones_like(const at::Tensor & self, const at::TensorOptions & options = {}, c10::optional<at::MemoryFormat> memory_format = c10::nullopt) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1068,19 +1103,23 @@ inline at::Tensor ones_like(const at::Tensor & self, const at::TensorOptions & o
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::ones_like(self, at::TensorOptions(options), memory_format);
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor scalar_tensor(at::Scalar s, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1095,19 +1134,23 @@ inline at::Tensor scalar_tensor(at::Scalar s, const at::TensorOptions & options 
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::scalar_tensor(s, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor rand(at::IntArrayRef size, c10::optional<DimnameList> names, const at::TensorOptions & options = {}) {
+inline at::Tensor rand(at::IntArrayRef size, c10::optional<at::DimnameList> names, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1123,19 +1166,23 @@ inline at::Tensor rand(at::IntArrayRef size, c10::optional<DimnameList> names, c
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::rand(size, names, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor rand(at::IntArrayRef size, at::Generator * generator, c10::optional<DimnameList> names, const at::TensorOptions & options = {}) {
+inline at::Tensor rand(at::IntArrayRef size, at::Generator generator, c10::optional<at::DimnameList> names, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1152,19 +1199,23 @@ inline at::Tensor rand(at::IntArrayRef size, at::Generator * generator, c10::opt
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::rand(size, generator, names, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor rand(at::IntArrayRef size, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1179,19 +1230,23 @@ inline at::Tensor rand(at::IntArrayRef size, const at::TensorOptions & options =
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::rand(size, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor rand(at::IntArrayRef size, at::Generator * generator, const at::TensorOptions & options = {}) {
+inline at::Tensor rand(at::IntArrayRef size, at::Generator generator, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1207,46 +1262,23 @@ inline at::Tensor rand(at::IntArrayRef size, at::Generator * generator, const at
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::rand(size, generator, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor rand_like(const at::Tensor & self, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
-  torch::jit::Node* node = nullptr;
-  std::shared_ptr<jit::tracer::TracingState> tracer_state;
-  if (jit::tracer::isTracing()) {
-    tracer_state = jit::tracer::getTracingState();
-    at::Symbol op_name;
-    op_name = jit::Symbol::fromQualString("aten::rand_like");
-    node = tracer_state->graph->create(op_name, /*num_outputs=*/0);
-    jit::tracer::recordSourceLocation(node);
-    jit::tracer::addInputs(node, "self", self);
-    jit::tracer::addInputs(node, "memory_format", memory_format);
-    tracer_state->graph->insertNode(node);
-  
-    jit::tracer::setTracingState(nullptr);
-  }
-  at::Tensor tensor = ([&]() {
-    at::AutoNonVariableTypeMode non_var_type_mode(true);
-    return at::rand_like(self, self.options(), memory_format);
-  })();
-  at::Tensor result =
-    autograd::make_variable(std::move(tensor), /*requires_grad=*/false);
-  if (tracer_state) {
-    jit::tracer::setTracingState(std::move(tracer_state));
-    jit::tracer::addOutput(node, result);
-  }
-  return result;
-}
-inline at::Tensor rand_like(const at::Tensor & self, const at::TensorOptions & options, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
+inline at::Tensor rand_like(const at::Tensor & self, const at::TensorOptions & options = {}, c10::optional<at::MemoryFormat> memory_format = c10::nullopt) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1262,19 +1294,23 @@ inline at::Tensor rand_like(const at::Tensor & self, const at::TensorOptions & o
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::rand_like(self, at::TensorOptions(options), memory_format);
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor randint(int64_t high, at::IntArrayRef size, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1290,19 +1326,23 @@ inline at::Tensor randint(int64_t high, at::IntArrayRef size, const at::TensorOp
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::randint(high, size, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor randint(int64_t high, at::IntArrayRef size, at::Generator * generator, const at::TensorOptions & options = {}) {
+inline at::Tensor randint(int64_t high, at::IntArrayRef size, at::Generator generator, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1319,19 +1359,23 @@ inline at::Tensor randint(int64_t high, at::IntArrayRef size, at::Generator * ge
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::randint(high, size, generator, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor randint(int64_t low, int64_t high, at::IntArrayRef size, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1348,19 +1392,23 @@ inline at::Tensor randint(int64_t low, int64_t high, at::IntArrayRef size, const
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::randint(low, high, size, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor randint(int64_t low, int64_t high, at::IntArrayRef size, at::Generator * generator, const at::TensorOptions & options = {}) {
+inline at::Tensor randint(int64_t low, int64_t high, at::IntArrayRef size, at::Generator generator, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1378,76 +1426,23 @@ inline at::Tensor randint(int64_t low, int64_t high, at::IntArrayRef size, at::G
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::randint(low, high, size, generator, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor randint_like(const at::Tensor & self, int64_t high, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
-  torch::jit::Node* node = nullptr;
-  std::shared_ptr<jit::tracer::TracingState> tracer_state;
-  if (jit::tracer::isTracing()) {
-    tracer_state = jit::tracer::getTracingState();
-    at::Symbol op_name;
-    op_name = jit::Symbol::fromQualString("aten::randint_like");
-    node = tracer_state->graph->create(op_name, /*num_outputs=*/0);
-    jit::tracer::recordSourceLocation(node);
-    jit::tracer::addInputs(node, "self", self);
-    jit::tracer::addInputs(node, "high", high);
-    jit::tracer::addInputs(node, "memory_format", memory_format);
-    tracer_state->graph->insertNode(node);
-  
-    jit::tracer::setTracingState(nullptr);
-  }
-  at::Tensor tensor = ([&]() {
-    at::AutoNonVariableTypeMode non_var_type_mode(true);
-    return at::randint_like(self, high, self.options(), memory_format);
-  })();
-  at::Tensor result =
-    autograd::make_variable(std::move(tensor), /*requires_grad=*/false);
-  if (tracer_state) {
-    jit::tracer::setTracingState(std::move(tracer_state));
-    jit::tracer::addOutput(node, result);
-  }
-  return result;
-}
-inline at::Tensor randint_like(const at::Tensor & self, int64_t low, int64_t high, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
-  torch::jit::Node* node = nullptr;
-  std::shared_ptr<jit::tracer::TracingState> tracer_state;
-  if (jit::tracer::isTracing()) {
-    tracer_state = jit::tracer::getTracingState();
-    at::Symbol op_name;
-    op_name = jit::Symbol::fromQualString("aten::randint_like");
-    node = tracer_state->graph->create(op_name, /*num_outputs=*/0);
-    jit::tracer::recordSourceLocation(node);
-    jit::tracer::addInputs(node, "self", self);
-    jit::tracer::addInputs(node, "low", low);
-    jit::tracer::addInputs(node, "high", high);
-    jit::tracer::addInputs(node, "memory_format", memory_format);
-    tracer_state->graph->insertNode(node);
-  
-    jit::tracer::setTracingState(nullptr);
-  }
-  at::Tensor tensor = ([&]() {
-    at::AutoNonVariableTypeMode non_var_type_mode(true);
-    return at::randint_like(self, low, high, self.options(), memory_format);
-  })();
-  at::Tensor result =
-    autograd::make_variable(std::move(tensor), /*requires_grad=*/false);
-  if (tracer_state) {
-    jit::tracer::setTracingState(std::move(tracer_state));
-    jit::tracer::addOutput(node, result);
-  }
-  return result;
-}
-inline at::Tensor randint_like(const at::Tensor & self, int64_t high, const at::TensorOptions & options, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
+inline at::Tensor randint_like(const at::Tensor & self, int64_t high, const at::TensorOptions & options = {}, c10::optional<at::MemoryFormat> memory_format = c10::nullopt) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1464,19 +1459,23 @@ inline at::Tensor randint_like(const at::Tensor & self, int64_t high, const at::
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::randint_like(self, high, at::TensorOptions(options), memory_format);
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor randint_like(const at::Tensor & self, int64_t low, int64_t high, const at::TensorOptions & options, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
+inline at::Tensor randint_like(const at::Tensor & self, int64_t low, int64_t high, const at::TensorOptions & options = {}, c10::optional<at::MemoryFormat> memory_format = c10::nullopt) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1494,19 +1493,23 @@ inline at::Tensor randint_like(const at::Tensor & self, int64_t low, int64_t hig
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::randint_like(self, low, high, at::TensorOptions(options), memory_format);
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor randn(at::IntArrayRef size, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1521,19 +1524,23 @@ inline at::Tensor randn(at::IntArrayRef size, const at::TensorOptions & options 
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::randn(size, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor randn(at::IntArrayRef size, at::Generator * generator, const at::TensorOptions & options = {}) {
+inline at::Tensor randn(at::IntArrayRef size, at::Generator generator, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1549,19 +1556,23 @@ inline at::Tensor randn(at::IntArrayRef size, at::Generator * generator, const a
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::randn(size, generator, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor randn(at::IntArrayRef size, c10::optional<DimnameList> names, const at::TensorOptions & options = {}) {
+inline at::Tensor randn(at::IntArrayRef size, c10::optional<at::DimnameList> names, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1577,19 +1588,23 @@ inline at::Tensor randn(at::IntArrayRef size, c10::optional<DimnameList> names, 
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::randn(size, names, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor randn(at::IntArrayRef size, at::Generator * generator, c10::optional<DimnameList> names, const at::TensorOptions & options = {}) {
+inline at::Tensor randn(at::IntArrayRef size, at::Generator generator, c10::optional<at::DimnameList> names, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1606,46 +1621,23 @@ inline at::Tensor randn(at::IntArrayRef size, at::Generator * generator, c10::op
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::randn(size, generator, names, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor randn_like(const at::Tensor & self, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
-  torch::jit::Node* node = nullptr;
-  std::shared_ptr<jit::tracer::TracingState> tracer_state;
-  if (jit::tracer::isTracing()) {
-    tracer_state = jit::tracer::getTracingState();
-    at::Symbol op_name;
-    op_name = jit::Symbol::fromQualString("aten::randn_like");
-    node = tracer_state->graph->create(op_name, /*num_outputs=*/0);
-    jit::tracer::recordSourceLocation(node);
-    jit::tracer::addInputs(node, "self", self);
-    jit::tracer::addInputs(node, "memory_format", memory_format);
-    tracer_state->graph->insertNode(node);
-  
-    jit::tracer::setTracingState(nullptr);
-  }
-  at::Tensor tensor = ([&]() {
-    at::AutoNonVariableTypeMode non_var_type_mode(true);
-    return at::randn_like(self, self.options(), memory_format);
-  })();
-  at::Tensor result =
-    autograd::make_variable(std::move(tensor), /*requires_grad=*/false);
-  if (tracer_state) {
-    jit::tracer::setTracingState(std::move(tracer_state));
-    jit::tracer::addOutput(node, result);
-  }
-  return result;
-}
-inline at::Tensor randn_like(const at::Tensor & self, const at::TensorOptions & options, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
+inline at::Tensor randn_like(const at::Tensor & self, const at::TensorOptions & options = {}, c10::optional<at::MemoryFormat> memory_format = c10::nullopt) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1661,19 +1653,23 @@ inline at::Tensor randn_like(const at::Tensor & self, const at::TensorOptions & 
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::randn_like(self, at::TensorOptions(options), memory_format);
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor randperm(int64_t n, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1688,19 +1684,23 @@ inline at::Tensor randperm(int64_t n, const at::TensorOptions & options = {}) {
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::randperm(n, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor randperm(int64_t n, at::Generator * generator, const at::TensorOptions & options = {}) {
+inline at::Tensor randperm(int64_t n, at::Generator generator, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1716,19 +1716,23 @@ inline at::Tensor randperm(int64_t n, at::Generator * generator, const at::Tenso
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::randperm(n, generator, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor range(at::Scalar start, at::Scalar end, at::Scalar step = 1, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1745,19 +1749,23 @@ inline at::Tensor range(at::Scalar start, at::Scalar end, at::Scalar step = 1, c
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::range(start, end, step, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor range(at::Scalar start, at::Scalar end, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1773,19 +1781,23 @@ inline at::Tensor range(at::Scalar start, at::Scalar end, const at::TensorOption
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::range(start, end, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor zeros(at::IntArrayRef size, c10::optional<DimnameList> names, const at::TensorOptions & options = {}) {
+inline at::Tensor zeros(at::IntArrayRef size, c10::optional<at::DimnameList> names, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1801,19 +1813,23 @@ inline at::Tensor zeros(at::IntArrayRef size, c10::optional<DimnameList> names, 
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::zeros(size, names, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor zeros(at::IntArrayRef size, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1828,46 +1844,23 @@ inline at::Tensor zeros(at::IntArrayRef size, const at::TensorOptions & options 
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::zeros(size, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor zeros_like(const at::Tensor & self, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
-  torch::jit::Node* node = nullptr;
-  std::shared_ptr<jit::tracer::TracingState> tracer_state;
-  if (jit::tracer::isTracing()) {
-    tracer_state = jit::tracer::getTracingState();
-    at::Symbol op_name;
-    op_name = jit::Symbol::fromQualString("aten::zeros_like");
-    node = tracer_state->graph->create(op_name, /*num_outputs=*/0);
-    jit::tracer::recordSourceLocation(node);
-    jit::tracer::addInputs(node, "self", self);
-    jit::tracer::addInputs(node, "memory_format", memory_format);
-    tracer_state->graph->insertNode(node);
-  
-    jit::tracer::setTracingState(nullptr);
-  }
-  at::Tensor tensor = ([&]() {
-    at::AutoNonVariableTypeMode non_var_type_mode(true);
-    return at::zeros_like(self, self.options(), memory_format);
-  })();
-  at::Tensor result =
-    autograd::make_variable(std::move(tensor), /*requires_grad=*/false);
-  if (tracer_state) {
-    jit::tracer::setTracingState(std::move(tracer_state));
-    jit::tracer::addOutput(node, result);
-  }
-  return result;
-}
-inline at::Tensor zeros_like(const at::Tensor & self, const at::TensorOptions & options, c10::optional<MemoryFormat> memory_format = c10::nullopt) {
+inline at::Tensor zeros_like(const at::Tensor & self, const at::TensorOptions & options = {}, c10::optional<at::MemoryFormat> memory_format = c10::nullopt) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1883,19 +1876,23 @@ inline at::Tensor zeros_like(const at::Tensor & self, const at::TensorOptions & 
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::zeros_like(self, at::TensorOptions(options), memory_format);
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor sparse_coo_tensor(at::IntArrayRef size, const at::TensorOptions & options) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1910,19 +1907,23 @@ inline at::Tensor sparse_coo_tensor(at::IntArrayRef size, const at::TensorOption
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::sparse_coo_tensor(size, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor sparse_coo_tensor(const at::Tensor & indices, const at::Tensor & values, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1938,19 +1939,23 @@ inline at::Tensor sparse_coo_tensor(const at::Tensor & indices, const at::Tensor
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::sparse_coo_tensor(indices, values, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor sparse_coo_tensor(const at::Tensor & indices, const at::Tensor & values, at::IntArrayRef size, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1967,19 +1972,23 @@ inline at::Tensor sparse_coo_tensor(const at::Tensor & indices, const at::Tensor
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::sparse_coo_tensor(indices, values, size, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor _sparse_coo_tensor_unsafe(const at::Tensor & indices, const at::Tensor & values, at::IntArrayRef size, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -1996,19 +2005,23 @@ inline at::Tensor _sparse_coo_tensor_unsafe(const at::Tensor & indices, const at
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::_sparse_coo_tensor_unsafe(indices, values, size, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor _sparse_coo_tensor_with_dims(int64_t sparse_dim, int64_t dense_dim, at::IntArrayRef size, const at::TensorOptions & options) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -2025,19 +2038,23 @@ inline at::Tensor _sparse_coo_tensor_with_dims(int64_t sparse_dim, int64_t dense
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::_sparse_coo_tensor_with_dims(sparse_dim, dense_dim, size, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor _sparse_coo_tensor_with_dims_and_tensors(int64_t sparse_dim, int64_t dense_dim, at::IntArrayRef size, const at::Tensor & indices, const at::Tensor & values, const at::TensorOptions & options) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -2056,19 +2073,23 @@ inline at::Tensor _sparse_coo_tensor_with_dims_and_tensors(int64_t sparse_dim, i
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::_sparse_coo_tensor_with_dims_and_tensors(sparse_dim, dense_dim, size, indices, values, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor tril_indices(int64_t row, int64_t col, int64_t offset = 0, const at::TensorOptions & options = at::kLong) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -2085,19 +2106,23 @@ inline at::Tensor tril_indices(int64_t row, int64_t col, int64_t offset = 0, con
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::tril_indices(row, col, offset, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 inline at::Tensor triu_indices(int64_t row, int64_t col, int64_t offset = 0, const at::TensorOptions & options = at::kLong) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -2114,19 +2139,23 @@ inline at::Tensor triu_indices(int64_t row, int64_t col, int64_t offset = 0, con
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::triu_indices(row, col, offset, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
-inline at::Tensor normal(double mean, double std, at::IntArrayRef size, at::Generator * generator = nullptr, const at::TensorOptions & options = {}) {
+inline at::Tensor normal(double mean, double std, at::IntArrayRef size, at::Generator generator = nullptr, const at::TensorOptions & options = {}) {
+  #if !defined(PYTORCH_DISABLE_TRACING)
   torch::jit::Node* node = nullptr;
   std::shared_ptr<jit::tracer::TracingState> tracer_state;
   if (jit::tracer::isTracing()) {
@@ -2144,16 +2173,19 @@ inline at::Tensor normal(double mean, double std, at::IntArrayRef size, at::Gene
   
     jit::tracer::setTracingState(nullptr);
   }
+  #endif
   at::Tensor tensor = ([&]() {
     at::AutoNonVariableTypeMode non_var_type_mode(true);
     return at::normal(mean, std, size, generator, at::TensorOptions(options));
   })();
   at::Tensor result =
     autograd::make_variable(std::move(tensor), /*requires_grad=*/options.requires_grad());
+  #if !defined(PYTORCH_DISABLE_TRACING)
   if (tracer_state) {
     jit::tracer::setTracingState(std::move(tracer_state));
     jit::tracer::addOutput(node, result);
   }
+  #endif
   return result;
 }
 
