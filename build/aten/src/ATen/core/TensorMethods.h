@@ -54,6 +54,8 @@ inline TensorOptions Tensor::options() const {
 }
 
 // all static inline to allow for inlining of the non-dynamic part of dispatch
+
+// aten::backward(Tensor self, Tensor? gradient=None, bool keep_graph=False, bool create_graph=False) -> ()
 inline void Tensor::backward(const Tensor & gradient, bool keep_graph, bool create_graph) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -63,6 +65,8 @@ inline void Tensor::backward(const Tensor & gradient, bool keep_graph, bool crea
     return op.callUnboxed<void, const Tensor &, const Tensor &, bool, bool>(const_cast<Tensor&>(*this), gradient, keep_graph, create_graph);
 #endif
 }
+
+// aten::set_data(Tensor(a!) self, Tensor new_data) -> ()
 inline void Tensor::set_data(const Tensor & new_data) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -72,6 +76,8 @@ inline void Tensor::set_data(const Tensor & new_data) const {
     return op.callUnboxed<void, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), new_data);
 #endif
 }
+
+// aten::data(Tensor self) -> Tensor
 inline Tensor Tensor::data() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -81,6 +87,8 @@ inline Tensor Tensor::data() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::is_leaf(Tensor self) -> bool
 inline bool Tensor::is_leaf() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -90,6 +98,8 @@ inline bool Tensor::is_leaf() const {
     return op.callUnboxed<bool, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::output_nr(Tensor self) -> int
 inline int64_t Tensor::output_nr() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -99,6 +109,8 @@ inline int64_t Tensor::output_nr() const {
     return op.callUnboxed<int64_t, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::_version(Tensor self) -> int
 inline int64_t Tensor::_version() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -108,6 +120,8 @@ inline int64_t Tensor::_version() const {
     return op.callUnboxed<int64_t, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::requires_grad_(Tensor(a!) self, bool _requires_grad=True) -> Tensor(a!)
 inline Tensor & Tensor::requires_grad_(bool _requires_grad) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -117,6 +131,8 @@ inline Tensor & Tensor::requires_grad_(bool _requires_grad) const {
     return op.callUnboxed<Tensor &, Tensor &, bool>(const_cast<Tensor&>(*this), _requires_grad);
 #endif
 }
+
+// aten::retain_grad(Tensor(a!) self) -> ()
 inline void Tensor::retain_grad() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -126,6 +142,8 @@ inline void Tensor::retain_grad() const {
     return op.callUnboxed<void, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::rename_(Tensor(a!) self, Dimname[]? names) -> Tensor(a!)
 inline Tensor & Tensor::rename_(c10::optional<DimnameList> names) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -135,6 +153,8 @@ inline Tensor & Tensor::rename_(c10::optional<DimnameList> names) const {
     return op.callUnboxed<Tensor &, Tensor &, c10::optional<DimnameList>>(const_cast<Tensor&>(*this), names);
 #endif
 }
+
+// aten::rename(Tensor(a) self, Dimname[]? names) -> Tensor(a)
 inline Tensor Tensor::rename(c10::optional<DimnameList> names) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -144,6 +164,8 @@ inline Tensor Tensor::rename(c10::optional<DimnameList> names) const {
     return op.callUnboxed<Tensor, const Tensor &, c10::optional<DimnameList>>(const_cast<Tensor&>(*this), names);
 #endif
 }
+
+// aten::align_to(Tensor(a) self, Dimname[] names) -> Tensor(a)
 inline Tensor Tensor::align_to(DimnameList names) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -153,6 +175,8 @@ inline Tensor Tensor::align_to(DimnameList names) const {
     return op.callUnboxed<Tensor, const Tensor &, DimnameList>(const_cast<Tensor&>(*this), names);
 #endif
 }
+
+// aten::align_to.ellipsis_idx(Tensor(a) self, Dimname[] order, int ellipsis_idx) -> Tensor(a)
 inline Tensor Tensor::align_to(DimnameList order, int64_t ellipsis_idx) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -162,6 +186,8 @@ inline Tensor Tensor::align_to(DimnameList order, int64_t ellipsis_idx) const {
     return op.callUnboxed<Tensor, const Tensor &, DimnameList, int64_t>(const_cast<Tensor&>(*this), order, ellipsis_idx);
 #endif
 }
+
+// aten::align_as(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::align_as(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -171,6 +197,8 @@ inline Tensor Tensor::align_as(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::refine_names(Tensor(a) self, Dimname[] names) -> Tensor(a)
 inline Tensor Tensor::refine_names(DimnameList names) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -180,6 +208,8 @@ inline Tensor Tensor::refine_names(DimnameList names) const {
     return op.callUnboxed<Tensor, const Tensor &, DimnameList>(const_cast<Tensor&>(*this), names);
 #endif
 }
+
+// aten::unflatten.Dimname(Tensor self, Dimname dim, int[] sizes, Dimname[] names) -> Tensor
 inline Tensor Tensor::unflatten(Dimname dim, IntArrayRef sizes, DimnameList names) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -189,6 +219,8 @@ inline Tensor Tensor::unflatten(Dimname dim, IntArrayRef sizes, DimnameList name
     return op.callUnboxed<Tensor, const Tensor &, Dimname, IntArrayRef, DimnameList>(const_cast<Tensor&>(*this), dim, sizes, names);
 #endif
 }
+
+// aten::unflatten.int(Tensor self, int dim, int[] sizes, Dimname[] names) -> Tensor
 inline Tensor Tensor::unflatten(int64_t dim, IntArrayRef sizes, DimnameList names) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -198,6 +230,8 @@ inline Tensor Tensor::unflatten(int64_t dim, IntArrayRef sizes, DimnameList name
     return op.callUnboxed<Tensor, const Tensor &, int64_t, IntArrayRef, DimnameList>(const_cast<Tensor&>(*this), dim, sizes, names);
 #endif
 }
+
+// aten::abs(Tensor self) -> Tensor
 inline Tensor Tensor::abs() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -207,6 +241,8 @@ inline Tensor Tensor::abs() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::abs_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::abs_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -216,6 +252,8 @@ inline Tensor & Tensor::abs_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::angle(Tensor self) -> Tensor
 inline Tensor Tensor::angle() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -225,6 +263,8 @@ inline Tensor Tensor::angle() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::copy_real(Tensor self) -> Tensor
 inline Tensor Tensor::copy_real() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -234,6 +274,8 @@ inline Tensor Tensor::copy_real() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::copy_imag(Tensor self) -> Tensor
 inline Tensor Tensor::copy_imag() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -243,6 +285,8 @@ inline Tensor Tensor::copy_imag() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::conj(Tensor self) -> Tensor
 inline Tensor Tensor::conj() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -252,6 +296,8 @@ inline Tensor Tensor::conj() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::acos(Tensor self) -> Tensor
 inline Tensor Tensor::acos() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -261,6 +307,8 @@ inline Tensor Tensor::acos() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::acos_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::acos_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -270,38 +318,48 @@ inline Tensor & Tensor::acos_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::add.Tensor(Tensor self, Tensor other, *, Scalar alpha=1) -> Tensor
 inline Tensor Tensor::add(const Tensor & other, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::add_Tensor(const_cast<Tensor&>(*this), other, alpha);
             break;
         default:
-            AT_ERROR("add not implemented for ", at::toString(key_set()));
+            AT_ERROR("add not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::add", "Tensor");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other, alpha);
 #endif
 }
+
+// aten::add_.Tensor(Tensor(a!) self, Tensor other, *, Scalar alpha=1) -> Tensor(a!)
 inline Tensor & Tensor::add_(const Tensor & other, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::add__Tensor(const_cast<Tensor&>(*this), other, alpha);
             break;
         default:
-            AT_ERROR("add_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("add_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::add_", "Tensor");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other, alpha);
 #endif
 }
+
+// aten::add.Scalar(Tensor self, Scalar other, Scalar alpha=1) -> Tensor
 inline Tensor Tensor::add(Scalar other, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -311,6 +369,8 @@ inline Tensor Tensor::add(Scalar other, Scalar alpha) const {
     return op.callUnboxed<Tensor, const Tensor &, Scalar, Scalar>(const_cast<Tensor&>(*this), other, alpha);
 #endif
 }
+
+// aten::add_.Scalar(Tensor(a!) self, Scalar other, Scalar alpha=1) -> Tensor(a!)
 inline Tensor & Tensor::add_(Scalar other, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -320,38 +380,48 @@ inline Tensor & Tensor::add_(Scalar other, Scalar alpha) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar, Scalar>(const_cast<Tensor&>(*this), other, alpha);
 #endif
 }
+
+// aten::addmv(Tensor self, Tensor mat, Tensor vec, *, Scalar beta=1, Scalar alpha=1) -> Tensor
 inline Tensor Tensor::addmv(const Tensor & mat, const Tensor & vec, Scalar beta, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, mat, vec);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::addmv(const_cast<Tensor&>(*this), mat, vec, beta, alpha);
             break;
         default:
-            AT_ERROR("addmv not implemented for ", at::toString(key_set()));
+            AT_ERROR("addmv not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::addmv", "");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, const Tensor &, Scalar, Scalar>(const_cast<Tensor&>(*this), mat, vec, beta, alpha);
 #endif
 }
+
+// aten::addmv_(Tensor(a!) self, Tensor mat, Tensor vec, *, Scalar beta=1, Scalar alpha=1) -> Tensor(a!)
 inline Tensor & Tensor::addmv_(const Tensor & mat, const Tensor & vec, Scalar beta, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, mat, vec);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::addmv_(const_cast<Tensor&>(*this), mat, vec, beta, alpha);
             break;
         default:
-            AT_ERROR("addmv_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("addmv_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::addmv_", "");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, const Tensor &, Scalar, Scalar>(const_cast<Tensor&>(*this), mat, vec, beta, alpha);
 #endif
 }
+
+// aten::addr(Tensor self, Tensor vec1, Tensor vec2, *, Scalar beta=1, Scalar alpha=1) -> Tensor
 inline Tensor Tensor::addr(const Tensor & vec1, const Tensor & vec2, Scalar beta, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -361,6 +431,8 @@ inline Tensor Tensor::addr(const Tensor & vec1, const Tensor & vec2, Scalar beta
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, const Tensor &, Scalar, Scalar>(const_cast<Tensor&>(*this), vec1, vec2, beta, alpha);
 #endif
 }
+
+// aten::addr_(Tensor(a!) self, Tensor vec1, Tensor vec2, *, Scalar beta=1, Scalar alpha=1) -> Tensor(a!)
 inline Tensor & Tensor::addr_(const Tensor & vec1, const Tensor & vec2, Scalar beta, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -370,6 +442,8 @@ inline Tensor & Tensor::addr_(const Tensor & vec1, const Tensor & vec2, Scalar b
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, const Tensor &, Scalar, Scalar>(const_cast<Tensor&>(*this), vec1, vec2, beta, alpha);
 #endif
 }
+
+// aten::all.dim(Tensor self, int dim, bool keepdim=False) -> Tensor
 inline Tensor Tensor::all(int64_t dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -379,6 +453,8 @@ inline Tensor Tensor::all(int64_t dim, bool keepdim) const {
     return op.callUnboxed<Tensor, const Tensor &, int64_t, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::all.dimname(Tensor self, Dimname dim, bool keepdim=False) -> Tensor
 inline Tensor Tensor::all(Dimname dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -388,6 +464,8 @@ inline Tensor Tensor::all(Dimname dim, bool keepdim) const {
     return op.callUnboxed<Tensor, const Tensor &, Dimname, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::allclose(Tensor self, Tensor other, float rtol=1e-05, float atol=1e-08, bool equal_nan=False) -> bool
 inline bool Tensor::allclose(const Tensor & other, double rtol, double atol, bool equal_nan) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -397,6 +475,8 @@ inline bool Tensor::allclose(const Tensor & other, double rtol, double atol, boo
     return op.callUnboxed<bool, const Tensor &, const Tensor &, double, double, bool>(const_cast<Tensor&>(*this), other, rtol, atol, equal_nan);
 #endif
 }
+
+// aten::any.dim(Tensor self, int dim, bool keepdim=False) -> Tensor
 inline Tensor Tensor::any(int64_t dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -406,6 +486,8 @@ inline Tensor Tensor::any(int64_t dim, bool keepdim) const {
     return op.callUnboxed<Tensor, const Tensor &, int64_t, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::any.dimname(Tensor self, Dimname dim, bool keepdim=False) -> Tensor
 inline Tensor Tensor::any(Dimname dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -415,43 +497,55 @@ inline Tensor Tensor::any(Dimname dim, bool keepdim) const {
     return op.callUnboxed<Tensor, const Tensor &, Dimname, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::argmax(Tensor self, int? dim=None, bool keepdim=False) -> Tensor
 inline Tensor Tensor::argmax(c10::optional<int64_t> dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::argmax(const_cast<Tensor&>(*this), dim, keepdim);
             break;
         default:
-            AT_ERROR("argmax not implemented for ", at::toString(key_set()));
+            AT_ERROR("argmax not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::argmax", "");
     return op.callUnboxed<Tensor, const Tensor &, c10::optional<int64_t>, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::argmin(Tensor self, int? dim=None, bool keepdim=False) -> Tensor
 inline Tensor Tensor::argmin(c10::optional<int64_t> dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::argmin(const_cast<Tensor&>(*this), dim, keepdim);
             break;
         default:
-            AT_ERROR("argmin not implemented for ", at::toString(key_set()));
+            AT_ERROR("argmin not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::argmin", "");
     return op.callUnboxed<Tensor, const Tensor &, c10::optional<int64_t>, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::as_strided(Tensor(a) self, int[] size, int[] stride, int? storage_offset=None) -> Tensor(a)
 inline Tensor Tensor::as_strided(IntArrayRef size, IntArrayRef stride, c10::optional<int64_t> storage_offset) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::as_strided(const_cast<Tensor&>(*this), size, stride, storage_offset);
             break;
@@ -459,13 +553,15 @@ inline Tensor Tensor::as_strided(IntArrayRef size, IntArrayRef stride, c10::opti
             return QuantizedCPUType::as_strided(const_cast<Tensor&>(*this), size, stride, storage_offset);
             break;
         default:
-            AT_ERROR("as_strided not implemented for ", at::toString(key_set()));
+            AT_ERROR("as_strided not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::as_strided", "");
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef, IntArrayRef, c10::optional<int64_t>>(const_cast<Tensor&>(*this), size, stride, storage_offset);
 #endif
 }
+
+// aten::as_strided_(Tensor(a!) self, int[] size, int[] stride, int? storage_offset=None) -> Tensor(a!)
 inline Tensor & Tensor::as_strided_(IntArrayRef size, IntArrayRef stride, c10::optional<int64_t> storage_offset) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -475,6 +571,8 @@ inline Tensor & Tensor::as_strided_(IntArrayRef size, IntArrayRef stride, c10::o
     return op.callUnboxed<Tensor &, Tensor &, IntArrayRef, IntArrayRef, c10::optional<int64_t>>(const_cast<Tensor&>(*this), size, stride, storage_offset);
 #endif
 }
+
+// aten::asin(Tensor self) -> Tensor
 inline Tensor Tensor::asin() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -484,6 +582,8 @@ inline Tensor Tensor::asin() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::asin_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::asin_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -493,6 +593,8 @@ inline Tensor & Tensor::asin_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::atan(Tensor self) -> Tensor
 inline Tensor Tensor::atan() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -502,54 +604,68 @@ inline Tensor Tensor::atan() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::atan_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::atan_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::atan_(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("atan_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("atan_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::atan_", "");
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::baddbmm(Tensor self, Tensor batch1, Tensor batch2, *, Scalar beta=1, Scalar alpha=1) -> Tensor
 inline Tensor Tensor::baddbmm(const Tensor & batch1, const Tensor & batch2, Scalar beta, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, batch1, batch2);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::baddbmm(const_cast<Tensor&>(*this), batch1, batch2, beta, alpha);
             break;
         default:
-            AT_ERROR("baddbmm not implemented for ", at::toString(key_set()));
+            AT_ERROR("baddbmm not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::baddbmm", "");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, const Tensor &, Scalar, Scalar>(const_cast<Tensor&>(*this), batch1, batch2, beta, alpha);
 #endif
 }
+
+// aten::baddbmm_(Tensor(a!) self, Tensor batch1, Tensor batch2, *, Scalar beta=1, Scalar alpha=1) -> Tensor(a!)
 inline Tensor & Tensor::baddbmm_(const Tensor & batch1, const Tensor & batch2, Scalar beta, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, batch1, batch2);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::baddbmm_(const_cast<Tensor&>(*this), batch1, batch2, beta, alpha);
             break;
         default:
-            AT_ERROR("baddbmm_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("baddbmm_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::baddbmm_", "");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, const Tensor &, Scalar, Scalar>(const_cast<Tensor&>(*this), batch1, batch2, beta, alpha);
 #endif
 }
+
+// aten::bernoulli(Tensor self, *, Generator? generator=None) -> Tensor
 inline Tensor Tensor::bernoulli(Generator generator) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -559,38 +675,48 @@ inline Tensor Tensor::bernoulli(Generator generator) const {
     return op.callUnboxed<Tensor, const Tensor &, Generator>(const_cast<Tensor&>(*this), generator);
 #endif
 }
+
+// aten::bernoulli_.Tensor(Tensor(a!) self, Tensor p, *, Generator? generator=None) -> Tensor(a!)
 inline Tensor & Tensor::bernoulli_(const Tensor & p, Generator generator) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, p);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::bernoulli__Tensor(const_cast<Tensor&>(*this), p, generator);
             break;
         default:
-            AT_ERROR("bernoulli_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("bernoulli_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::bernoulli_", "Tensor");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, Generator>(const_cast<Tensor&>(*this), p, generator);
 #endif
 }
+
+// aten::bernoulli_.float(Tensor(a!) self, float p=0.5, *, Generator? generator=None) -> Tensor(a!)
 inline Tensor & Tensor::bernoulli_(double p, Generator generator) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::bernoulli__float(const_cast<Tensor&>(*this), p, generator);
             break;
         default:
-            AT_ERROR("bernoulli_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("bernoulli_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::bernoulli_", "float");
     return op.callUnboxed<Tensor &, Tensor &, double, Generator>(const_cast<Tensor&>(*this), p, generator);
 #endif
 }
+
+// aten::bernoulli.p(Tensor self, float p, *, Generator? generator=None) -> Tensor
 inline Tensor Tensor::bernoulli(double p, Generator generator) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -600,22 +726,28 @@ inline Tensor Tensor::bernoulli(double p, Generator generator) const {
     return op.callUnboxed<Tensor, const Tensor &, double, Generator>(const_cast<Tensor&>(*this), p, generator);
 #endif
 }
+
+// aten::bincount(Tensor self, Tensor? weights=None, int minlength=0) -> Tensor
 inline Tensor Tensor::bincount(const Tensor & weights, int64_t minlength) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, weights);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::bincount(const_cast<Tensor&>(*this), weights, minlength);
             break;
         default:
-            AT_ERROR("bincount not implemented for ", at::toString(key_set()));
+            AT_ERROR("bincount not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::bincount", "");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, int64_t>(const_cast<Tensor&>(*this), weights, minlength);
 #endif
 }
+
+// aten::bitwise_not(Tensor self) -> Tensor
 inline Tensor Tensor::bitwise_not() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -625,6 +757,8 @@ inline Tensor Tensor::bitwise_not() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::bitwise_not_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::bitwise_not_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -634,6 +768,8 @@ inline Tensor & Tensor::bitwise_not_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::logical_not(Tensor self) -> Tensor
 inline Tensor Tensor::logical_not() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -643,6 +779,8 @@ inline Tensor Tensor::logical_not() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::logical_not_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::logical_not_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -652,6 +790,8 @@ inline Tensor & Tensor::logical_not_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::logical_xor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::logical_xor(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -661,6 +801,8 @@ inline Tensor Tensor::logical_xor(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::logical_xor_(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::logical_xor_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -670,6 +812,8 @@ inline Tensor & Tensor::logical_xor_(const Tensor & other) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::logical_and(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::logical_and(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -679,6 +823,8 @@ inline Tensor Tensor::logical_and(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::logical_and_(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::logical_and_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -688,6 +834,8 @@ inline Tensor & Tensor::logical_and_(const Tensor & other) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::logical_or(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::logical_or(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -697,6 +845,8 @@ inline Tensor Tensor::logical_or(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::logical_or_(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::logical_or_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -706,22 +856,28 @@ inline Tensor & Tensor::logical_or_(const Tensor & other) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::bmm(Tensor self, Tensor mat2) -> Tensor
 inline Tensor Tensor::bmm(const Tensor & mat2) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, mat2);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::bmm(const_cast<Tensor&>(*this), mat2);
             break;
         default:
-            AT_ERROR("bmm not implemented for ", at::toString(key_set()));
+            AT_ERROR("bmm not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::bmm", "");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), mat2);
 #endif
 }
+
+// aten::ceil(Tensor self) -> Tensor
 inline Tensor Tensor::ceil() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -731,6 +887,8 @@ inline Tensor Tensor::ceil() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::ceil_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::ceil_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -740,6 +898,8 @@ inline Tensor & Tensor::ceil_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::chunk(Tensor(a) self, int chunks, int dim=0) -> Tensor(a)[]
 inline std::vector<Tensor> Tensor::chunk(int64_t chunks, int64_t dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -749,11 +909,15 @@ inline std::vector<Tensor> Tensor::chunk(int64_t chunks, int64_t dim) const {
     return op.callUnboxed<std::vector<Tensor>, const Tensor &, int64_t, int64_t>(const_cast<Tensor&>(*this), chunks, dim);
 #endif
 }
+
+// aten::clamp(Tensor self, Scalar? min=None, Scalar? max=None) -> Tensor
 inline Tensor Tensor::clamp(c10::optional<Scalar> min, c10::optional<Scalar> max) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::clamp(const_cast<Tensor&>(*this), min, max);
             break;
@@ -761,29 +925,35 @@ inline Tensor Tensor::clamp(c10::optional<Scalar> min, c10::optional<Scalar> max
             return QuantizedCPUType::clamp(const_cast<Tensor&>(*this), min, max);
             break;
         default:
-            AT_ERROR("clamp not implemented for ", at::toString(key_set()));
+            AT_ERROR("clamp not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::clamp", "");
     return op.callUnboxed<Tensor, const Tensor &, c10::optional<Scalar>, c10::optional<Scalar>>(const_cast<Tensor&>(*this), min, max);
 #endif
 }
+
+// aten::clamp_(Tensor(a!) self, Scalar? min=None, Scalar? max=None) -> Tensor(a!)
 inline Tensor & Tensor::clamp_(c10::optional<Scalar> min, c10::optional<Scalar> max) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::clamp_(const_cast<Tensor&>(*this), min, max);
             break;
         default:
-            AT_ERROR("clamp_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("clamp_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::clamp_", "");
     return op.callUnboxed<Tensor &, Tensor &, c10::optional<Scalar>, c10::optional<Scalar>>(const_cast<Tensor&>(*this), min, max);
 #endif
 }
+
+// aten::clamp_max(Tensor self, Scalar max) -> Tensor
 inline Tensor Tensor::clamp_max(Scalar max) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -793,22 +963,28 @@ inline Tensor Tensor::clamp_max(Scalar max) const {
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), max);
 #endif
 }
+
+// aten::clamp_max_(Tensor(a!) self, Scalar max) -> Tensor(a!)
 inline Tensor & Tensor::clamp_max_(Scalar max) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::clamp_max_(const_cast<Tensor&>(*this), max);
             break;
         default:
-            AT_ERROR("clamp_max_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("clamp_max_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::clamp_max_", "");
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), max);
 #endif
 }
+
+// aten::clamp_min(Tensor self, Scalar min) -> Tensor
 inline Tensor Tensor::clamp_min(Scalar min) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -818,22 +994,28 @@ inline Tensor Tensor::clamp_min(Scalar min) const {
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), min);
 #endif
 }
+
+// aten::clamp_min_(Tensor(a!) self, Scalar min) -> Tensor(a!)
 inline Tensor & Tensor::clamp_min_(Scalar min) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::clamp_min_(const_cast<Tensor&>(*this), min);
             break;
         default:
-            AT_ERROR("clamp_min_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("clamp_min_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::clamp_min_", "");
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), min);
 #endif
 }
+
+// aten::contiguous(Tensor self, *, MemoryFormat memory_format=contiguous_format) -> Tensor
 inline Tensor Tensor::contiguous(MemoryFormat memory_format) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -843,6 +1025,8 @@ inline Tensor Tensor::contiguous(MemoryFormat memory_format) const {
     return op.callUnboxed<Tensor, const Tensor &, MemoryFormat>(const_cast<Tensor&>(*this), memory_format);
 #endif
 }
+
+// aten::copy_(Tensor(a!) self, Tensor src, bool non_blocking=False) -> Tensor(a!)
 inline Tensor & Tensor::copy_(const Tensor & src, bool non_blocking) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -852,6 +1036,8 @@ inline Tensor & Tensor::copy_(const Tensor & src, bool non_blocking) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, bool>(const_cast<Tensor&>(*this), src, non_blocking);
 #endif
 }
+
+// aten::cos(Tensor self) -> Tensor
 inline Tensor Tensor::cos() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -861,22 +1047,28 @@ inline Tensor Tensor::cos() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::cos_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::cos_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::cos_(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("cos_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("cos_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::cos_", "");
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::cosh(Tensor self) -> Tensor
 inline Tensor Tensor::cosh() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -886,22 +1078,28 @@ inline Tensor Tensor::cosh() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::cosh_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::cosh_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::cosh_(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("cosh_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("cosh_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::cosh_", "");
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::cummax(Tensor self, int dim) -> (Tensor values, Tensor indices)
 inline std::tuple<Tensor,Tensor> Tensor::cummax(int64_t dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -911,6 +1109,8 @@ inline std::tuple<Tensor,Tensor> Tensor::cummax(int64_t dim) const {
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, int64_t>(const_cast<Tensor&>(*this), dim);
 #endif
 }
+
+// aten::cummax.dimname(Tensor self, Dimname dim) -> (Tensor values, Tensor indices)
 inline std::tuple<Tensor,Tensor> Tensor::cummax(Dimname dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -920,6 +1120,8 @@ inline std::tuple<Tensor,Tensor> Tensor::cummax(Dimname dim) const {
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, Dimname>(const_cast<Tensor&>(*this), dim);
 #endif
 }
+
+// aten::cummin(Tensor self, int dim) -> (Tensor values, Tensor indices)
 inline std::tuple<Tensor,Tensor> Tensor::cummin(int64_t dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -929,6 +1131,8 @@ inline std::tuple<Tensor,Tensor> Tensor::cummin(int64_t dim) const {
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, int64_t>(const_cast<Tensor&>(*this), dim);
 #endif
 }
+
+// aten::cummin.dimname(Tensor self, Dimname dim) -> (Tensor values, Tensor indices)
 inline std::tuple<Tensor,Tensor> Tensor::cummin(Dimname dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -938,6 +1142,8 @@ inline std::tuple<Tensor,Tensor> Tensor::cummin(Dimname dim) const {
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, Dimname>(const_cast<Tensor&>(*this), dim);
 #endif
 }
+
+// aten::cumprod(Tensor self, int dim, *, ScalarType? dtype=None) -> Tensor
 inline Tensor Tensor::cumprod(int64_t dim, c10::optional<ScalarType> dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -947,6 +1153,8 @@ inline Tensor Tensor::cumprod(int64_t dim, c10::optional<ScalarType> dtype) cons
     return op.callUnboxed<Tensor, const Tensor &, int64_t, c10::optional<ScalarType>>(const_cast<Tensor&>(*this), dim, dtype);
 #endif
 }
+
+// aten::cumprod.dimname(Tensor self, Dimname dim, *, ScalarType? dtype=None) -> Tensor
 inline Tensor Tensor::cumprod(Dimname dim, c10::optional<ScalarType> dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -956,6 +1164,8 @@ inline Tensor Tensor::cumprod(Dimname dim, c10::optional<ScalarType> dtype) cons
     return op.callUnboxed<Tensor, const Tensor &, Dimname, c10::optional<ScalarType>>(const_cast<Tensor&>(*this), dim, dtype);
 #endif
 }
+
+// aten::cumsum(Tensor self, int dim, *, ScalarType? dtype=None) -> Tensor
 inline Tensor Tensor::cumsum(int64_t dim, c10::optional<ScalarType> dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -965,6 +1175,8 @@ inline Tensor Tensor::cumsum(int64_t dim, c10::optional<ScalarType> dtype) const
     return op.callUnboxed<Tensor, const Tensor &, int64_t, c10::optional<ScalarType>>(const_cast<Tensor&>(*this), dim, dtype);
 #endif
 }
+
+// aten::cumsum.dimname(Tensor self, Dimname dim, *, ScalarType? dtype=None) -> Tensor
 inline Tensor Tensor::cumsum(Dimname dim, c10::optional<ScalarType> dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -974,6 +1186,8 @@ inline Tensor Tensor::cumsum(Dimname dim, c10::optional<ScalarType> dtype) const
     return op.callUnboxed<Tensor, const Tensor &, Dimname, c10::optional<ScalarType>>(const_cast<Tensor&>(*this), dim, dtype);
 #endif
 }
+
+// aten::det(Tensor self) -> Tensor
 inline Tensor Tensor::det() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -983,6 +1197,8 @@ inline Tensor Tensor::det() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::diag_embed(Tensor self, int offset=0, int dim1=-2, int dim2=-1) -> Tensor
 inline Tensor Tensor::diag_embed(int64_t offset, int64_t dim1, int64_t dim2) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -992,6 +1208,8 @@ inline Tensor Tensor::diag_embed(int64_t offset, int64_t dim1, int64_t dim2) con
     return op.callUnboxed<Tensor, const Tensor &, int64_t, int64_t, int64_t>(const_cast<Tensor&>(*this), offset, dim1, dim2);
 #endif
 }
+
+// aten::diagflat(Tensor self, int offset=0) -> Tensor
 inline Tensor Tensor::diagflat(int64_t offset) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1001,6 +1219,8 @@ inline Tensor Tensor::diagflat(int64_t offset) const {
     return op.callUnboxed<Tensor, const Tensor &, int64_t>(const_cast<Tensor&>(*this), offset);
 #endif
 }
+
+// aten::diagonal(Tensor(a) self, int offset=0, int dim1=0, int dim2=1) -> Tensor(a)
 inline Tensor Tensor::diagonal(int64_t offset, int64_t dim1, int64_t dim2) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1010,6 +1230,8 @@ inline Tensor Tensor::diagonal(int64_t offset, int64_t dim1, int64_t dim2) const
     return op.callUnboxed<Tensor, const Tensor &, int64_t, int64_t, int64_t>(const_cast<Tensor&>(*this), offset, dim1, dim2);
 #endif
 }
+
+// aten::diagonal.Dimname(Tensor(a) self, *, Dimname outdim, Dimname dim1, Dimname dim2, int offset=0) -> Tensor(a)
 inline Tensor Tensor::diagonal(Dimname outdim, Dimname dim1, Dimname dim2, int64_t offset) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1019,6 +1241,8 @@ inline Tensor Tensor::diagonal(Dimname outdim, Dimname dim1, Dimname dim2, int64
     return op.callUnboxed<Tensor, const Tensor &, Dimname, Dimname, Dimname, int64_t>(const_cast<Tensor&>(*this), outdim, dim1, dim2, offset);
 #endif
 }
+
+// aten::fill_diagonal_(Tensor(a!) self, Scalar fill_value, bool wrap=False) -> Tensor(a!)
 inline Tensor & Tensor::fill_diagonal_(Scalar fill_value, bool wrap) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1028,38 +1252,48 @@ inline Tensor & Tensor::fill_diagonal_(Scalar fill_value, bool wrap) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar, bool>(const_cast<Tensor&>(*this), fill_value, wrap);
 #endif
 }
+
+// aten::div.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::div(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::div_Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("div not implemented for ", at::toString(key_set()));
+            AT_ERROR("div not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::div", "Tensor");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::div_.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::div_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::div__Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("div_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("div_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::div_", "Tensor");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::div.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::div(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1069,6 +1303,8 @@ inline Tensor Tensor::div(Scalar other) const {
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::div_.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::div_(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1078,22 +1314,28 @@ inline Tensor & Tensor::div_(Scalar other) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::dot(Tensor self, Tensor tensor) -> Tensor
 inline Tensor Tensor::dot(const Tensor & tensor) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, tensor);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::dot(const_cast<Tensor&>(*this), tensor);
             break;
         default:
-            AT_ERROR("dot not implemented for ", at::toString(key_set()));
+            AT_ERROR("dot not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::dot", "");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), tensor);
 #endif
 }
+
+// aten::new_empty(Tensor self, int[] size, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 inline Tensor Tensor::new_empty(IntArrayRef size, const TensorOptions & options) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1103,6 +1345,8 @@ inline Tensor Tensor::new_empty(IntArrayRef size, const TensorOptions & options)
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef, const TensorOptions &>(const_cast<Tensor&>(*this), size, options);
 #endif
 }
+
+// aten::new_full(Tensor self, int[] size, Scalar fill_value, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 inline Tensor Tensor::new_full(IntArrayRef size, Scalar fill_value, const TensorOptions & options) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1112,6 +1356,8 @@ inline Tensor Tensor::new_full(IntArrayRef size, Scalar fill_value, const Tensor
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef, Scalar, const TensorOptions &>(const_cast<Tensor&>(*this), size, fill_value, options);
 #endif
 }
+
+// aten::new_zeros(Tensor self, int[] size, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 inline Tensor Tensor::new_zeros(IntArrayRef size, const TensorOptions & options) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1121,6 +1367,8 @@ inline Tensor Tensor::new_zeros(IntArrayRef size, const TensorOptions & options)
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef, const TensorOptions &>(const_cast<Tensor&>(*this), size, options);
 #endif
 }
+
+// aten::resize_(Tensor(a!) self, int[] size, *, MemoryFormat? memory_format=None) -> Tensor(a!)
 inline Tensor & Tensor::resize_(IntArrayRef size, c10::optional<MemoryFormat> memory_format) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1130,6 +1378,8 @@ inline Tensor & Tensor::resize_(IntArrayRef size, c10::optional<MemoryFormat> me
     return op.callUnboxed<Tensor &, Tensor &, IntArrayRef, c10::optional<MemoryFormat>>(const_cast<Tensor&>(*this), size, memory_format);
 #endif
 }
+
+// aten::erf(Tensor self) -> Tensor
 inline Tensor Tensor::erf() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1139,22 +1389,28 @@ inline Tensor Tensor::erf() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::erf_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::erf_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::erf_(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("erf_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("erf_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::erf_", "");
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::erfc(Tensor self) -> Tensor
 inline Tensor Tensor::erfc() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1164,22 +1420,28 @@ inline Tensor Tensor::erfc() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::erfc_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::erfc_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::erfc_(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("erfc_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("erfc_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::erfc_", "");
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::exp(Tensor self) -> Tensor
 inline Tensor Tensor::exp() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1189,22 +1451,28 @@ inline Tensor Tensor::exp() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::exp_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::exp_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::exp_(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("exp_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("exp_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::exp_", "");
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::expm1(Tensor self) -> Tensor
 inline Tensor Tensor::expm1() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1214,6 +1482,8 @@ inline Tensor Tensor::expm1() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::expm1_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::expm1_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1223,6 +1493,8 @@ inline Tensor & Tensor::expm1_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::expand(Tensor(a) self, int[] size, *, bool implicit=False) -> Tensor(a)
 inline Tensor Tensor::expand(IntArrayRef size, bool implicit) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1232,6 +1504,8 @@ inline Tensor Tensor::expand(IntArrayRef size, bool implicit) const {
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef, bool>(const_cast<Tensor&>(*this), size, implicit);
 #endif
 }
+
+// aten::expand_as(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::expand_as(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1241,6 +1515,8 @@ inline Tensor Tensor::expand_as(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::flatten.using_ints(Tensor self, int start_dim=0, int end_dim=-1) -> Tensor
 inline Tensor Tensor::flatten(int64_t start_dim, int64_t end_dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1250,6 +1526,8 @@ inline Tensor Tensor::flatten(int64_t start_dim, int64_t end_dim) const {
     return op.callUnboxed<Tensor, const Tensor &, int64_t, int64_t>(const_cast<Tensor&>(*this), start_dim, end_dim);
 #endif
 }
+
+// aten::flatten.named_out_dim(Tensor self, int start_dim, int end_dim, Dimname out_dim) -> Tensor
 inline Tensor Tensor::flatten(int64_t start_dim, int64_t end_dim, Dimname out_dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1259,6 +1537,8 @@ inline Tensor Tensor::flatten(int64_t start_dim, int64_t end_dim, Dimname out_di
     return op.callUnboxed<Tensor, const Tensor &, int64_t, int64_t, Dimname>(const_cast<Tensor&>(*this), start_dim, end_dim, out_dim);
 #endif
 }
+
+// aten::flatten.using_names(Tensor self, Dimname start_dim, Dimname end_dim, Dimname out_dim) -> Tensor
 inline Tensor Tensor::flatten(Dimname start_dim, Dimname end_dim, Dimname out_dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1268,6 +1548,8 @@ inline Tensor Tensor::flatten(Dimname start_dim, Dimname end_dim, Dimname out_di
     return op.callUnboxed<Tensor, const Tensor &, Dimname, Dimname, Dimname>(const_cast<Tensor&>(*this), start_dim, end_dim, out_dim);
 #endif
 }
+
+// aten::flatten.DimnameList(Tensor self, Dimname[] dims, Dimname out_dim) -> Tensor
 inline Tensor Tensor::flatten(DimnameList dims, Dimname out_dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1277,6 +1559,8 @@ inline Tensor Tensor::flatten(DimnameList dims, Dimname out_dim) const {
     return op.callUnboxed<Tensor, const Tensor &, DimnameList, Dimname>(const_cast<Tensor&>(*this), dims, out_dim);
 #endif
 }
+
+// aten::fill_.Scalar(Tensor(a!) self, Scalar value) -> Tensor(a!)
 inline Tensor & Tensor::fill_(Scalar value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1286,6 +1570,8 @@ inline Tensor & Tensor::fill_(Scalar value) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), value);
 #endif
 }
+
+// aten::fill_.Tensor(Tensor(a!) self, Tensor value) -> Tensor(a!)
 inline Tensor & Tensor::fill_(const Tensor & value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1295,6 +1581,8 @@ inline Tensor & Tensor::fill_(const Tensor & value) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), value);
 #endif
 }
+
+// aten::floor(Tensor self) -> Tensor
 inline Tensor Tensor::floor() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1304,6 +1592,8 @@ inline Tensor Tensor::floor() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::floor_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::floor_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1313,38 +1603,48 @@ inline Tensor & Tensor::floor_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::floor_divide(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::floor_divide(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::floor_divide(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("floor_divide not implemented for ", at::toString(key_set()));
+            AT_ERROR("floor_divide not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::floor_divide", "");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::floor_divide_.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::floor_divide_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::floor_divide__Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("floor_divide_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("floor_divide_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::floor_divide_", "Tensor");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::floor_divide.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::floor_divide(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1354,6 +1654,8 @@ inline Tensor Tensor::floor_divide(Scalar other) const {
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::floor_divide_.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::floor_divide_(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1363,6 +1665,8 @@ inline Tensor & Tensor::floor_divide_(Scalar other) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::frac(Tensor self) -> Tensor
 inline Tensor Tensor::frac() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1372,6 +1676,8 @@ inline Tensor Tensor::frac() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::frac_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::frac_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1381,6 +1687,8 @@ inline Tensor & Tensor::frac_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::ger(Tensor self, Tensor vec2) -> Tensor
 inline Tensor Tensor::ger(const Tensor & vec2) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1390,6 +1698,8 @@ inline Tensor Tensor::ger(const Tensor & vec2) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), vec2);
 #endif
 }
+
+// aten::fft(Tensor self, int signal_ndim, bool normalized=False) -> Tensor
 inline Tensor Tensor::fft(int64_t signal_ndim, bool normalized) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1399,6 +1709,8 @@ inline Tensor Tensor::fft(int64_t signal_ndim, bool normalized) const {
     return op.callUnboxed<Tensor, const Tensor &, int64_t, bool>(const_cast<Tensor&>(*this), signal_ndim, normalized);
 #endif
 }
+
+// aten::ifft(Tensor self, int signal_ndim, bool normalized=False) -> Tensor
 inline Tensor Tensor::ifft(int64_t signal_ndim, bool normalized) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1408,6 +1720,8 @@ inline Tensor Tensor::ifft(int64_t signal_ndim, bool normalized) const {
     return op.callUnboxed<Tensor, const Tensor &, int64_t, bool>(const_cast<Tensor&>(*this), signal_ndim, normalized);
 #endif
 }
+
+// aten::rfft(Tensor self, int signal_ndim, bool normalized=False, bool onesided=True) -> Tensor
 inline Tensor Tensor::rfft(int64_t signal_ndim, bool normalized, bool onesided) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1417,6 +1731,8 @@ inline Tensor Tensor::rfft(int64_t signal_ndim, bool normalized, bool onesided) 
     return op.callUnboxed<Tensor, const Tensor &, int64_t, bool, bool>(const_cast<Tensor&>(*this), signal_ndim, normalized, onesided);
 #endif
 }
+
+// aten::irfft(Tensor self, int signal_ndim, bool normalized=False, bool onesided=True, int[] signal_sizes=[]) -> Tensor
 inline Tensor Tensor::irfft(int64_t signal_ndim, bool normalized, bool onesided, IntArrayRef signal_sizes) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1426,6 +1742,8 @@ inline Tensor Tensor::irfft(int64_t signal_ndim, bool normalized, bool onesided,
     return op.callUnboxed<Tensor, const Tensor &, int64_t, bool, bool, IntArrayRef>(const_cast<Tensor&>(*this), signal_ndim, normalized, onesided, signal_sizes);
 #endif
 }
+
+// aten::index.Tensor(Tensor self, Tensor?[] indices) -> Tensor
 inline Tensor Tensor::index(TensorList indices) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1435,6 +1753,8 @@ inline Tensor Tensor::index(TensorList indices) const {
     return op.callUnboxed<Tensor, const Tensor &, TensorList>(const_cast<Tensor&>(*this), indices);
 #endif
 }
+
+// aten::index_copy_(Tensor(a!) self, int dim, Tensor index, Tensor source) -> Tensor(a!)
 inline Tensor & Tensor::index_copy_(int64_t dim, const Tensor & index, const Tensor & source) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1444,6 +1764,8 @@ inline Tensor & Tensor::index_copy_(int64_t dim, const Tensor & index, const Ten
     return op.callUnboxed<Tensor &, Tensor &, int64_t, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), dim, index, source);
 #endif
 }
+
+// aten::index_copy(Tensor self, int dim, Tensor index, Tensor source) -> Tensor
 inline Tensor Tensor::index_copy(int64_t dim, const Tensor & index, const Tensor & source) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1453,6 +1775,8 @@ inline Tensor Tensor::index_copy(int64_t dim, const Tensor & index, const Tensor
     return op.callUnboxed<Tensor, const Tensor &, int64_t, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), dim, index, source);
 #endif
 }
+
+// aten::index_copy_.dimname(Tensor(a!) self, Dimname dim, Tensor index, Tensor source) -> Tensor(a!)
 inline Tensor & Tensor::index_copy_(Dimname dim, const Tensor & index, const Tensor & source) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1462,6 +1786,8 @@ inline Tensor & Tensor::index_copy_(Dimname dim, const Tensor & index, const Ten
     return op.callUnboxed<Tensor &, Tensor &, Dimname, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), dim, index, source);
 #endif
 }
+
+// aten::index_copy.dimname(Tensor self, Dimname dim, Tensor index, Tensor source) -> Tensor
 inline Tensor Tensor::index_copy(Dimname dim, const Tensor & index, const Tensor & source) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1471,6 +1797,8 @@ inline Tensor Tensor::index_copy(Dimname dim, const Tensor & index, const Tensor
     return op.callUnboxed<Tensor, const Tensor &, Dimname, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), dim, index, source);
 #endif
 }
+
+// aten::index_put_(Tensor(a!) self, Tensor?[] indices, Tensor values, bool accumulate=False) -> Tensor(a!)
 inline Tensor & Tensor::index_put_(TensorList indices, const Tensor & values, bool accumulate) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1480,6 +1808,8 @@ inline Tensor & Tensor::index_put_(TensorList indices, const Tensor & values, bo
     return op.callUnboxed<Tensor &, Tensor &, TensorList, const Tensor &, bool>(const_cast<Tensor&>(*this), indices, values, accumulate);
 #endif
 }
+
+// aten::index_put(Tensor self, Tensor?[] indices, Tensor values, bool accumulate=False) -> Tensor
 inline Tensor Tensor::index_put(TensorList indices, const Tensor & values, bool accumulate) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1489,6 +1819,8 @@ inline Tensor Tensor::index_put(TensorList indices, const Tensor & values, bool 
     return op.callUnboxed<Tensor, const Tensor &, TensorList, const Tensor &, bool>(const_cast<Tensor&>(*this), indices, values, accumulate);
 #endif
 }
+
+// aten::inverse(Tensor self) -> Tensor
 inline Tensor Tensor::inverse() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1498,6 +1830,8 @@ inline Tensor Tensor::inverse() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::isclose(Tensor self, Tensor other, float rtol=1e-05, float atol=1e-08, bool equal_nan=False) -> Tensor
 inline Tensor Tensor::isclose(const Tensor & other, double rtol, double atol, bool equal_nan) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1507,6 +1841,8 @@ inline Tensor Tensor::isclose(const Tensor & other, double rtol, double atol, bo
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, double, double, bool>(const_cast<Tensor&>(*this), other, rtol, atol, equal_nan);
 #endif
 }
+
+// aten::is_distributed(Tensor self) -> bool
 inline bool Tensor::is_distributed() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1516,6 +1852,8 @@ inline bool Tensor::is_distributed() const {
     return op.callUnboxed<bool, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::is_floating_point(Tensor self) -> bool
 inline bool Tensor::is_floating_point() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1525,6 +1863,8 @@ inline bool Tensor::is_floating_point() const {
     return op.callUnboxed<bool, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::is_complex(Tensor self) -> bool
 inline bool Tensor::is_complex() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1534,6 +1874,8 @@ inline bool Tensor::is_complex() const {
     return op.callUnboxed<bool, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::is_nonzero(Tensor self) -> bool
 inline bool Tensor::is_nonzero() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1543,6 +1885,8 @@ inline bool Tensor::is_nonzero() const {
     return op.callUnboxed<bool, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::is_same_size(Tensor self, Tensor other) -> bool
 inline bool Tensor::is_same_size(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1552,6 +1896,8 @@ inline bool Tensor::is_same_size(const Tensor & other) const {
     return op.callUnboxed<bool, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::is_signed(Tensor self) -> bool
 inline bool Tensor::is_signed() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1561,6 +1907,8 @@ inline bool Tensor::is_signed() const {
     return op.callUnboxed<bool, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::kthvalue(Tensor self, int k, int dim=-1, bool keepdim=False) -> (Tensor values, Tensor indices)
 inline std::tuple<Tensor,Tensor> Tensor::kthvalue(int64_t k, int64_t dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1570,6 +1918,8 @@ inline std::tuple<Tensor,Tensor> Tensor::kthvalue(int64_t k, int64_t dim, bool k
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, int64_t, int64_t, bool>(const_cast<Tensor&>(*this), k, dim, keepdim);
 #endif
 }
+
+// aten::kthvalue.dimname(Tensor self, int k, Dimname dim, bool keepdim=False) -> (Tensor values, Tensor indices)
 inline std::tuple<Tensor,Tensor> Tensor::kthvalue(int64_t k, Dimname dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1579,6 +1929,8 @@ inline std::tuple<Tensor,Tensor> Tensor::kthvalue(int64_t k, Dimname dim, bool k
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, int64_t, Dimname, bool>(const_cast<Tensor&>(*this), k, dim, keepdim);
 #endif
 }
+
+// aten::log(Tensor self) -> Tensor
 inline Tensor Tensor::log() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1588,6 +1940,8 @@ inline Tensor Tensor::log() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::log_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::log_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1597,6 +1951,8 @@ inline Tensor & Tensor::log_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::log10(Tensor self) -> Tensor
 inline Tensor Tensor::log10() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1606,6 +1962,8 @@ inline Tensor Tensor::log10() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::log10_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::log10_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1615,6 +1973,8 @@ inline Tensor & Tensor::log10_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::log1p(Tensor self) -> Tensor
 inline Tensor Tensor::log1p() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1624,22 +1984,28 @@ inline Tensor Tensor::log1p() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::log1p_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::log1p_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::log1p_(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("log1p_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("log1p_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::log1p_", "");
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::log2(Tensor self) -> Tensor
 inline Tensor Tensor::log2() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1649,6 +2015,8 @@ inline Tensor Tensor::log2() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::log2_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::log2_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1658,6 +2026,8 @@ inline Tensor & Tensor::log2_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::logdet(Tensor self) -> Tensor
 inline Tensor Tensor::logdet() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1667,6 +2037,8 @@ inline Tensor Tensor::logdet() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::log_softmax.int(Tensor self, int dim, ScalarType? dtype=None) -> Tensor
 inline Tensor Tensor::log_softmax(int64_t dim, c10::optional<ScalarType> dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1676,6 +2048,8 @@ inline Tensor Tensor::log_softmax(int64_t dim, c10::optional<ScalarType> dtype) 
     return op.callUnboxed<Tensor, const Tensor &, int64_t, c10::optional<ScalarType>>(const_cast<Tensor&>(*this), dim, dtype);
 #endif
 }
+
+// aten::log_softmax.Dimname(Tensor self, Dimname dim, *, ScalarType? dtype=None) -> Tensor
 inline Tensor Tensor::log_softmax(Dimname dim, c10::optional<ScalarType> dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1685,6 +2059,8 @@ inline Tensor Tensor::log_softmax(Dimname dim, c10::optional<ScalarType> dtype) 
     return op.callUnboxed<Tensor, const Tensor &, Dimname, c10::optional<ScalarType>>(const_cast<Tensor&>(*this), dim, dtype);
 #endif
 }
+
+// aten::logsumexp(Tensor self, int[1] dim, bool keepdim=False) -> Tensor
 inline Tensor Tensor::logsumexp(IntArrayRef dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1694,6 +2070,8 @@ inline Tensor Tensor::logsumexp(IntArrayRef dim, bool keepdim) const {
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::logsumexp.names(Tensor self, Dimname[1] dim, bool keepdim=False) -> Tensor
 inline Tensor Tensor::logsumexp(DimnameList dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1703,6 +2081,8 @@ inline Tensor Tensor::logsumexp(DimnameList dim, bool keepdim) const {
     return op.callUnboxed<Tensor, const Tensor &, DimnameList, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::matmul(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::matmul(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1712,6 +2092,8 @@ inline Tensor Tensor::matmul(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::matrix_power(Tensor self, int n) -> Tensor
 inline Tensor Tensor::matrix_power(int64_t n) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1721,6 +2103,8 @@ inline Tensor Tensor::matrix_power(int64_t n) const {
     return op.callUnboxed<Tensor, const Tensor &, int64_t>(const_cast<Tensor&>(*this), n);
 #endif
 }
+
+// aten::max.dim(Tensor self, int dim, bool keepdim=False) -> (Tensor values, Tensor indices)
 inline std::tuple<Tensor,Tensor> Tensor::max(int64_t dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1730,6 +2114,8 @@ inline std::tuple<Tensor,Tensor> Tensor::max(int64_t dim, bool keepdim) const {
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, int64_t, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::max_values(Tensor self, int[1] dim, bool keepdim=False) -> Tensor
 inline Tensor Tensor::max_values(IntArrayRef dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1739,6 +2125,8 @@ inline Tensor Tensor::max_values(IntArrayRef dim, bool keepdim) const {
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::max.names_dim(Tensor self, Dimname dim, bool keepdim=False) -> (Tensor values, Tensor indices)
 inline std::tuple<Tensor,Tensor> Tensor::max(Dimname dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1748,6 +2136,8 @@ inline std::tuple<Tensor,Tensor> Tensor::max(Dimname dim, bool keepdim) const {
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, Dimname, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::max_values.names(Tensor self, Dimname[1] dim, bool keepdim=False) -> Tensor
 inline Tensor Tensor::max_values(DimnameList dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1757,11 +2147,15 @@ inline Tensor Tensor::max_values(DimnameList dim, bool keepdim) const {
     return op.callUnboxed<Tensor, const Tensor &, DimnameList, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::mean(Tensor self, *, ScalarType? dtype=None) -> Tensor
 inline Tensor Tensor::mean(c10::optional<ScalarType> dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::mean(const_cast<Tensor&>(*this), dtype);
             break;
@@ -1769,18 +2163,22 @@ inline Tensor Tensor::mean(c10::optional<ScalarType> dtype) const {
             return QuantizedCPUType::mean(const_cast<Tensor&>(*this), dtype);
             break;
         default:
-            AT_ERROR("mean not implemented for ", at::toString(key_set()));
+            AT_ERROR("mean not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::mean", "");
     return op.callUnboxed<Tensor, const Tensor &, c10::optional<ScalarType>>(const_cast<Tensor&>(*this), dtype);
 #endif
 }
+
+// aten::mean.dim(Tensor self, int[1] dim, bool keepdim=False, *, ScalarType? dtype=None) -> Tensor
 inline Tensor Tensor::mean(IntArrayRef dim, bool keepdim, c10::optional<ScalarType> dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::mean_dim(const_cast<Tensor&>(*this), dim, keepdim, dtype);
             break;
@@ -1788,13 +2186,15 @@ inline Tensor Tensor::mean(IntArrayRef dim, bool keepdim, c10::optional<ScalarTy
             return QuantizedCPUType::mean_dim(const_cast<Tensor&>(*this), dim, keepdim, dtype);
             break;
         default:
-            AT_ERROR("mean not implemented for ", at::toString(key_set()));
+            AT_ERROR("mean not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::mean", "dim");
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef, bool, c10::optional<ScalarType>>(const_cast<Tensor&>(*this), dim, keepdim, dtype);
 #endif
 }
+
+// aten::mean.names_dim(Tensor self, Dimname[1] dim, bool keepdim=False, *, ScalarType? dtype=None) -> Tensor
 inline Tensor Tensor::mean(DimnameList dim, bool keepdim, c10::optional<ScalarType> dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1804,6 +2204,8 @@ inline Tensor Tensor::mean(DimnameList dim, bool keepdim, c10::optional<ScalarTy
     return op.callUnboxed<Tensor, const Tensor &, DimnameList, bool, c10::optional<ScalarType>>(const_cast<Tensor&>(*this), dim, keepdim, dtype);
 #endif
 }
+
+// aten::median.dim(Tensor self, int dim, bool keepdim=False) -> (Tensor values, Tensor indices)
 inline std::tuple<Tensor,Tensor> Tensor::median(int64_t dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1813,6 +2215,8 @@ inline std::tuple<Tensor,Tensor> Tensor::median(int64_t dim, bool keepdim) const
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, int64_t, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::median.names_dim(Tensor self, Dimname dim, bool keepdim=False) -> (Tensor values, Tensor indices)
 inline std::tuple<Tensor,Tensor> Tensor::median(Dimname dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1822,6 +2226,8 @@ inline std::tuple<Tensor,Tensor> Tensor::median(Dimname dim, bool keepdim) const
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, Dimname, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::min.dim(Tensor self, int dim, bool keepdim=False) -> (Tensor values, Tensor indices)
 inline std::tuple<Tensor,Tensor> Tensor::min(int64_t dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1831,6 +2237,8 @@ inline std::tuple<Tensor,Tensor> Tensor::min(int64_t dim, bool keepdim) const {
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, int64_t, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::min_values(Tensor self, int[1] dim, bool keepdim=False) -> Tensor
 inline Tensor Tensor::min_values(IntArrayRef dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1840,6 +2248,8 @@ inline Tensor Tensor::min_values(IntArrayRef dim, bool keepdim) const {
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::min.names_dim(Tensor self, Dimname dim, bool keepdim=False) -> (Tensor values, Tensor indices)
 inline std::tuple<Tensor,Tensor> Tensor::min(Dimname dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1849,6 +2259,8 @@ inline std::tuple<Tensor,Tensor> Tensor::min(Dimname dim, bool keepdim) const {
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, Dimname, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::min_values.names(Tensor self, Dimname[1] dim, bool keepdim=False) -> Tensor
 inline Tensor Tensor::min_values(DimnameList dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1858,22 +2270,28 @@ inline Tensor Tensor::min_values(DimnameList dim, bool keepdim) const {
     return op.callUnboxed<Tensor, const Tensor &, DimnameList, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::mm(Tensor self, Tensor mat2) -> Tensor
 inline Tensor Tensor::mm(const Tensor & mat2) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, mat2);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::mm(const_cast<Tensor&>(*this), mat2);
             break;
         default:
-            AT_ERROR("mm not implemented for ", at::toString(key_set()));
+            AT_ERROR("mm not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::mm", "");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), mat2);
 #endif
 }
+
+// aten::mode(Tensor self, int dim=-1, bool keepdim=False) -> (Tensor values, Tensor indices)
 inline std::tuple<Tensor,Tensor> Tensor::mode(int64_t dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1883,6 +2301,8 @@ inline std::tuple<Tensor,Tensor> Tensor::mode(int64_t dim, bool keepdim) const {
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, int64_t, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::mode.dimname(Tensor self, Dimname dim, bool keepdim=False) -> (Tensor values, Tensor indices)
 inline std::tuple<Tensor,Tensor> Tensor::mode(Dimname dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1892,38 +2312,48 @@ inline std::tuple<Tensor,Tensor> Tensor::mode(Dimname dim, bool keepdim) const {
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, Dimname, bool>(const_cast<Tensor&>(*this), dim, keepdim);
 #endif
 }
+
+// aten::mul.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::mul(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::mul_Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("mul not implemented for ", at::toString(key_set()));
+            AT_ERROR("mul not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::mul", "Tensor");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::mul_.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::mul_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::mul__Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("mul_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("mul_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::mul_", "Tensor");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::mul.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::mul(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1933,6 +2363,8 @@ inline Tensor Tensor::mul(Scalar other) const {
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::mul_.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::mul_(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1942,22 +2374,28 @@ inline Tensor & Tensor::mul_(Scalar other) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::mv(Tensor self, Tensor vec) -> Tensor
 inline Tensor Tensor::mv(const Tensor & vec) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, vec);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::mv(const_cast<Tensor&>(*this), vec);
             break;
         default:
-            AT_ERROR("mv not implemented for ", at::toString(key_set()));
+            AT_ERROR("mv not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::mv", "");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), vec);
 #endif
 }
+
+// aten::mvlgamma(Tensor self, int p) -> Tensor
 inline Tensor Tensor::mvlgamma(int64_t p) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1967,6 +2405,8 @@ inline Tensor Tensor::mvlgamma(int64_t p) const {
     return op.callUnboxed<Tensor, const Tensor &, int64_t>(const_cast<Tensor&>(*this), p);
 #endif
 }
+
+// aten::mvlgamma_(Tensor(a!) self, int p) -> Tensor(a!)
 inline Tensor & Tensor::mvlgamma_(int64_t p) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -1976,22 +2416,28 @@ inline Tensor & Tensor::mvlgamma_(int64_t p) const {
     return op.callUnboxed<Tensor &, Tensor &, int64_t>(const_cast<Tensor&>(*this), p);
 #endif
 }
+
+// aten::narrow_copy(Tensor self, int dim, int start, int length) -> Tensor
 inline Tensor Tensor::narrow_copy(int64_t dim, int64_t start, int64_t length) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::narrow_copy(const_cast<Tensor&>(*this), dim, start, length);
             break;
         default:
-            AT_ERROR("narrow_copy not implemented for ", at::toString(key_set()));
+            AT_ERROR("narrow_copy not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::narrow_copy", "");
     return op.callUnboxed<Tensor, const Tensor &, int64_t, int64_t, int64_t>(const_cast<Tensor&>(*this), dim, start, length);
 #endif
 }
+
+// aten::narrow(Tensor(a) self, int dim, int start, int length) -> Tensor(a)
 inline Tensor Tensor::narrow(int64_t dim, int64_t start, int64_t length) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2001,6 +2447,8 @@ inline Tensor Tensor::narrow(int64_t dim, int64_t start, int64_t length) const {
     return op.callUnboxed<Tensor, const Tensor &, int64_t, int64_t, int64_t>(const_cast<Tensor&>(*this), dim, start, length);
 #endif
 }
+
+// aten::narrow.Tensor(Tensor(a) self, int dim, Tensor start, int length) -> Tensor(a)
 inline Tensor Tensor::narrow(int64_t dim, const Tensor & start, int64_t length) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2010,6 +2458,8 @@ inline Tensor Tensor::narrow(int64_t dim, const Tensor & start, int64_t length) 
     return op.callUnboxed<Tensor, const Tensor &, int64_t, const Tensor &, int64_t>(const_cast<Tensor&>(*this), dim, start, length);
 #endif
 }
+
+// aten::permute(Tensor(a) self, int[] dims) -> Tensor(a)
 inline Tensor Tensor::permute(IntArrayRef dims) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2019,6 +2469,8 @@ inline Tensor Tensor::permute(IntArrayRef dims) const {
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef>(const_cast<Tensor&>(*this), dims);
 #endif
 }
+
+// aten::numpy_T(Tensor(a) self) -> Tensor(a)
 inline Tensor Tensor::numpy_T() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2028,6 +2480,8 @@ inline Tensor Tensor::numpy_T() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::is_pinned(Tensor self) -> bool
 inline bool Tensor::is_pinned() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2037,6 +2491,8 @@ inline bool Tensor::is_pinned() const {
     return op.callUnboxed<bool, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::pin_memory(Tensor self) -> Tensor
 inline Tensor Tensor::pin_memory() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2046,6 +2502,8 @@ inline Tensor Tensor::pin_memory() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::pinverse(Tensor self, float rcond=1e-15) -> Tensor
 inline Tensor Tensor::pinverse(double rcond) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2055,6 +2513,8 @@ inline Tensor Tensor::pinverse(double rcond) const {
     return op.callUnboxed<Tensor, const Tensor &, double>(const_cast<Tensor&>(*this), rcond);
 #endif
 }
+
+// aten::reciprocal(Tensor self) -> Tensor
 inline Tensor Tensor::reciprocal() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2064,6 +2524,8 @@ inline Tensor Tensor::reciprocal() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::reciprocal_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::reciprocal_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2073,6 +2535,8 @@ inline Tensor & Tensor::reciprocal_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::neg(Tensor self) -> Tensor
 inline Tensor Tensor::neg() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2082,6 +2546,8 @@ inline Tensor Tensor::neg() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::neg_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::neg_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2091,6 +2557,8 @@ inline Tensor & Tensor::neg_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::repeat(Tensor self, int[] repeats) -> Tensor
 inline Tensor Tensor::repeat(IntArrayRef repeats) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2100,6 +2568,8 @@ inline Tensor Tensor::repeat(IntArrayRef repeats) const {
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef>(const_cast<Tensor&>(*this), repeats);
 #endif
 }
+
+// aten::repeat_interleave.self_Tensor(Tensor self, Tensor repeats, int? dim=None) -> Tensor
 inline Tensor Tensor::repeat_interleave(const Tensor & repeats, c10::optional<int64_t> dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2109,6 +2579,8 @@ inline Tensor Tensor::repeat_interleave(const Tensor & repeats, c10::optional<in
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, c10::optional<int64_t>>(const_cast<Tensor&>(*this), repeats, dim);
 #endif
 }
+
+// aten::repeat_interleave.self_int(Tensor self, int repeats, int? dim=None) -> Tensor
 inline Tensor Tensor::repeat_interleave(int64_t repeats, c10::optional<int64_t> dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2118,6 +2590,8 @@ inline Tensor Tensor::repeat_interleave(int64_t repeats, c10::optional<int64_t> 
     return op.callUnboxed<Tensor, const Tensor &, int64_t, c10::optional<int64_t>>(const_cast<Tensor&>(*this), repeats, dim);
 #endif
 }
+
+// aten::reshape(Tensor self, int[] shape) -> Tensor
 inline Tensor Tensor::reshape(IntArrayRef shape) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2127,6 +2601,8 @@ inline Tensor Tensor::reshape(IntArrayRef shape) const {
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef>(const_cast<Tensor&>(*this), shape);
 #endif
 }
+
+// aten::reshape_as(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::reshape_as(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2136,6 +2612,8 @@ inline Tensor Tensor::reshape_as(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::round(Tensor self) -> Tensor
 inline Tensor Tensor::round() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2145,6 +2623,8 @@ inline Tensor Tensor::round() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::round_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::round_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2154,11 +2634,15 @@ inline Tensor & Tensor::round_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::relu(Tensor self) -> Tensor
 inline Tensor Tensor::relu() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::relu(const_cast<Tensor&>(*this));
             break;
@@ -2166,18 +2650,22 @@ inline Tensor Tensor::relu() const {
             return QuantizedCPUType::relu(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("relu not implemented for ", at::toString(key_set()));
+            AT_ERROR("relu not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::relu", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::relu_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::relu_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::relu_(const_cast<Tensor&>(*this));
             break;
@@ -2185,45 +2673,55 @@ inline Tensor & Tensor::relu_() const {
             return QuantizedCPUType::relu_(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("relu_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("relu_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::relu_", "");
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::prelu(Tensor self, Tensor weight) -> Tensor
 inline Tensor Tensor::prelu(const Tensor & weight) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, weight);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::prelu(const_cast<Tensor&>(*this), weight);
             break;
         default:
-            AT_ERROR("prelu not implemented for ", at::toString(key_set()));
+            AT_ERROR("prelu not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::prelu", "");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), weight);
 #endif
 }
+
+// aten::prelu_backward(Tensor grad_output, Tensor self, Tensor weight) -> (Tensor, Tensor)
 inline std::tuple<Tensor,Tensor> Tensor::prelu_backward(const Tensor & grad_output, const Tensor & weight) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(grad_output, *this, weight);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::prelu_backward(grad_output, const_cast<Tensor&>(*this), weight);
             break;
         default:
-            AT_ERROR("prelu_backward not implemented for ", at::toString(key_set()));
+            AT_ERROR("prelu_backward not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::prelu_backward", "");
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, const Tensor &, const Tensor &>(grad_output, const_cast<Tensor&>(*this), weight);
 #endif
 }
+
+// aten::hardshrink(Tensor self, Scalar lambd=0.5) -> Tensor
 inline Tensor Tensor::hardshrink(Scalar lambd) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2233,6 +2731,8 @@ inline Tensor Tensor::hardshrink(Scalar lambd) const {
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), lambd);
 #endif
 }
+
+// aten::hardshrink_backward(Tensor grad_out, Tensor self, Scalar lambd) -> Tensor
 inline Tensor Tensor::hardshrink_backward(const Tensor & grad_out, Scalar lambd) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2242,6 +2742,8 @@ inline Tensor Tensor::hardshrink_backward(const Tensor & grad_out, Scalar lambd)
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, Scalar>(grad_out, const_cast<Tensor&>(*this), lambd);
 #endif
 }
+
+// aten::rsqrt(Tensor self) -> Tensor
 inline Tensor Tensor::rsqrt() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2251,6 +2753,8 @@ inline Tensor Tensor::rsqrt() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::rsqrt_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::rsqrt_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2260,6 +2764,8 @@ inline Tensor & Tensor::rsqrt_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::select.Dimname(Tensor(a) self, Dimname dim, int index) -> Tensor(a)
 inline Tensor Tensor::select(Dimname dim, int64_t index) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2269,6 +2775,8 @@ inline Tensor Tensor::select(Dimname dim, int64_t index) const {
     return op.callUnboxed<Tensor, const Tensor &, Dimname, int64_t>(const_cast<Tensor&>(*this), dim, index);
 #endif
 }
+
+// aten::select.int(Tensor(a) self, int dim, int index) -> Tensor(a)
 inline Tensor Tensor::select(int64_t dim, int64_t index) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2278,11 +2786,15 @@ inline Tensor Tensor::select(int64_t dim, int64_t index) const {
     return op.callUnboxed<Tensor, const Tensor &, int64_t, int64_t>(const_cast<Tensor&>(*this), dim, index);
 #endif
 }
+
+// aten::sigmoid(Tensor self) -> Tensor
 inline Tensor Tensor::sigmoid() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::sigmoid(const_cast<Tensor&>(*this));
             break;
@@ -2290,29 +2802,35 @@ inline Tensor Tensor::sigmoid() const {
             return QuantizedCPUType::sigmoid(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("sigmoid not implemented for ", at::toString(key_set()));
+            AT_ERROR("sigmoid not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::sigmoid", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::sigmoid_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::sigmoid_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::sigmoid_(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("sigmoid_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("sigmoid_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::sigmoid_", "");
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::sin(Tensor self) -> Tensor
 inline Tensor Tensor::sin() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2322,6 +2840,8 @@ inline Tensor Tensor::sin() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::sin_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::sin_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2331,6 +2851,8 @@ inline Tensor & Tensor::sin_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::sinh(Tensor self) -> Tensor
 inline Tensor Tensor::sinh() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2340,6 +2862,8 @@ inline Tensor Tensor::sinh() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::sinh_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::sinh_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2349,6 +2873,8 @@ inline Tensor & Tensor::sinh_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::detach(Tensor self) -> Tensor
 inline Tensor Tensor::detach() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2358,6 +2884,8 @@ inline Tensor Tensor::detach() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::detach_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::detach_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2367,6 +2895,8 @@ inline Tensor & Tensor::detach_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::size.int(Tensor self, int dim) -> int
 inline int64_t Tensor::size(int64_t dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2376,6 +2906,8 @@ inline int64_t Tensor::size(int64_t dim) const {
     return op.callUnboxed<int64_t, const Tensor &, int64_t>(const_cast<Tensor&>(*this), dim);
 #endif
 }
+
+// aten::size.Dimname(Tensor self, Dimname dim) -> int
 inline int64_t Tensor::size(Dimname dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2385,6 +2917,8 @@ inline int64_t Tensor::size(Dimname dim) const {
     return op.callUnboxed<int64_t, const Tensor &, Dimname>(const_cast<Tensor&>(*this), dim);
 #endif
 }
+
+// aten::slice.Tensor(Tensor(a) self, int dim=0, int start=0, int end=9223372036854775807, int step=1) -> Tensor(a)
 inline Tensor Tensor::slice(int64_t dim, int64_t start, int64_t end, int64_t step) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2394,6 +2928,8 @@ inline Tensor Tensor::slice(int64_t dim, int64_t start, int64_t end, int64_t ste
     return op.callUnboxed<Tensor, const Tensor &, int64_t, int64_t, int64_t, int64_t>(const_cast<Tensor&>(*this), dim, start, end, step);
 #endif
 }
+
+// aten::slogdet(Tensor self) -> (Tensor sign, Tensor logabsdet)
 inline std::tuple<Tensor,Tensor> Tensor::slogdet() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2403,6 +2939,8 @@ inline std::tuple<Tensor,Tensor> Tensor::slogdet() const {
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::smm(Tensor self, Tensor mat2) -> Tensor
 inline Tensor Tensor::smm(const Tensor & mat2) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2412,6 +2950,8 @@ inline Tensor Tensor::smm(const Tensor & mat2) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), mat2);
 #endif
 }
+
+// aten::softmax.int(Tensor self, int dim, ScalarType? dtype=None) -> Tensor
 inline Tensor Tensor::softmax(int64_t dim, c10::optional<ScalarType> dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2421,6 +2961,8 @@ inline Tensor Tensor::softmax(int64_t dim, c10::optional<ScalarType> dtype) cons
     return op.callUnboxed<Tensor, const Tensor &, int64_t, c10::optional<ScalarType>>(const_cast<Tensor&>(*this), dim, dtype);
 #endif
 }
+
+// aten::softmax.Dimname(Tensor self, Dimname dim, *, ScalarType? dtype=None) -> Tensor
 inline Tensor Tensor::softmax(Dimname dim, c10::optional<ScalarType> dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2430,6 +2972,8 @@ inline Tensor Tensor::softmax(Dimname dim, c10::optional<ScalarType> dtype) cons
     return op.callUnboxed<Tensor, const Tensor &, Dimname, c10::optional<ScalarType>>(const_cast<Tensor&>(*this), dim, dtype);
 #endif
 }
+
+// aten::split.Tensor(Tensor(a) self, int split_size, int dim=0) -> Tensor(a)[]
 inline std::vector<Tensor> Tensor::split(int64_t split_size, int64_t dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2439,6 +2983,8 @@ inline std::vector<Tensor> Tensor::split(int64_t split_size, int64_t dim) const 
     return op.callUnboxed<std::vector<Tensor>, const Tensor &, int64_t, int64_t>(const_cast<Tensor&>(*this), split_size, dim);
 #endif
 }
+
+// aten::split_with_sizes(Tensor self, int[] split_sizes, int dim=0) -> Tensor[]
 inline std::vector<Tensor> Tensor::split_with_sizes(IntArrayRef split_sizes, int64_t dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2448,6 +2994,8 @@ inline std::vector<Tensor> Tensor::split_with_sizes(IntArrayRef split_sizes, int
     return op.callUnboxed<std::vector<Tensor>, const Tensor &, IntArrayRef, int64_t>(const_cast<Tensor&>(*this), split_sizes, dim);
 #endif
 }
+
+// aten::squeeze(Tensor(a) self) -> Tensor(a)
 inline Tensor Tensor::squeeze() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2457,6 +3005,8 @@ inline Tensor Tensor::squeeze() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::squeeze.dim(Tensor(a) self, int dim) -> Tensor(a)
 inline Tensor Tensor::squeeze(int64_t dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2466,6 +3016,8 @@ inline Tensor Tensor::squeeze(int64_t dim) const {
     return op.callUnboxed<Tensor, const Tensor &, int64_t>(const_cast<Tensor&>(*this), dim);
 #endif
 }
+
+// aten::squeeze.dimname(Tensor(a) self, Dimname dim) -> Tensor(a)
 inline Tensor Tensor::squeeze(Dimname dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2475,6 +3027,8 @@ inline Tensor Tensor::squeeze(Dimname dim) const {
     return op.callUnboxed<Tensor, const Tensor &, Dimname>(const_cast<Tensor&>(*this), dim);
 #endif
 }
+
+// aten::squeeze_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::squeeze_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2484,6 +3038,8 @@ inline Tensor & Tensor::squeeze_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::squeeze_.dim(Tensor(a!) self, int dim) -> Tensor(a!)
 inline Tensor & Tensor::squeeze_(int64_t dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2493,6 +3049,8 @@ inline Tensor & Tensor::squeeze_(int64_t dim) const {
     return op.callUnboxed<Tensor &, Tensor &, int64_t>(const_cast<Tensor&>(*this), dim);
 #endif
 }
+
+// aten::squeeze_.dimname(Tensor(a!) self, Dimname dim) -> Tensor(a!)
 inline Tensor & Tensor::squeeze_(Dimname dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2502,6 +3060,8 @@ inline Tensor & Tensor::squeeze_(Dimname dim) const {
     return op.callUnboxed<Tensor &, Tensor &, Dimname>(const_cast<Tensor&>(*this), dim);
 #endif
 }
+
+// aten::sspaddmm(Tensor self, Tensor mat1, Tensor mat2, *, Scalar beta=1, Scalar alpha=1) -> Tensor
 inline Tensor Tensor::sspaddmm(const Tensor & mat1, const Tensor & mat2, Scalar beta, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2511,6 +3071,8 @@ inline Tensor Tensor::sspaddmm(const Tensor & mat1, const Tensor & mat2, Scalar 
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, const Tensor &, Scalar, Scalar>(const_cast<Tensor&>(*this), mat1, mat2, beta, alpha);
 #endif
 }
+
+// aten::stft(Tensor self, int n_fft, int? hop_length=None, int? win_length=None, Tensor? window=None, bool normalized=False, bool onesided=True) -> Tensor
 inline Tensor Tensor::stft(int64_t n_fft, c10::optional<int64_t> hop_length, c10::optional<int64_t> win_length, const Tensor & window, bool normalized, bool onesided) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2520,6 +3082,8 @@ inline Tensor Tensor::stft(int64_t n_fft, c10::optional<int64_t> hop_length, c10
     return op.callUnboxed<Tensor, const Tensor &, int64_t, c10::optional<int64_t>, c10::optional<int64_t>, const Tensor &, bool, bool>(const_cast<Tensor&>(*this), n_fft, hop_length, win_length, window, normalized, onesided);
 #endif
 }
+
+// aten::stride.int(Tensor self, int dim) -> int
 inline int64_t Tensor::stride(int64_t dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2529,6 +3093,8 @@ inline int64_t Tensor::stride(int64_t dim) const {
     return op.callUnboxed<int64_t, const Tensor &, int64_t>(const_cast<Tensor&>(*this), dim);
 #endif
 }
+
+// aten::stride.Dimname(Tensor self, Dimname dim) -> int
 inline int64_t Tensor::stride(Dimname dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2538,6 +3104,8 @@ inline int64_t Tensor::stride(Dimname dim) const {
     return op.callUnboxed<int64_t, const Tensor &, Dimname>(const_cast<Tensor&>(*this), dim);
 #endif
 }
+
+// aten::sum(Tensor self, *, ScalarType? dtype=None) -> Tensor
 inline Tensor Tensor::sum(c10::optional<ScalarType> dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2547,6 +3115,8 @@ inline Tensor Tensor::sum(c10::optional<ScalarType> dtype) const {
     return op.callUnboxed<Tensor, const Tensor &, c10::optional<ScalarType>>(const_cast<Tensor&>(*this), dtype);
 #endif
 }
+
+// aten::sum.dim_IntList(Tensor self, int[1] dim, bool keepdim=False, *, ScalarType? dtype=None) -> Tensor
 inline Tensor Tensor::sum(IntArrayRef dim, bool keepdim, c10::optional<ScalarType> dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2556,6 +3126,8 @@ inline Tensor Tensor::sum(IntArrayRef dim, bool keepdim, c10::optional<ScalarTyp
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef, bool, c10::optional<ScalarType>>(const_cast<Tensor&>(*this), dim, keepdim, dtype);
 #endif
 }
+
+// aten::sum.dim_DimnameList(Tensor self, Dimname[1] dim, bool keepdim=False, *, ScalarType? dtype=None) -> Tensor
 inline Tensor Tensor::sum(DimnameList dim, bool keepdim, c10::optional<ScalarType> dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2565,6 +3137,8 @@ inline Tensor Tensor::sum(DimnameList dim, bool keepdim, c10::optional<ScalarTyp
     return op.callUnboxed<Tensor, const Tensor &, DimnameList, bool, c10::optional<ScalarType>>(const_cast<Tensor&>(*this), dim, keepdim, dtype);
 #endif
 }
+
+// aten::sum_to_size(Tensor self, int[] size) -> Tensor
 inline Tensor Tensor::sum_to_size(IntArrayRef size) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2574,6 +3148,8 @@ inline Tensor Tensor::sum_to_size(IntArrayRef size) const {
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef>(const_cast<Tensor&>(*this), size);
 #endif
 }
+
+// aten::sqrt(Tensor self) -> Tensor
 inline Tensor Tensor::sqrt() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2583,6 +3159,8 @@ inline Tensor Tensor::sqrt() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::sqrt_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::sqrt_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2592,6 +3170,8 @@ inline Tensor & Tensor::sqrt_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::square(Tensor self) -> Tensor
 inline Tensor Tensor::square() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2601,6 +3181,8 @@ inline Tensor Tensor::square() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::square_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::square_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2610,6 +3192,8 @@ inline Tensor & Tensor::square_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::std(Tensor self, bool unbiased=True) -> Tensor
 inline Tensor Tensor::std(bool unbiased) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2619,6 +3203,8 @@ inline Tensor Tensor::std(bool unbiased) const {
     return op.callUnboxed<Tensor, const Tensor &, bool>(const_cast<Tensor&>(*this), unbiased);
 #endif
 }
+
+// aten::std.dim(Tensor self, int[1] dim, bool unbiased=True, bool keepdim=False) -> Tensor
 inline Tensor Tensor::std(IntArrayRef dim, bool unbiased, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2628,6 +3214,8 @@ inline Tensor Tensor::std(IntArrayRef dim, bool unbiased, bool keepdim) const {
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef, bool, bool>(const_cast<Tensor&>(*this), dim, unbiased, keepdim);
 #endif
 }
+
+// aten::std.names_dim(Tensor self, Dimname[1] dim, bool unbiased=True, bool keepdim=False) -> Tensor
 inline Tensor Tensor::std(DimnameList dim, bool unbiased, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2637,6 +3225,8 @@ inline Tensor Tensor::std(DimnameList dim, bool unbiased, bool keepdim) const {
     return op.callUnboxed<Tensor, const Tensor &, DimnameList, bool, bool>(const_cast<Tensor&>(*this), dim, unbiased, keepdim);
 #endif
 }
+
+// aten::prod(Tensor self, *, ScalarType? dtype=None) -> Tensor
 inline Tensor Tensor::prod(c10::optional<ScalarType> dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2646,6 +3236,8 @@ inline Tensor Tensor::prod(c10::optional<ScalarType> dtype) const {
     return op.callUnboxed<Tensor, const Tensor &, c10::optional<ScalarType>>(const_cast<Tensor&>(*this), dtype);
 #endif
 }
+
+// aten::prod.dim_int(Tensor self, int dim, bool keepdim=False, *, ScalarType? dtype=None) -> Tensor
 inline Tensor Tensor::prod(int64_t dim, bool keepdim, c10::optional<ScalarType> dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2655,6 +3247,8 @@ inline Tensor Tensor::prod(int64_t dim, bool keepdim, c10::optional<ScalarType> 
     return op.callUnboxed<Tensor, const Tensor &, int64_t, bool, c10::optional<ScalarType>>(const_cast<Tensor&>(*this), dim, keepdim, dtype);
 #endif
 }
+
+// aten::prod.dim_Dimname(Tensor self, Dimname dim, bool keepdim=False, *, ScalarType? dtype=None) -> Tensor
 inline Tensor Tensor::prod(Dimname dim, bool keepdim, c10::optional<ScalarType> dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2664,6 +3258,8 @@ inline Tensor Tensor::prod(Dimname dim, bool keepdim, c10::optional<ScalarType> 
     return op.callUnboxed<Tensor, const Tensor &, Dimname, bool, c10::optional<ScalarType>>(const_cast<Tensor&>(*this), dim, keepdim, dtype);
 #endif
 }
+
+// aten::t(Tensor(a) self) -> Tensor(a)
 inline Tensor Tensor::t() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2673,6 +3269,8 @@ inline Tensor Tensor::t() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::t_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::t_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2682,6 +3280,8 @@ inline Tensor & Tensor::t_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::tan(Tensor self) -> Tensor
 inline Tensor Tensor::tan() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2691,27 +3291,35 @@ inline Tensor Tensor::tan() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::tan_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::tan_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::tan_(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("tan_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("tan_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::tan_", "");
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::tanh(Tensor self) -> Tensor
 inline Tensor Tensor::tanh() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::tanh(const_cast<Tensor&>(*this));
             break;
@@ -2719,29 +3327,35 @@ inline Tensor Tensor::tanh() const {
             return QuantizedCPUType::tanh(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("tanh not implemented for ", at::toString(key_set()));
+            AT_ERROR("tanh not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::tanh", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::tanh_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::tanh_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::tanh_(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("tanh_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("tanh_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::tanh_", "");
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::transpose.int(Tensor(a) self, int dim0, int dim1) -> Tensor(a)
 inline Tensor Tensor::transpose(int64_t dim0, int64_t dim1) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2751,6 +3365,8 @@ inline Tensor Tensor::transpose(int64_t dim0, int64_t dim1) const {
     return op.callUnboxed<Tensor, const Tensor &, int64_t, int64_t>(const_cast<Tensor&>(*this), dim0, dim1);
 #endif
 }
+
+// aten::transpose.Dimname(Tensor(a) self, Dimname dim0, Dimname dim1) -> Tensor(a)
 inline Tensor Tensor::transpose(Dimname dim0, Dimname dim1) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2760,6 +3376,8 @@ inline Tensor Tensor::transpose(Dimname dim0, Dimname dim1) const {
     return op.callUnboxed<Tensor, const Tensor &, Dimname, Dimname>(const_cast<Tensor&>(*this), dim0, dim1);
 #endif
 }
+
+// aten::transpose_(Tensor(a!) self, int dim0, int dim1) -> Tensor(a!)
 inline Tensor & Tensor::transpose_(int64_t dim0, int64_t dim1) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2769,38 +3387,48 @@ inline Tensor & Tensor::transpose_(int64_t dim0, int64_t dim1) const {
     return op.callUnboxed<Tensor &, Tensor &, int64_t, int64_t>(const_cast<Tensor&>(*this), dim0, dim1);
 #endif
 }
+
+// aten::flip(Tensor self, int[] dims) -> Tensor
 inline Tensor Tensor::flip(IntArrayRef dims) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::flip(const_cast<Tensor&>(*this), dims);
             break;
         default:
-            AT_ERROR("flip not implemented for ", at::toString(key_set()));
+            AT_ERROR("flip not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::flip", "");
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef>(const_cast<Tensor&>(*this), dims);
 #endif
 }
+
+// aten::roll(Tensor self, int[1] shifts, int[1] dims=[]) -> Tensor
 inline Tensor Tensor::roll(IntArrayRef shifts, IntArrayRef dims) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::roll(const_cast<Tensor&>(*this), shifts, dims);
             break;
         default:
-            AT_ERROR("roll not implemented for ", at::toString(key_set()));
+            AT_ERROR("roll not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::roll", "");
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef, IntArrayRef>(const_cast<Tensor&>(*this), shifts, dims);
 #endif
 }
+
+// aten::rot90(Tensor self, int k=1, int[] dims=[0,1]) -> Tensor
 inline Tensor Tensor::rot90(int64_t k, IntArrayRef dims) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2810,38 +3438,48 @@ inline Tensor Tensor::rot90(int64_t k, IntArrayRef dims) const {
     return op.callUnboxed<Tensor, const Tensor &, int64_t, IntArrayRef>(const_cast<Tensor&>(*this), k, dims);
 #endif
 }
+
+// aten::true_divide.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::true_divide(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::true_divide_Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("true_divide not implemented for ", at::toString(key_set()));
+            AT_ERROR("true_divide not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::true_divide", "Tensor");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::true_divide_.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::true_divide_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::true_divide__Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("true_divide_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("true_divide_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::true_divide_", "Tensor");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::true_divide.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::true_divide(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2851,6 +3489,8 @@ inline Tensor Tensor::true_divide(Scalar other) const {
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::true_divide_.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::true_divide_(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2860,6 +3500,8 @@ inline Tensor & Tensor::true_divide_(Scalar other) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::trunc(Tensor self) -> Tensor
 inline Tensor Tensor::trunc() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2869,6 +3511,8 @@ inline Tensor Tensor::trunc() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::trunc_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::trunc_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2878,6 +3522,8 @@ inline Tensor & Tensor::trunc_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::type_as(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::type_as(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2887,6 +3533,8 @@ inline Tensor Tensor::type_as(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::unsqueeze(Tensor(a) self, int dim) -> Tensor(a)
 inline Tensor Tensor::unsqueeze(int64_t dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2896,6 +3544,8 @@ inline Tensor Tensor::unsqueeze(int64_t dim) const {
     return op.callUnboxed<Tensor, const Tensor &, int64_t>(const_cast<Tensor&>(*this), dim);
 #endif
 }
+
+// aten::unsqueeze_(Tensor(a!) self, int dim) -> Tensor(a!)
 inline Tensor & Tensor::unsqueeze_(int64_t dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2905,6 +3555,8 @@ inline Tensor & Tensor::unsqueeze_(int64_t dim) const {
     return op.callUnboxed<Tensor &, Tensor &, int64_t>(const_cast<Tensor&>(*this), dim);
 #endif
 }
+
+// aten::var(Tensor self, bool unbiased=True) -> Tensor
 inline Tensor Tensor::var(bool unbiased) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2914,6 +3566,8 @@ inline Tensor Tensor::var(bool unbiased) const {
     return op.callUnboxed<Tensor, const Tensor &, bool>(const_cast<Tensor&>(*this), unbiased);
 #endif
 }
+
+// aten::var.dim(Tensor self, int[1] dim, bool unbiased=True, bool keepdim=False) -> Tensor
 inline Tensor Tensor::var(IntArrayRef dim, bool unbiased, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2923,6 +3577,8 @@ inline Tensor Tensor::var(IntArrayRef dim, bool unbiased, bool keepdim) const {
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef, bool, bool>(const_cast<Tensor&>(*this), dim, unbiased, keepdim);
 #endif
 }
+
+// aten::var.names_dim(Tensor self, Dimname[1] dim, bool unbiased=True, bool keepdim=False) -> Tensor
 inline Tensor Tensor::var(DimnameList dim, bool unbiased, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2932,6 +3588,8 @@ inline Tensor Tensor::var(DimnameList dim, bool unbiased, bool keepdim) const {
     return op.callUnboxed<Tensor, const Tensor &, DimnameList, bool, bool>(const_cast<Tensor&>(*this), dim, unbiased, keepdim);
 #endif
 }
+
+// aten::view_as(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::view_as(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2941,6 +3599,8 @@ inline Tensor Tensor::view_as(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::where.self(Tensor condition, Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::where(const Tensor & condition, const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2950,6 +3610,8 @@ inline Tensor Tensor::where(const Tensor & condition, const Tensor & other) cons
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, const Tensor &>(condition, const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::norm.ScalarOpt_dtype(Tensor self, Scalar? p, *, ScalarType dtype) -> Tensor
 inline Tensor Tensor::norm(c10::optional<Scalar> p, ScalarType dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2959,6 +3621,8 @@ inline Tensor Tensor::norm(c10::optional<Scalar> p, ScalarType dtype) const {
     return op.callUnboxed<Tensor, const Tensor &, c10::optional<Scalar>, ScalarType>(const_cast<Tensor&>(*this), p, dtype);
 #endif
 }
+
+// aten::norm.Scalar(Tensor self, Scalar p=2) -> Tensor
 inline Tensor Tensor::norm(Scalar p) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2968,6 +3632,8 @@ inline Tensor Tensor::norm(Scalar p) const {
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), p);
 #endif
 }
+
+// aten::norm.ScalarOpt_dim_dtype(Tensor self, Scalar? p, int[1] dim, bool keepdim, *, ScalarType dtype) -> Tensor
 inline Tensor Tensor::norm(c10::optional<Scalar> p, IntArrayRef dim, bool keepdim, ScalarType dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2977,6 +3643,8 @@ inline Tensor Tensor::norm(c10::optional<Scalar> p, IntArrayRef dim, bool keepdi
     return op.callUnboxed<Tensor, const Tensor &, c10::optional<Scalar>, IntArrayRef, bool, ScalarType>(const_cast<Tensor&>(*this), p, dim, keepdim, dtype);
 #endif
 }
+
+// aten::norm.ScalarOpt_dim(Tensor self, Scalar? p, int[1] dim, bool keepdim=False) -> Tensor
 inline Tensor Tensor::norm(c10::optional<Scalar> p, IntArrayRef dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2986,6 +3654,8 @@ inline Tensor Tensor::norm(c10::optional<Scalar> p, IntArrayRef dim, bool keepdi
     return op.callUnboxed<Tensor, const Tensor &, c10::optional<Scalar>, IntArrayRef, bool>(const_cast<Tensor&>(*this), p, dim, keepdim);
 #endif
 }
+
+// aten::norm.names_ScalarOpt_dim_dtype(Tensor self, Scalar? p, Dimname[1] dim, bool keepdim, *, ScalarType dtype) -> Tensor
 inline Tensor Tensor::norm(c10::optional<Scalar> p, DimnameList dim, bool keepdim, ScalarType dtype) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -2995,6 +3665,8 @@ inline Tensor Tensor::norm(c10::optional<Scalar> p, DimnameList dim, bool keepdi
     return op.callUnboxed<Tensor, const Tensor &, c10::optional<Scalar>, DimnameList, bool, ScalarType>(const_cast<Tensor&>(*this), p, dim, keepdim, dtype);
 #endif
 }
+
+// aten::norm.names_ScalarOpt_dim(Tensor self, Scalar? p, Dimname[1] dim, bool keepdim=False) -> Tensor
 inline Tensor Tensor::norm(c10::optional<Scalar> p, DimnameList dim, bool keepdim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3004,11 +3676,15 @@ inline Tensor Tensor::norm(c10::optional<Scalar> p, DimnameList dim, bool keepdi
     return op.callUnboxed<Tensor, const Tensor &, c10::optional<Scalar>, DimnameList, bool>(const_cast<Tensor&>(*this), p, dim, keepdim);
 #endif
 }
+
+// aten::clone(Tensor self, *, MemoryFormat? memory_format=None) -> Tensor
 inline Tensor Tensor::clone(c10::optional<MemoryFormat> memory_format) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::clone(const_cast<Tensor&>(*this), memory_format);
             break;
@@ -3016,13 +3692,15 @@ inline Tensor Tensor::clone(c10::optional<MemoryFormat> memory_format) const {
             return QuantizedCPUType::clone(const_cast<Tensor&>(*this), memory_format);
             break;
         default:
-            AT_ERROR("clone not implemented for ", at::toString(key_set()));
+            AT_ERROR("clone not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::clone", "");
     return op.callUnboxed<Tensor, const Tensor &, c10::optional<MemoryFormat>>(const_cast<Tensor&>(*this), memory_format);
 #endif
 }
+
+// aten::resize_as_(Tensor(a!) self, Tensor the_template, *, MemoryFormat? memory_format=None) -> Tensor(a!)
 inline Tensor & Tensor::resize_as_(const Tensor & the_template, c10::optional<MemoryFormat> memory_format) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3032,70 +3710,88 @@ inline Tensor & Tensor::resize_as_(const Tensor & the_template, c10::optional<Me
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, c10::optional<MemoryFormat>>(const_cast<Tensor&>(*this), the_template, memory_format);
 #endif
 }
+
+// aten::pow.Tensor_Scalar(Tensor self, Scalar exponent) -> Tensor
 inline Tensor Tensor::pow(Scalar exponent) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::pow_Tensor_Scalar(const_cast<Tensor&>(*this), exponent);
             break;
         default:
-            AT_ERROR("pow not implemented for ", at::toString(key_set()));
+            AT_ERROR("pow not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::pow", "Tensor_Scalar");
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), exponent);
 #endif
 }
+
+// aten::zero_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::zero_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::zero_(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("zero_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("zero_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::zero_", "");
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::sub.Tensor(Tensor self, Tensor other, *, Scalar alpha=1) -> Tensor
 inline Tensor Tensor::sub(const Tensor & other, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::sub_Tensor(const_cast<Tensor&>(*this), other, alpha);
             break;
         default:
-            AT_ERROR("sub not implemented for ", at::toString(key_set()));
+            AT_ERROR("sub not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::sub", "Tensor");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other, alpha);
 #endif
 }
+
+// aten::sub_.Tensor(Tensor(a!) self, Tensor other, *, Scalar alpha=1) -> Tensor(a!)
 inline Tensor & Tensor::sub_(const Tensor & other, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::sub__Tensor(const_cast<Tensor&>(*this), other, alpha);
             break;
         default:
-            AT_ERROR("sub_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("sub_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::sub_", "Tensor");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other, alpha);
 #endif
 }
+
+// aten::sub.Scalar(Tensor self, Scalar other, Scalar alpha=1) -> Tensor
 inline Tensor Tensor::sub(Scalar other, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3105,6 +3801,8 @@ inline Tensor Tensor::sub(Scalar other, Scalar alpha) const {
     return op.callUnboxed<Tensor, const Tensor &, Scalar, Scalar>(const_cast<Tensor&>(*this), other, alpha);
 #endif
 }
+
+// aten::sub_.Scalar(Tensor(a!) self, Scalar other, Scalar alpha=1) -> Tensor(a!)
 inline Tensor & Tensor::sub_(Scalar other, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3114,262 +3812,336 @@ inline Tensor & Tensor::sub_(Scalar other, Scalar alpha) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar, Scalar>(const_cast<Tensor&>(*this), other, alpha);
 #endif
 }
+
+// aten::addmm(Tensor self, Tensor mat1, Tensor mat2, *, Scalar beta=1, Scalar alpha=1) -> Tensor
 inline Tensor Tensor::addmm(const Tensor & mat1, const Tensor & mat2, Scalar beta, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, mat1, mat2);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::addmm(const_cast<Tensor&>(*this), mat1, mat2, beta, alpha);
             break;
         default:
-            AT_ERROR("addmm not implemented for ", at::toString(key_set()));
+            AT_ERROR("addmm not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::addmm", "");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, const Tensor &, Scalar, Scalar>(const_cast<Tensor&>(*this), mat1, mat2, beta, alpha);
 #endif
 }
+
+// aten::addmm_(Tensor(a!) self, Tensor mat1, Tensor mat2, *, Scalar beta=1, Scalar alpha=1) -> Tensor(a!)
 inline Tensor & Tensor::addmm_(const Tensor & mat1, const Tensor & mat2, Scalar beta, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, mat1, mat2);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::addmm_(const_cast<Tensor&>(*this), mat1, mat2, beta, alpha);
             break;
         default:
-            AT_ERROR("addmm_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("addmm_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::addmm_", "");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, const Tensor &, Scalar, Scalar>(const_cast<Tensor&>(*this), mat1, mat2, beta, alpha);
 #endif
 }
+
+// aten::sparse_resize_(Tensor(a!) self, int[] size, int sparse_dim, int dense_dim) -> Tensor(a!)
 inline Tensor & Tensor::sparse_resize_(IntArrayRef size, int64_t sparse_dim, int64_t dense_dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
     
         default:
-            AT_ERROR("sparse_resize_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("sparse_resize_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::sparse_resize_", "");
     return op.callUnboxed<Tensor &, Tensor &, IntArrayRef, int64_t, int64_t>(const_cast<Tensor&>(*this), size, sparse_dim, dense_dim);
 #endif
 }
+
+// aten::sparse_resize_and_clear_(Tensor(a!) self, int[] size, int sparse_dim, int dense_dim) -> Tensor(a!)
 inline Tensor & Tensor::sparse_resize_and_clear_(IntArrayRef size, int64_t sparse_dim, int64_t dense_dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
     
         default:
-            AT_ERROR("sparse_resize_and_clear_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("sparse_resize_and_clear_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::sparse_resize_and_clear_", "");
     return op.callUnboxed<Tensor &, Tensor &, IntArrayRef, int64_t, int64_t>(const_cast<Tensor&>(*this), size, sparse_dim, dense_dim);
 #endif
 }
+
+// aten::sparse_mask(Tensor self, Tensor mask) -> Tensor
 inline Tensor Tensor::sparse_mask(const Tensor & mask) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, mask);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
     
         default:
-            AT_ERROR("sparse_mask not implemented for ", at::toString(key_set()));
+            AT_ERROR("sparse_mask not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::sparse_mask", "");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), mask);
 #endif
 }
+
+// aten::to_dense(Tensor self) -> Tensor
 inline Tensor Tensor::to_dense() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
     
         default:
-            AT_ERROR("to_dense not implemented for ", at::toString(key_set()));
+            AT_ERROR("to_dense not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::to_dense", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::sparse_dim(Tensor self) -> int
 inline int64_t Tensor::sparse_dim() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
     
         default:
-            AT_ERROR("sparse_dim not implemented for ", at::toString(key_set()));
+            AT_ERROR("sparse_dim not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::sparse_dim", "");
     return op.callUnboxed<int64_t, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::_dimI(Tensor self) -> int
 inline int64_t Tensor::_dimI() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
     
         default:
-            AT_ERROR("_dimI not implemented for ", at::toString(key_set()));
+            AT_ERROR("_dimI not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_dimI", "");
     return op.callUnboxed<int64_t, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::dense_dim(Tensor self) -> int
 inline int64_t Tensor::dense_dim() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
     
         default:
-            AT_ERROR("dense_dim not implemented for ", at::toString(key_set()));
+            AT_ERROR("dense_dim not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::dense_dim", "");
     return op.callUnboxed<int64_t, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::_dimV(Tensor self) -> int
 inline int64_t Tensor::_dimV() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
     
         default:
-            AT_ERROR("_dimV not implemented for ", at::toString(key_set()));
+            AT_ERROR("_dimV not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_dimV", "");
     return op.callUnboxed<int64_t, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::_nnz(Tensor self) -> int
 inline int64_t Tensor::_nnz() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
     
         default:
-            AT_ERROR("_nnz not implemented for ", at::toString(key_set()));
+            AT_ERROR("_nnz not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_nnz", "");
     return op.callUnboxed<int64_t, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::coalesce(Tensor self) -> Tensor
 inline Tensor Tensor::coalesce() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
     
         default:
-            AT_ERROR("coalesce not implemented for ", at::toString(key_set()));
+            AT_ERROR("coalesce not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::coalesce", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::is_coalesced(Tensor self) -> bool
 inline bool Tensor::is_coalesced() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
     
         default:
-            AT_ERROR("is_coalesced not implemented for ", at::toString(key_set()));
+            AT_ERROR("is_coalesced not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::is_coalesced", "");
     return op.callUnboxed<bool, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::_indices(Tensor(a) self) -> Tensor(a)
 inline Tensor Tensor::_indices() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
     
         default:
-            AT_ERROR("_indices not implemented for ", at::toString(key_set()));
+            AT_ERROR("_indices not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_indices", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::_values(Tensor(a) self) -> Tensor(a)
 inline Tensor Tensor::_values() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
     
         default:
-            AT_ERROR("_values not implemented for ", at::toString(key_set()));
+            AT_ERROR("_values not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_values", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::_coalesced_(Tensor(a!) self, bool coalesced) -> Tensor(a!)
 inline Tensor & Tensor::_coalesced_(bool coalesced) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
     
         default:
-            AT_ERROR("_coalesced_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("_coalesced_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_coalesced_", "");
     return op.callUnboxed<Tensor &, Tensor &, bool>(const_cast<Tensor&>(*this), coalesced);
 #endif
 }
+
+// aten::indices(Tensor(a) self) -> Tensor(a)
 inline Tensor Tensor::indices() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
     
         default:
-            AT_ERROR("indices not implemented for ", at::toString(key_set()));
+            AT_ERROR("indices not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::indices", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::values(Tensor(a) self) -> Tensor(a)
 inline Tensor Tensor::values() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
     
         default:
-            AT_ERROR("values not implemented for ", at::toString(key_set()));
+            AT_ERROR("values not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::values", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::unbind.int(Tensor(a) self, int dim=0) -> Tensor(a)[]
 inline std::vector<Tensor> Tensor::unbind(int64_t dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3379,6 +4151,8 @@ inline std::vector<Tensor> Tensor::unbind(int64_t dim) const {
     return op.callUnboxed<std::vector<Tensor>, const Tensor &, int64_t>(const_cast<Tensor&>(*this), dim);
 #endif
 }
+
+// aten::unbind.Dimname(Tensor(a) self, Dimname dim) -> Tensor(a)[]
 inline std::vector<Tensor> Tensor::unbind(Dimname dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3388,182 +4162,228 @@ inline std::vector<Tensor> Tensor::unbind(Dimname dim) const {
     return op.callUnboxed<std::vector<Tensor>, const Tensor &, Dimname>(const_cast<Tensor&>(*this), dim);
 #endif
 }
+
+// aten::to_sparse.sparse_dim(Tensor self, int sparse_dim) -> Tensor
 inline Tensor Tensor::to_sparse(int64_t sparse_dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::to_sparse_sparse_dim(const_cast<Tensor&>(*this), sparse_dim);
             break;
         default:
-            AT_ERROR("to_sparse not implemented for ", at::toString(key_set()));
+            AT_ERROR("to_sparse not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::to_sparse", "sparse_dim");
     return op.callUnboxed<Tensor, const Tensor &, int64_t>(const_cast<Tensor&>(*this), sparse_dim);
 #endif
 }
+
+// aten::to_sparse(Tensor self) -> Tensor
 inline Tensor Tensor::to_sparse() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::to_sparse(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("to_sparse not implemented for ", at::toString(key_set()));
+            AT_ERROR("to_sparse not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::to_sparse", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::to_mkldnn(Tensor self) -> Tensor
 inline Tensor Tensor::to_mkldnn() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::to_mkldnn(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("to_mkldnn not implemented for ", at::toString(key_set()));
+            AT_ERROR("to_mkldnn not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::to_mkldnn", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::dequantize.self(Tensor self) -> Tensor
 inline Tensor Tensor::dequantize() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::QuantizedCPU:
             return QuantizedCPUType::dequantize_self(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("dequantize not implemented for ", at::toString(key_set()));
+            AT_ERROR("dequantize not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::dequantize", "self");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::q_scale(Tensor self) -> float
 inline double Tensor::q_scale() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::QuantizedCPU:
             return QuantizedCPUType::q_scale(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("q_scale not implemented for ", at::toString(key_set()));
+            AT_ERROR("q_scale not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::q_scale", "");
     return op.callUnboxed<double, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::q_zero_point(Tensor self) -> int
 inline int64_t Tensor::q_zero_point() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::QuantizedCPU:
             return QuantizedCPUType::q_zero_point(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("q_zero_point not implemented for ", at::toString(key_set()));
+            AT_ERROR("q_zero_point not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::q_zero_point", "");
     return op.callUnboxed<int64_t, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::q_per_channel_scales(Tensor self) -> Tensor
 inline Tensor Tensor::q_per_channel_scales() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::QuantizedCPU:
             return QuantizedCPUType::q_per_channel_scales(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("q_per_channel_scales not implemented for ", at::toString(key_set()));
+            AT_ERROR("q_per_channel_scales not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::q_per_channel_scales", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::q_per_channel_zero_points(Tensor self) -> Tensor
 inline Tensor Tensor::q_per_channel_zero_points() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::QuantizedCPU:
             return QuantizedCPUType::q_per_channel_zero_points(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("q_per_channel_zero_points not implemented for ", at::toString(key_set()));
+            AT_ERROR("q_per_channel_zero_points not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::q_per_channel_zero_points", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::q_per_channel_axis(Tensor self) -> int
 inline int64_t Tensor::q_per_channel_axis() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::QuantizedCPU:
             return QuantizedCPUType::q_per_channel_axis(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("q_per_channel_axis not implemented for ", at::toString(key_set()));
+            AT_ERROR("q_per_channel_axis not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::q_per_channel_axis", "");
     return op.callUnboxed<int64_t, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::int_repr(Tensor self) -> Tensor
 inline Tensor Tensor::int_repr() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::QuantizedCPU:
             return QuantizedCPUType::int_repr(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("int_repr not implemented for ", at::toString(key_set()));
+            AT_ERROR("int_repr not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::int_repr", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::qscheme(Tensor self) -> QScheme
 inline QScheme Tensor::qscheme() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::QuantizedCPU:
             return QuantizedCPUType::qscheme(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("qscheme not implemented for ", at::toString(key_set()));
+            AT_ERROR("qscheme not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::qscheme", "");
     return op.callUnboxed<QScheme, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::to.dtype_layout(Tensor self, *, ScalarType dtype, Layout layout, Device device, bool pin_memory=False, bool non_blocking=False, bool copy=False, MemoryFormat? memory_format=None) -> Tensor
 inline Tensor Tensor::to(const TensorOptions & options, bool non_blocking, bool copy, c10::optional<MemoryFormat> memory_format) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3573,6 +4393,8 @@ inline Tensor Tensor::to(const TensorOptions & options, bool non_blocking, bool 
     return op.callUnboxed<Tensor, const Tensor &, const TensorOptions &, bool, bool, c10::optional<MemoryFormat>>(const_cast<Tensor&>(*this), options, non_blocking, copy, memory_format);
 #endif
 }
+
+// aten::to.device(Tensor self, Device device, ScalarType dtype, bool non_blocking=False, bool copy=False, MemoryFormat? memory_format=None) -> Tensor
 inline Tensor Tensor::to(Device device, ScalarType dtype, bool non_blocking, bool copy, c10::optional<MemoryFormat> memory_format) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3582,6 +4404,8 @@ inline Tensor Tensor::to(Device device, ScalarType dtype, bool non_blocking, boo
     return op.callUnboxed<Tensor, const Tensor &, Device, ScalarType, bool, bool, c10::optional<MemoryFormat>>(const_cast<Tensor&>(*this), device, dtype, non_blocking, copy, memory_format);
 #endif
 }
+
+// aten::to.dtype(Tensor self, ScalarType dtype, bool non_blocking=False, bool copy=False, MemoryFormat? memory_format=None) -> Tensor
 inline Tensor Tensor::to(ScalarType dtype, bool non_blocking, bool copy, c10::optional<MemoryFormat> memory_format) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3591,6 +4415,8 @@ inline Tensor Tensor::to(ScalarType dtype, bool non_blocking, bool copy, c10::op
     return op.callUnboxed<Tensor, const Tensor &, ScalarType, bool, bool, c10::optional<MemoryFormat>>(const_cast<Tensor&>(*this), dtype, non_blocking, copy, memory_format);
 #endif
 }
+
+// aten::to.other(Tensor self, Tensor other, bool non_blocking=False, bool copy=False, MemoryFormat? memory_format=None) -> Tensor
 inline Tensor Tensor::to(const Tensor & other, bool non_blocking, bool copy, c10::optional<MemoryFormat> memory_format) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3600,6 +4426,8 @@ inline Tensor Tensor::to(const Tensor & other, bool non_blocking, bool copy, c10
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, bool, bool, c10::optional<MemoryFormat>>(const_cast<Tensor&>(*this), other, non_blocking, copy, memory_format);
 #endif
 }
+
+// aten::item(Tensor self) -> Scalar
 inline Scalar Tensor::item() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3609,27 +4437,35 @@ inline Scalar Tensor::item() const {
     return op.callUnboxed<Scalar, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::set_.source_Storage(Tensor(a!) self, Storage source) -> Tensor(a!)
 inline Tensor & Tensor::set_(Storage source) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::set__source_Storage(const_cast<Tensor&>(*this), source);
             break;
         default:
-            AT_ERROR("set_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("set_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::set_", "source_Storage");
     return op.callUnboxed<Tensor &, Tensor &, Storage>(const_cast<Tensor&>(*this), source);
 #endif
 }
+
+// aten::set_.source_Storage_storage_offset(Tensor(a!) self, Storage source, int storage_offset, int[] size, int[] stride=[]) -> Tensor(a!)
 inline Tensor & Tensor::set_(Storage source, int64_t storage_offset, IntArrayRef size, IntArrayRef stride) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::set__source_Storage_storage_offset(const_cast<Tensor&>(*this), source, storage_offset, size, stride);
             break;
@@ -3637,93 +4473,115 @@ inline Tensor & Tensor::set_(Storage source, int64_t storage_offset, IntArrayRef
             return QuantizedCPUType::set__source_Storage_storage_offset(const_cast<Tensor&>(*this), source, storage_offset, size, stride);
             break;
         default:
-            AT_ERROR("set_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("set_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::set_", "source_Storage_storage_offset");
     return op.callUnboxed<Tensor &, Tensor &, Storage, int64_t, IntArrayRef, IntArrayRef>(const_cast<Tensor&>(*this), source, storage_offset, size, stride);
 #endif
 }
+
+// aten::set_.source_Tensor(Tensor(a!) self, Tensor source) -> Tensor(a!)
 inline Tensor & Tensor::set_(const Tensor & source) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, source);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::set__source_Tensor(const_cast<Tensor&>(*this), source);
             break;
         default:
-            AT_ERROR("set_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("set_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::set_", "source_Tensor");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), source);
 #endif
 }
+
+// aten::set_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::set_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::set_(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("set_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("set_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::set_", "");
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::set_quantizer_(Tensor(a!) self, ConstQuantizerPtr quantizer) -> Tensor(a!)
 inline Tensor & Tensor::set_quantizer_(ConstQuantizerPtr quantizer) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::QuantizedCPU:
             return QuantizedCPUType::set_quantizer_(const_cast<Tensor&>(*this), quantizer);
             break;
         default:
-            AT_ERROR("set_quantizer_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("set_quantizer_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::set_quantizer_", "");
     return op.callUnboxed<Tensor &, Tensor &, ConstQuantizerPtr>(const_cast<Tensor&>(*this), quantizer);
 #endif
 }
+
+// aten::is_set_to(Tensor self, Tensor tensor) -> bool
 inline bool Tensor::is_set_to(const Tensor & tensor) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, tensor);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::is_set_to(const_cast<Tensor&>(*this), tensor);
             break;
         default:
-            AT_ERROR("is_set_to not implemented for ", at::toString(key_set()));
+            AT_ERROR("is_set_to not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::is_set_to", "");
     return op.callUnboxed<bool, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), tensor);
 #endif
 }
+
+// aten::masked_fill_.Scalar(Tensor(a!) self, Tensor mask, Scalar value) -> Tensor(a!)
 inline Tensor & Tensor::masked_fill_(const Tensor & mask, Scalar value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, mask);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::masked_fill__Scalar(const_cast<Tensor&>(*this), mask, value);
             break;
         default:
-            AT_ERROR("masked_fill_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("masked_fill_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::masked_fill_", "Scalar");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, Scalar>(const_cast<Tensor&>(*this), mask, value);
 #endif
 }
+
+// aten::masked_fill.Scalar(Tensor self, Tensor mask, Scalar value) -> Tensor
 inline Tensor Tensor::masked_fill(const Tensor & mask, Scalar value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3733,22 +4591,28 @@ inline Tensor Tensor::masked_fill(const Tensor & mask, Scalar value) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, Scalar>(const_cast<Tensor&>(*this), mask, value);
 #endif
 }
+
+// aten::masked_fill_.Tensor(Tensor(a!) self, Tensor mask, Tensor value) -> Tensor(a!)
 inline Tensor & Tensor::masked_fill_(const Tensor & mask, const Tensor & value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, mask, value);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::masked_fill__Tensor(const_cast<Tensor&>(*this), mask, value);
             break;
         default:
-            AT_ERROR("masked_fill_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("masked_fill_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::masked_fill_", "Tensor");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), mask, value);
 #endif
 }
+
+// aten::masked_fill.Tensor(Tensor self, Tensor mask, Tensor value) -> Tensor
 inline Tensor Tensor::masked_fill(const Tensor & mask, const Tensor & value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3758,22 +4622,28 @@ inline Tensor Tensor::masked_fill(const Tensor & mask, const Tensor & value) con
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), mask, value);
 #endif
 }
+
+// aten::masked_scatter_(Tensor(a!) self, Tensor mask, Tensor source) -> Tensor(a!)
 inline Tensor & Tensor::masked_scatter_(const Tensor & mask, const Tensor & source) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, mask, source);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::masked_scatter_(const_cast<Tensor&>(*this), mask, source);
             break;
         default:
-            AT_ERROR("masked_scatter_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("masked_scatter_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::masked_scatter_", "");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), mask, source);
 #endif
 }
+
+// aten::masked_scatter(Tensor self, Tensor mask, Tensor source) -> Tensor
 inline Tensor Tensor::masked_scatter(const Tensor & mask, const Tensor & source) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3783,11 +4653,15 @@ inline Tensor Tensor::masked_scatter(const Tensor & mask, const Tensor & source)
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), mask, source);
 #endif
 }
+
+// aten::view(Tensor(a) self, int[] size) -> Tensor(a)
 inline Tensor Tensor::view(IntArrayRef size) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::view(const_cast<Tensor&>(*this), size);
             break;
@@ -3795,45 +4669,55 @@ inline Tensor Tensor::view(IntArrayRef size) const {
             return QuantizedCPUType::view(const_cast<Tensor&>(*this), size);
             break;
         default:
-            AT_ERROR("view not implemented for ", at::toString(key_set()));
+            AT_ERROR("view not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::view", "");
     return op.callUnboxed<Tensor, const Tensor &, IntArrayRef>(const_cast<Tensor&>(*this), size);
 #endif
 }
+
+// aten::put_(Tensor(a!) self, Tensor index, Tensor source, bool accumulate=False) -> Tensor(a!)
 inline Tensor & Tensor::put_(const Tensor & index, const Tensor & source, bool accumulate) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, index, source);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::put_(const_cast<Tensor&>(*this), index, source, accumulate);
             break;
         default:
-            AT_ERROR("put_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("put_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::put_", "");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, const Tensor &, bool>(const_cast<Tensor&>(*this), index, source, accumulate);
 #endif
 }
+
+// aten::index_add_(Tensor(a!) self, int dim, Tensor index, Tensor source) -> Tensor(a!)
 inline Tensor & Tensor::index_add_(int64_t dim, const Tensor & index, const Tensor & source) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, index, source);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::index_add_(const_cast<Tensor&>(*this), dim, index, source);
             break;
         default:
-            AT_ERROR("index_add_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("index_add_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::index_add_", "");
     return op.callUnboxed<Tensor &, Tensor &, int64_t, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), dim, index, source);
 #endif
 }
+
+// aten::index_add(Tensor self, int dim, Tensor index, Tensor source) -> Tensor
 inline Tensor Tensor::index_add(int64_t dim, const Tensor & index, const Tensor & source) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3843,6 +4727,8 @@ inline Tensor Tensor::index_add(int64_t dim, const Tensor & index, const Tensor 
     return op.callUnboxed<Tensor, const Tensor &, int64_t, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), dim, index, source);
 #endif
 }
+
+// aten::index_add.dimname(Tensor self, Dimname dim, Tensor index, Tensor source) -> Tensor
 inline Tensor Tensor::index_add(Dimname dim, const Tensor & index, const Tensor & source) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3852,22 +4738,28 @@ inline Tensor Tensor::index_add(Dimname dim, const Tensor & index, const Tensor 
     return op.callUnboxed<Tensor, const Tensor &, Dimname, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), dim, index, source);
 #endif
 }
+
+// aten::index_fill_.int_Scalar(Tensor(a!) self, int dim, Tensor index, Scalar value) -> Tensor(a!)
 inline Tensor & Tensor::index_fill_(int64_t dim, const Tensor & index, Scalar value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, index);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::index_fill__int_Scalar(const_cast<Tensor&>(*this), dim, index, value);
             break;
         default:
-            AT_ERROR("index_fill_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("index_fill_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::index_fill_", "int_Scalar");
     return op.callUnboxed<Tensor &, Tensor &, int64_t, const Tensor &, Scalar>(const_cast<Tensor&>(*this), dim, index, value);
 #endif
 }
+
+// aten::index_fill.int_Scalar(Tensor self, int dim, Tensor index, Scalar value) -> Tensor
 inline Tensor Tensor::index_fill(int64_t dim, const Tensor & index, Scalar value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3877,22 +4769,28 @@ inline Tensor Tensor::index_fill(int64_t dim, const Tensor & index, Scalar value
     return op.callUnboxed<Tensor, const Tensor &, int64_t, const Tensor &, Scalar>(const_cast<Tensor&>(*this), dim, index, value);
 #endif
 }
+
+// aten::index_fill_.int_Tensor(Tensor(a!) self, int dim, Tensor index, Tensor value) -> Tensor(a!)
 inline Tensor & Tensor::index_fill_(int64_t dim, const Tensor & index, const Tensor & value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, index, value);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::index_fill__int_Tensor(const_cast<Tensor&>(*this), dim, index, value);
             break;
         default:
-            AT_ERROR("index_fill_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("index_fill_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::index_fill_", "int_Tensor");
     return op.callUnboxed<Tensor &, Tensor &, int64_t, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), dim, index, value);
 #endif
 }
+
+// aten::index_fill.int_Tensor(Tensor self, int dim, Tensor index, Tensor value) -> Tensor
 inline Tensor Tensor::index_fill(int64_t dim, const Tensor & index, const Tensor & value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3902,6 +4800,8 @@ inline Tensor Tensor::index_fill(int64_t dim, const Tensor & index, const Tensor
     return op.callUnboxed<Tensor, const Tensor &, int64_t, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), dim, index, value);
 #endif
 }
+
+// aten::index_fill_.Dimname_Scalar(Tensor(a!) self, Dimname dim, Tensor index, Scalar value) -> Tensor(a!)
 inline Tensor & Tensor::index_fill_(Dimname dim, const Tensor & index, Scalar value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3911,6 +4811,8 @@ inline Tensor & Tensor::index_fill_(Dimname dim, const Tensor & index, Scalar va
     return op.callUnboxed<Tensor &, Tensor &, Dimname, const Tensor &, Scalar>(const_cast<Tensor&>(*this), dim, index, value);
 #endif
 }
+
+// aten::index_fill_.Dimname_Tensor(Tensor(a!) self, Dimname dim, Tensor index, Tensor value) -> Tensor(a!)
 inline Tensor & Tensor::index_fill_(Dimname dim, const Tensor & index, const Tensor & value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3920,6 +4822,8 @@ inline Tensor & Tensor::index_fill_(Dimname dim, const Tensor & index, const Ten
     return op.callUnboxed<Tensor &, Tensor &, Dimname, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), dim, index, value);
 #endif
 }
+
+// aten::index_fill.Dimname_Scalar(Tensor self, Dimname dim, Tensor index, Scalar value) -> Tensor
 inline Tensor Tensor::index_fill(Dimname dim, const Tensor & index, Scalar value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3929,6 +4833,8 @@ inline Tensor Tensor::index_fill(Dimname dim, const Tensor & index, Scalar value
     return op.callUnboxed<Tensor, const Tensor &, Dimname, const Tensor &, Scalar>(const_cast<Tensor&>(*this), dim, index, value);
 #endif
 }
+
+// aten::index_fill.Dimname_Tensor(Tensor self, Dimname dim, Tensor index, Tensor value) -> Tensor
 inline Tensor Tensor::index_fill(Dimname dim, const Tensor & index, const Tensor & value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3938,22 +4844,28 @@ inline Tensor Tensor::index_fill(Dimname dim, const Tensor & index, const Tensor
     return op.callUnboxed<Tensor, const Tensor &, Dimname, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), dim, index, value);
 #endif
 }
+
+// aten::scatter_.src(Tensor(a!) self, int dim, Tensor index, Tensor src) -> Tensor(a!)
 inline Tensor & Tensor::scatter_(int64_t dim, const Tensor & index, const Tensor & src) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, index, src);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::scatter__src(const_cast<Tensor&>(*this), dim, index, src);
             break;
         default:
-            AT_ERROR("scatter_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("scatter_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::scatter_", "src");
     return op.callUnboxed<Tensor &, Tensor &, int64_t, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), dim, index, src);
 #endif
 }
+
+// aten::scatter.src(Tensor self, int dim, Tensor index, Tensor src) -> Tensor
 inline Tensor Tensor::scatter(int64_t dim, const Tensor & index, const Tensor & src) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3963,22 +4875,28 @@ inline Tensor Tensor::scatter(int64_t dim, const Tensor & index, const Tensor & 
     return op.callUnboxed<Tensor, const Tensor &, int64_t, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), dim, index, src);
 #endif
 }
+
+// aten::scatter_.value(Tensor(a!) self, int dim, Tensor index, Scalar value) -> Tensor(a!)
 inline Tensor & Tensor::scatter_(int64_t dim, const Tensor & index, Scalar value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, index);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::scatter__value(const_cast<Tensor&>(*this), dim, index, value);
             break;
         default:
-            AT_ERROR("scatter_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("scatter_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::scatter_", "value");
     return op.callUnboxed<Tensor &, Tensor &, int64_t, const Tensor &, Scalar>(const_cast<Tensor&>(*this), dim, index, value);
 #endif
 }
+
+// aten::scatter.value(Tensor self, int dim, Tensor index, Scalar value) -> Tensor
 inline Tensor Tensor::scatter(int64_t dim, const Tensor & index, Scalar value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3988,6 +4906,8 @@ inline Tensor Tensor::scatter(int64_t dim, const Tensor & index, Scalar value) c
     return op.callUnboxed<Tensor, const Tensor &, int64_t, const Tensor &, Scalar>(const_cast<Tensor&>(*this), dim, index, value);
 #endif
 }
+
+// aten::scatter.dimname_src(Tensor self, Dimname dim, Tensor index, Tensor src) -> Tensor
 inline Tensor Tensor::scatter(Dimname dim, const Tensor & index, const Tensor & src) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -3997,6 +4917,8 @@ inline Tensor Tensor::scatter(Dimname dim, const Tensor & index, const Tensor & 
     return op.callUnboxed<Tensor, const Tensor &, Dimname, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), dim, index, src);
 #endif
 }
+
+// aten::scatter.dimname_value(Tensor self, Dimname dim, Tensor index, Scalar value) -> Tensor
 inline Tensor Tensor::scatter(Dimname dim, const Tensor & index, Scalar value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4006,22 +4928,28 @@ inline Tensor Tensor::scatter(Dimname dim, const Tensor & index, Scalar value) c
     return op.callUnboxed<Tensor, const Tensor &, Dimname, const Tensor &, Scalar>(const_cast<Tensor&>(*this), dim, index, value);
 #endif
 }
+
+// aten::scatter_add_(Tensor(a!) self, int dim, Tensor index, Tensor src) -> Tensor(a!)
 inline Tensor & Tensor::scatter_add_(int64_t dim, const Tensor & index, const Tensor & src) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, index, src);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::scatter_add_(const_cast<Tensor&>(*this), dim, index, src);
             break;
         default:
-            AT_ERROR("scatter_add_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("scatter_add_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::scatter_add_", "");
     return op.callUnboxed<Tensor &, Tensor &, int64_t, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), dim, index, src);
 #endif
 }
+
+// aten::scatter_add(Tensor self, int dim, Tensor index, Tensor src) -> Tensor
 inline Tensor Tensor::scatter_add(int64_t dim, const Tensor & index, const Tensor & src) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4031,6 +4959,8 @@ inline Tensor Tensor::scatter_add(int64_t dim, const Tensor & index, const Tenso
     return op.callUnboxed<Tensor, const Tensor &, int64_t, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), dim, index, src);
 #endif
 }
+
+// aten::scatter_add.dimname(Tensor self, Dimname dim, Tensor index, Tensor src) -> Tensor
 inline Tensor Tensor::scatter_add(Dimname dim, const Tensor & index, const Tensor & src) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4040,6 +4970,8 @@ inline Tensor Tensor::scatter_add(Dimname dim, const Tensor & index, const Tenso
     return op.callUnboxed<Tensor, const Tensor &, Dimname, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), dim, index, src);
 #endif
 }
+
+// aten::lt_.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::lt_(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4049,6 +4981,8 @@ inline Tensor & Tensor::lt_(Scalar other) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::lt_.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::lt_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4058,6 +4992,8 @@ inline Tensor & Tensor::lt_(const Tensor & other) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::gt_.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::gt_(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4067,6 +5003,8 @@ inline Tensor & Tensor::gt_(Scalar other) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::gt_.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::gt_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4076,6 +5014,8 @@ inline Tensor & Tensor::gt_(const Tensor & other) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::le_.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::le_(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4085,6 +5025,8 @@ inline Tensor & Tensor::le_(Scalar other) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::le_.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::le_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4094,6 +5036,8 @@ inline Tensor & Tensor::le_(const Tensor & other) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::ge_.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::ge_(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4103,6 +5047,8 @@ inline Tensor & Tensor::ge_(Scalar other) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::ge_.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::ge_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4112,6 +5058,8 @@ inline Tensor & Tensor::ge_(const Tensor & other) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::eq_.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::eq_(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4121,6 +5069,8 @@ inline Tensor & Tensor::eq_(Scalar other) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::eq_.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::eq_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4130,6 +5080,8 @@ inline Tensor & Tensor::eq_(const Tensor & other) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::ne_.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::ne_(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4139,6 +5091,8 @@ inline Tensor & Tensor::ne_(Scalar other) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::ne_.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::ne_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4148,6 +5102,8 @@ inline Tensor & Tensor::ne_(const Tensor & other) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::bitwise_and.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::bitwise_and(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4157,6 +5113,8 @@ inline Tensor Tensor::bitwise_and(Scalar other) const {
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::bitwise_and.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::bitwise_and(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4166,6 +5124,8 @@ inline Tensor Tensor::bitwise_and(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::bitwise_and_.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::bitwise_and_(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4175,6 +5135,8 @@ inline Tensor & Tensor::bitwise_and_(Scalar other) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::bitwise_and_.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::bitwise_and_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4184,6 +5146,8 @@ inline Tensor & Tensor::bitwise_and_(const Tensor & other) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__and__.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::__and__(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4193,6 +5157,8 @@ inline Tensor Tensor::__and__(Scalar other) const {
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__and__.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::__and__(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4202,6 +5168,8 @@ inline Tensor Tensor::__and__(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__iand__.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::__iand__(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4211,6 +5179,8 @@ inline Tensor & Tensor::__iand__(Scalar other) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__iand__.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::__iand__(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4220,6 +5190,8 @@ inline Tensor & Tensor::__iand__(const Tensor & other) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::bitwise_or.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::bitwise_or(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4229,6 +5201,8 @@ inline Tensor Tensor::bitwise_or(Scalar other) const {
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::bitwise_or.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::bitwise_or(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4238,6 +5212,8 @@ inline Tensor Tensor::bitwise_or(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::bitwise_or_.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::bitwise_or_(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4247,6 +5223,8 @@ inline Tensor & Tensor::bitwise_or_(Scalar other) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::bitwise_or_.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::bitwise_or_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4256,6 +5234,8 @@ inline Tensor & Tensor::bitwise_or_(const Tensor & other) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__or__.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::__or__(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4265,6 +5245,8 @@ inline Tensor Tensor::__or__(Scalar other) const {
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__or__.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::__or__(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4274,6 +5256,8 @@ inline Tensor Tensor::__or__(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__ior__.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::__ior__(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4283,6 +5267,8 @@ inline Tensor & Tensor::__ior__(Scalar other) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__ior__.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::__ior__(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4292,6 +5278,8 @@ inline Tensor & Tensor::__ior__(const Tensor & other) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::bitwise_xor.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::bitwise_xor(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4301,6 +5289,8 @@ inline Tensor Tensor::bitwise_xor(Scalar other) const {
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::bitwise_xor.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::bitwise_xor(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4310,6 +5300,8 @@ inline Tensor Tensor::bitwise_xor(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::bitwise_xor_.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::bitwise_xor_(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4319,6 +5311,8 @@ inline Tensor & Tensor::bitwise_xor_(Scalar other) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::bitwise_xor_.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::bitwise_xor_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4328,6 +5322,8 @@ inline Tensor & Tensor::bitwise_xor_(const Tensor & other) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__xor__.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::__xor__(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4337,6 +5333,8 @@ inline Tensor Tensor::__xor__(Scalar other) const {
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__xor__.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::__xor__(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4346,6 +5344,8 @@ inline Tensor Tensor::__xor__(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__ixor__.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::__ixor__(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4355,6 +5355,8 @@ inline Tensor & Tensor::__ixor__(Scalar other) const {
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__ixor__.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::__ixor__(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4364,150 +5366,188 @@ inline Tensor & Tensor::__ixor__(const Tensor & other) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__lshift__.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::__lshift__(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::__lshift___Scalar(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("__lshift__ not implemented for ", at::toString(key_set()));
+            AT_ERROR("__lshift__ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::__lshift__", "Scalar");
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__lshift__.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::__lshift__(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::__lshift___Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("__lshift__ not implemented for ", at::toString(key_set()));
+            AT_ERROR("__lshift__ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::__lshift__", "Tensor");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__ilshift__.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::__ilshift__(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::__ilshift___Scalar(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("__ilshift__ not implemented for ", at::toString(key_set()));
+            AT_ERROR("__ilshift__ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::__ilshift__", "Scalar");
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__ilshift__.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::__ilshift__(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::__ilshift___Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("__ilshift__ not implemented for ", at::toString(key_set()));
+            AT_ERROR("__ilshift__ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::__ilshift__", "Tensor");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__rshift__.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::__rshift__(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::__rshift___Scalar(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("__rshift__ not implemented for ", at::toString(key_set()));
+            AT_ERROR("__rshift__ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::__rshift__", "Scalar");
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__rshift__.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::__rshift__(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::__rshift___Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("__rshift__ not implemented for ", at::toString(key_set()));
+            AT_ERROR("__rshift__ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::__rshift__", "Tensor");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__irshift__.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::__irshift__(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::__irshift___Scalar(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("__irshift__ not implemented for ", at::toString(key_set()));
+            AT_ERROR("__irshift__ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::__irshift__", "Scalar");
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::__irshift__.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::__irshift__(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::__irshift___Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("__irshift__ not implemented for ", at::toString(key_set()));
+            AT_ERROR("__irshift__ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::__irshift__", "Tensor");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::lgamma_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::lgamma_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::lgamma_(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("lgamma_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("lgamma_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::lgamma_", "");
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::atan2_(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::atan2_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4517,38 +5557,48 @@ inline Tensor & Tensor::atan2_(const Tensor & other) const {
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::tril_(Tensor(a!) self, int diagonal=0) -> Tensor(a!)
 inline Tensor & Tensor::tril_(int64_t diagonal) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::tril_(const_cast<Tensor&>(*this), diagonal);
             break;
         default:
-            AT_ERROR("tril_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("tril_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::tril_", "");
     return op.callUnboxed<Tensor &, Tensor &, int64_t>(const_cast<Tensor&>(*this), diagonal);
 #endif
 }
+
+// aten::triu_(Tensor(a!) self, int diagonal=0) -> Tensor(a!)
 inline Tensor & Tensor::triu_(int64_t diagonal) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::triu_(const_cast<Tensor&>(*this), diagonal);
             break;
         default:
-            AT_ERROR("triu_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("triu_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::triu_", "");
     return op.callUnboxed<Tensor &, Tensor &, int64_t>(const_cast<Tensor&>(*this), diagonal);
 #endif
 }
+
+// aten::digamma_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::digamma_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4558,6 +5608,8 @@ inline Tensor & Tensor::digamma_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::polygamma_(Tensor(a!) self, int n) -> Tensor(a!)
 inline Tensor & Tensor::polygamma_(int64_t n) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4567,182 +5619,228 @@ inline Tensor & Tensor::polygamma_(int64_t n) const {
     return op.callUnboxed<Tensor &, Tensor &, int64_t>(const_cast<Tensor&>(*this), n);
 #endif
 }
+
+// aten::renorm_(Tensor(a!) self, Scalar p, int dim, Scalar maxnorm) -> Tensor(a!)
 inline Tensor & Tensor::renorm_(Scalar p, int64_t dim, Scalar maxnorm) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::renorm_(const_cast<Tensor&>(*this), p, dim, maxnorm);
             break;
         default:
-            AT_ERROR("renorm_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("renorm_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::renorm_", "");
     return op.callUnboxed<Tensor &, Tensor &, Scalar, int64_t, Scalar>(const_cast<Tensor&>(*this), p, dim, maxnorm);
 #endif
 }
+
+// aten::pow_.Scalar(Tensor(a!) self, Scalar exponent) -> Tensor(a!)
 inline Tensor & Tensor::pow_(Scalar exponent) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::pow__Scalar(const_cast<Tensor&>(*this), exponent);
             break;
         default:
-            AT_ERROR("pow_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("pow_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::pow_", "Scalar");
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), exponent);
 #endif
 }
+
+// aten::pow_.Tensor(Tensor(a!) self, Tensor exponent) -> Tensor(a!)
 inline Tensor & Tensor::pow_(const Tensor & exponent) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, exponent);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::pow__Tensor(const_cast<Tensor&>(*this), exponent);
             break;
         default:
-            AT_ERROR("pow_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("pow_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::pow_", "Tensor");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), exponent);
 #endif
 }
+
+// aten::lerp_.Scalar(Tensor(a!) self, Tensor end, Scalar weight) -> Tensor(a!)
 inline Tensor & Tensor::lerp_(const Tensor & end, Scalar weight) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, end);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::lerp__Scalar(const_cast<Tensor&>(*this), end, weight);
             break;
         default:
-            AT_ERROR("lerp_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("lerp_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::lerp_", "Scalar");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, Scalar>(const_cast<Tensor&>(*this), end, weight);
 #endif
 }
+
+// aten::lerp_.Tensor(Tensor(a!) self, Tensor end, Tensor weight) -> Tensor(a!)
 inline Tensor & Tensor::lerp_(const Tensor & end, const Tensor & weight) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, end, weight);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::lerp__Tensor(const_cast<Tensor&>(*this), end, weight);
             break;
         default:
-            AT_ERROR("lerp_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("lerp_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::lerp_", "Tensor");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), end, weight);
 #endif
 }
+
+// aten::fmod_.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::fmod_(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::fmod__Scalar(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("fmod_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("fmod_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::fmod_", "Scalar");
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::fmod_.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::fmod_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::fmod__Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("fmod_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("fmod_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::fmod_", "Tensor");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::remainder_.Scalar(Tensor(a!) self, Scalar other) -> Tensor(a!)
 inline Tensor & Tensor::remainder_(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::remainder__Scalar(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("remainder_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("remainder_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::remainder_", "Scalar");
     return op.callUnboxed<Tensor &, Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::remainder_.Tensor(Tensor(a!) self, Tensor other) -> Tensor(a!)
 inline Tensor & Tensor::remainder_(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::remainder__Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("remainder_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("remainder_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::remainder_", "Tensor");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::addbmm_(Tensor(a!) self, Tensor batch1, Tensor batch2, *, Scalar beta=1, Scalar alpha=1) -> Tensor(a!)
 inline Tensor & Tensor::addbmm_(const Tensor & batch1, const Tensor & batch2, Scalar beta, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, batch1, batch2);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::addbmm_(const_cast<Tensor&>(*this), batch1, batch2, beta, alpha);
             break;
         default:
-            AT_ERROR("addbmm_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("addbmm_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::addbmm_", "");
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, const Tensor &, Scalar, Scalar>(const_cast<Tensor&>(*this), batch1, batch2, beta, alpha);
 #endif
 }
+
+// aten::addbmm(Tensor self, Tensor batch1, Tensor batch2, *, Scalar beta=1, Scalar alpha=1) -> Tensor
 inline Tensor Tensor::addbmm(const Tensor & batch1, const Tensor & batch2, Scalar beta, Scalar alpha) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, batch1, batch2);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::addbmm(const_cast<Tensor&>(*this), batch1, batch2, beta, alpha);
             break;
         default:
-            AT_ERROR("addbmm not implemented for ", at::toString(key_set()));
+            AT_ERROR("addbmm not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::addbmm", "");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, const Tensor &, Scalar, Scalar>(const_cast<Tensor&>(*this), batch1, batch2, beta, alpha);
 #endif
 }
+
+// aten::addcdiv_(Tensor(a!) self, Tensor tensor1, Tensor tensor2, *, Scalar value=1) -> Tensor(a!)
 inline Tensor & Tensor::addcdiv_(const Tensor & tensor1, const Tensor & tensor2, Scalar value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4752,6 +5850,8 @@ inline Tensor & Tensor::addcdiv_(const Tensor & tensor1, const Tensor & tensor2,
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, const Tensor &, Scalar>(const_cast<Tensor&>(*this), tensor1, tensor2, value);
 #endif
 }
+
+// aten::random_.from(Tensor(a!) self, int from, int? to, *, Generator? generator=None) -> Tensor(a!)
 inline Tensor & Tensor::random_(int64_t from, c10::optional<int64_t> to, Generator generator) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4761,6 +5861,8 @@ inline Tensor & Tensor::random_(int64_t from, c10::optional<int64_t> to, Generat
     return op.callUnboxed<Tensor &, Tensor &, int64_t, c10::optional<int64_t>, Generator>(const_cast<Tensor&>(*this), from, to, generator);
 #endif
 }
+
+// aten::random_.to(Tensor(a!) self, int to, *, Generator? generator=None) -> Tensor(a!)
 inline Tensor & Tensor::random_(int64_t to, Generator generator) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4770,6 +5872,8 @@ inline Tensor & Tensor::random_(int64_t to, Generator generator) const {
     return op.callUnboxed<Tensor &, Tensor &, int64_t, Generator>(const_cast<Tensor&>(*this), to, generator);
 #endif
 }
+
+// aten::random_(Tensor(a!) self, *, Generator? generator=None) -> Tensor(a!)
 inline Tensor & Tensor::random_(Generator generator) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4779,6 +5883,8 @@ inline Tensor & Tensor::random_(Generator generator) const {
     return op.callUnboxed<Tensor &, Tensor &, Generator>(const_cast<Tensor&>(*this), generator);
 #endif
 }
+
+// aten::uniform_(Tensor(a!) self, float from=0, float to=1, *, Generator? generator=None) -> Tensor(a!)
 inline Tensor & Tensor::uniform_(double from, double to, Generator generator) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4788,6 +5894,8 @@ inline Tensor & Tensor::uniform_(double from, double to, Generator generator) co
     return op.callUnboxed<Tensor &, Tensor &, double, double, Generator>(const_cast<Tensor&>(*this), from, to, generator);
 #endif
 }
+
+// aten::cauchy_(Tensor(a!) self, float median=0, float sigma=1, *, Generator? generator=None) -> Tensor(a!)
 inline Tensor & Tensor::cauchy_(double median, double sigma, Generator generator) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4797,6 +5905,8 @@ inline Tensor & Tensor::cauchy_(double median, double sigma, Generator generator
     return op.callUnboxed<Tensor &, Tensor &, double, double, Generator>(const_cast<Tensor&>(*this), median, sigma, generator);
 #endif
 }
+
+// aten::log_normal_(Tensor(a!) self, float mean=1, float std=2, *, Generator? generator=None) -> Tensor(a!)
 inline Tensor & Tensor::log_normal_(double mean, double std, Generator generator) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4806,6 +5916,8 @@ inline Tensor & Tensor::log_normal_(double mean, double std, Generator generator
     return op.callUnboxed<Tensor &, Tensor &, double, double, Generator>(const_cast<Tensor&>(*this), mean, std, generator);
 #endif
 }
+
+// aten::exponential_(Tensor(a!) self, float lambd=1, *, Generator? generator=None) -> Tensor(a!)
 inline Tensor & Tensor::exponential_(double lambd, Generator generator) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4815,6 +5927,8 @@ inline Tensor & Tensor::exponential_(double lambd, Generator generator) const {
     return op.callUnboxed<Tensor &, Tensor &, double, Generator>(const_cast<Tensor&>(*this), lambd, generator);
 #endif
 }
+
+// aten::geometric_(Tensor(a!) self, float p, *, Generator? generator=None) -> Tensor(a!)
 inline Tensor & Tensor::geometric_(double p, Generator generator) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4824,22 +5938,28 @@ inline Tensor & Tensor::geometric_(double p, Generator generator) const {
     return op.callUnboxed<Tensor &, Tensor &, double, Generator>(const_cast<Tensor&>(*this), p, generator);
 #endif
 }
+
+// aten::diag(Tensor self, int diagonal=0) -> Tensor
 inline Tensor Tensor::diag(int64_t diagonal) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::diag(const_cast<Tensor&>(*this), diagonal);
             break;
         default:
-            AT_ERROR("diag not implemented for ", at::toString(key_set()));
+            AT_ERROR("diag not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::diag", "");
     return op.callUnboxed<Tensor, const Tensor &, int64_t>(const_cast<Tensor&>(*this), diagonal);
 #endif
 }
+
+// aten::cross(Tensor self, Tensor other, int? dim=None) -> Tensor
 inline Tensor Tensor::cross(const Tensor & other, c10::optional<int64_t> dim) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4849,6 +5969,8 @@ inline Tensor Tensor::cross(const Tensor & other, c10::optional<int64_t> dim) co
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, c10::optional<int64_t>>(const_cast<Tensor&>(*this), other, dim);
 #endif
 }
+
+// aten::triu(Tensor self, int diagonal=0) -> Tensor
 inline Tensor Tensor::triu(int64_t diagonal) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4858,6 +5980,8 @@ inline Tensor Tensor::triu(int64_t diagonal) const {
     return op.callUnboxed<Tensor, const Tensor &, int64_t>(const_cast<Tensor&>(*this), diagonal);
 #endif
 }
+
+// aten::tril(Tensor self, int diagonal=0) -> Tensor
 inline Tensor Tensor::tril(int64_t diagonal) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -4867,27 +5991,35 @@ inline Tensor Tensor::tril(int64_t diagonal) const {
     return op.callUnboxed<Tensor, const Tensor &, int64_t>(const_cast<Tensor&>(*this), diagonal);
 #endif
 }
+
+// aten::trace(Tensor self) -> Tensor
 inline Tensor Tensor::trace() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::trace(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("trace not implemented for ", at::toString(key_set()));
+            AT_ERROR("trace not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::trace", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::ne.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::ne(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::ne_Scalar(const_cast<Tensor&>(*this), other);
             break;
@@ -4895,18 +6027,22 @@ inline Tensor Tensor::ne(Scalar other) const {
             return QuantizedCPUType::ne_Scalar(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("ne not implemented for ", at::toString(key_set()));
+            AT_ERROR("ne not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::ne", "Scalar");
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::ne.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::ne(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::ne_Tensor(const_cast<Tensor&>(*this), other);
             break;
@@ -4914,18 +6050,22 @@ inline Tensor Tensor::ne(const Tensor & other) const {
             return QuantizedCPUType::ne_Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("ne not implemented for ", at::toString(key_set()));
+            AT_ERROR("ne not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::ne", "Tensor");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::eq.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::eq(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::eq_Scalar(const_cast<Tensor&>(*this), other);
             break;
@@ -4933,18 +6073,22 @@ inline Tensor Tensor::eq(Scalar other) const {
             return QuantizedCPUType::eq_Scalar(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("eq not implemented for ", at::toString(key_set()));
+            AT_ERROR("eq not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::eq", "Scalar");
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::eq.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::eq(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::eq_Tensor(const_cast<Tensor&>(*this), other);
             break;
@@ -4952,18 +6096,22 @@ inline Tensor Tensor::eq(const Tensor & other) const {
             return QuantizedCPUType::eq_Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("eq not implemented for ", at::toString(key_set()));
+            AT_ERROR("eq not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::eq", "Tensor");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::ge.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::ge(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::ge_Scalar(const_cast<Tensor&>(*this), other);
             break;
@@ -4971,18 +6119,22 @@ inline Tensor Tensor::ge(Scalar other) const {
             return QuantizedCPUType::ge_Scalar(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("ge not implemented for ", at::toString(key_set()));
+            AT_ERROR("ge not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::ge", "Scalar");
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::ge.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::ge(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::ge_Tensor(const_cast<Tensor&>(*this), other);
             break;
@@ -4990,18 +6142,22 @@ inline Tensor Tensor::ge(const Tensor & other) const {
             return QuantizedCPUType::ge_Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("ge not implemented for ", at::toString(key_set()));
+            AT_ERROR("ge not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::ge", "Tensor");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::le.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::le(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::le_Scalar(const_cast<Tensor&>(*this), other);
             break;
@@ -5009,18 +6165,22 @@ inline Tensor Tensor::le(Scalar other) const {
             return QuantizedCPUType::le_Scalar(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("le not implemented for ", at::toString(key_set()));
+            AT_ERROR("le not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::le", "Scalar");
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::le.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::le(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::le_Tensor(const_cast<Tensor&>(*this), other);
             break;
@@ -5028,18 +6188,22 @@ inline Tensor Tensor::le(const Tensor & other) const {
             return QuantizedCPUType::le_Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("le not implemented for ", at::toString(key_set()));
+            AT_ERROR("le not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::le", "Tensor");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::gt.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::gt(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::gt_Scalar(const_cast<Tensor&>(*this), other);
             break;
@@ -5047,18 +6211,22 @@ inline Tensor Tensor::gt(Scalar other) const {
             return QuantizedCPUType::gt_Scalar(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("gt not implemented for ", at::toString(key_set()));
+            AT_ERROR("gt not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::gt", "Scalar");
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::gt.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::gt(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::gt_Tensor(const_cast<Tensor&>(*this), other);
             break;
@@ -5066,18 +6234,22 @@ inline Tensor Tensor::gt(const Tensor & other) const {
             return QuantizedCPUType::gt_Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("gt not implemented for ", at::toString(key_set()));
+            AT_ERROR("gt not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::gt", "Tensor");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::lt.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::lt(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::lt_Scalar(const_cast<Tensor&>(*this), other);
             break;
@@ -5085,18 +6257,22 @@ inline Tensor Tensor::lt(Scalar other) const {
             return QuantizedCPUType::lt_Scalar(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("lt not implemented for ", at::toString(key_set()));
+            AT_ERROR("lt not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::lt", "Scalar");
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::lt.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::lt(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::lt_Tensor(const_cast<Tensor&>(*this), other);
             break;
@@ -5104,45 +6280,55 @@ inline Tensor Tensor::lt(const Tensor & other) const {
             return QuantizedCPUType::lt_Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("lt not implemented for ", at::toString(key_set()));
+            AT_ERROR("lt not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::lt", "Tensor");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::take(Tensor self, Tensor index) -> Tensor
 inline Tensor Tensor::take(const Tensor & index) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, index);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::take(const_cast<Tensor&>(*this), index);
             break;
         default:
-            AT_ERROR("take not implemented for ", at::toString(key_set()));
+            AT_ERROR("take not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::take", "");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), index);
 #endif
 }
+
+// aten::index_select(Tensor self, int dim, Tensor index) -> Tensor
 inline Tensor Tensor::index_select(int64_t dim, const Tensor & index) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, index);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::index_select(const_cast<Tensor&>(*this), dim, index);
             break;
         default:
-            AT_ERROR("index_select not implemented for ", at::toString(key_set()));
+            AT_ERROR("index_select not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::index_select", "");
     return op.callUnboxed<Tensor, const Tensor &, int64_t, const Tensor &>(const_cast<Tensor&>(*this), dim, index);
 #endif
 }
+
+// aten::index_select.dimname(Tensor self, Dimname dim, Tensor index) -> Tensor
 inline Tensor Tensor::index_select(Dimname dim, const Tensor & index) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5152,38 +6338,48 @@ inline Tensor Tensor::index_select(Dimname dim, const Tensor & index) const {
     return op.callUnboxed<Tensor, const Tensor &, Dimname, const Tensor &>(const_cast<Tensor&>(*this), dim, index);
 #endif
 }
+
+// aten::masked_select(Tensor self, Tensor mask) -> Tensor
 inline Tensor Tensor::masked_select(const Tensor & mask) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, mask);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::masked_select(const_cast<Tensor&>(*this), mask);
             break;
         default:
-            AT_ERROR("masked_select not implemented for ", at::toString(key_set()));
+            AT_ERROR("masked_select not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::masked_select", "");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), mask);
 #endif
 }
+
+// aten::nonzero(Tensor self) -> Tensor
 inline Tensor Tensor::nonzero() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::nonzero(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("nonzero not implemented for ", at::toString(key_set()));
+            AT_ERROR("nonzero not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::nonzero", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::nonzero_numpy(Tensor self) -> Tensor[]
 inline std::vector<Tensor> Tensor::nonzero_numpy() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5193,22 +6389,28 @@ inline std::vector<Tensor> Tensor::nonzero_numpy() const {
     return op.callUnboxed<std::vector<Tensor>, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::gather(Tensor self, int dim, Tensor index, *, bool sparse_grad=False) -> Tensor
 inline Tensor Tensor::gather(int64_t dim, const Tensor & index, bool sparse_grad) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, index);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::gather(const_cast<Tensor&>(*this), dim, index, sparse_grad);
             break;
         default:
-            AT_ERROR("gather not implemented for ", at::toString(key_set()));
+            AT_ERROR("gather not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::gather", "");
     return op.callUnboxed<Tensor, const Tensor &, int64_t, const Tensor &, bool>(const_cast<Tensor&>(*this), dim, index, sparse_grad);
 #endif
 }
+
+// aten::gather.dimname(Tensor self, Dimname dim, Tensor index, *, bool sparse_grad=False) -> Tensor
 inline Tensor Tensor::gather(Dimname dim, const Tensor & index, bool sparse_grad) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5218,6 +6420,8 @@ inline Tensor Tensor::gather(Dimname dim, const Tensor & index, bool sparse_grad
     return op.callUnboxed<Tensor, const Tensor &, Dimname, const Tensor &, bool>(const_cast<Tensor&>(*this), dim, index, sparse_grad);
 #endif
 }
+
+// aten::addcmul(Tensor self, Tensor tensor1, Tensor tensor2, *, Scalar value=1) -> Tensor
 inline Tensor Tensor::addcmul(const Tensor & tensor1, const Tensor & tensor2, Scalar value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5227,6 +6431,8 @@ inline Tensor Tensor::addcmul(const Tensor & tensor1, const Tensor & tensor2, Sc
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, const Tensor &, Scalar>(const_cast<Tensor&>(*this), tensor1, tensor2, value);
 #endif
 }
+
+// aten::addcmul_(Tensor(a!) self, Tensor tensor1, Tensor tensor2, *, Scalar value=1) -> Tensor(a!)
 inline Tensor & Tensor::addcmul_(const Tensor & tensor1, const Tensor & tensor2, Scalar value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5236,6 +6442,8 @@ inline Tensor & Tensor::addcmul_(const Tensor & tensor1, const Tensor & tensor2,
     return op.callUnboxed<Tensor &, Tensor &, const Tensor &, const Tensor &, Scalar>(const_cast<Tensor&>(*this), tensor1, tensor2, value);
 #endif
 }
+
+// aten::addcdiv(Tensor self, Tensor tensor1, Tensor tensor2, *, Scalar value=1) -> Tensor
 inline Tensor Tensor::addcdiv(const Tensor & tensor1, const Tensor & tensor2, Scalar value) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5245,22 +6453,28 @@ inline Tensor Tensor::addcdiv(const Tensor & tensor1, const Tensor & tensor2, Sc
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, const Tensor &, Scalar>(const_cast<Tensor&>(*this), tensor1, tensor2, value);
 #endif
 }
+
+// aten::lstsq(Tensor self, Tensor A) -> (Tensor solution, Tensor QR)
 inline std::tuple<Tensor,Tensor> Tensor::lstsq(const Tensor & A) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, A);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::lstsq(const_cast<Tensor&>(*this), A);
             break;
         default:
-            AT_ERROR("lstsq not implemented for ", at::toString(key_set()));
+            AT_ERROR("lstsq not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::lstsq", "");
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), A);
 #endif
 }
+
+// aten::triangular_solve(Tensor self, Tensor A, bool upper=True, bool transpose=False, bool unitriangular=False) -> (Tensor solution, Tensor cloned_coefficient)
 inline std::tuple<Tensor,Tensor> Tensor::triangular_solve(const Tensor & A, bool upper, bool transpose, bool unitriangular) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5270,6 +6484,8 @@ inline std::tuple<Tensor,Tensor> Tensor::triangular_solve(const Tensor & A, bool
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, const Tensor &, bool, bool, bool>(const_cast<Tensor&>(*this), A, upper, transpose, unitriangular);
 #endif
 }
+
+// aten::symeig(Tensor self, bool eigenvectors=False, bool upper=True) -> (Tensor eigenvalues, Tensor eigenvectors)
 inline std::tuple<Tensor,Tensor> Tensor::symeig(bool eigenvectors, bool upper) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5279,22 +6495,28 @@ inline std::tuple<Tensor,Tensor> Tensor::symeig(bool eigenvectors, bool upper) c
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, bool, bool>(const_cast<Tensor&>(*this), eigenvectors, upper);
 #endif
 }
+
+// aten::eig(Tensor self, bool eigenvectors=False) -> (Tensor eigenvalues, Tensor eigenvectors)
 inline std::tuple<Tensor,Tensor> Tensor::eig(bool eigenvectors) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::eig(const_cast<Tensor&>(*this), eigenvectors);
             break;
         default:
-            AT_ERROR("eig not implemented for ", at::toString(key_set()));
+            AT_ERROR("eig not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::eig", "");
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, bool>(const_cast<Tensor&>(*this), eigenvectors);
 #endif
 }
+
+// aten::svd(Tensor self, bool some=True, bool compute_uv=True) -> (Tensor U, Tensor S, Tensor V)
 inline std::tuple<Tensor,Tensor,Tensor> Tensor::svd(bool some, bool compute_uv) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5304,6 +6526,8 @@ inline std::tuple<Tensor,Tensor,Tensor> Tensor::svd(bool some, bool compute_uv) 
     return op.callUnboxed<std::tuple<Tensor,Tensor,Tensor>, const Tensor &, bool, bool>(const_cast<Tensor&>(*this), some, compute_uv);
 #endif
 }
+
+// aten::cholesky(Tensor self, bool upper=False) -> Tensor
 inline Tensor Tensor::cholesky(bool upper) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5313,6 +6537,8 @@ inline Tensor Tensor::cholesky(bool upper) const {
     return op.callUnboxed<Tensor, const Tensor &, bool>(const_cast<Tensor&>(*this), upper);
 #endif
 }
+
+// aten::cholesky_solve(Tensor self, Tensor input2, bool upper=False) -> Tensor
 inline Tensor Tensor::cholesky_solve(const Tensor & input2, bool upper) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5322,6 +6548,8 @@ inline Tensor Tensor::cholesky_solve(const Tensor & input2, bool upper) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, bool>(const_cast<Tensor&>(*this), input2, upper);
 #endif
 }
+
+// aten::solve(Tensor self, Tensor A) -> (Tensor solution, Tensor LU)
 inline std::tuple<Tensor,Tensor> Tensor::solve(const Tensor & A) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5331,22 +6559,28 @@ inline std::tuple<Tensor,Tensor> Tensor::solve(const Tensor & A) const {
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), A);
 #endif
 }
+
+// aten::cholesky_inverse(Tensor self, bool upper=False) -> Tensor
 inline Tensor Tensor::cholesky_inverse(bool upper) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::cholesky_inverse(const_cast<Tensor&>(*this), upper);
             break;
         default:
-            AT_ERROR("cholesky_inverse not implemented for ", at::toString(key_set()));
+            AT_ERROR("cholesky_inverse not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::cholesky_inverse", "");
     return op.callUnboxed<Tensor, const Tensor &, bool>(const_cast<Tensor&>(*this), upper);
 #endif
 }
+
+// aten::qr(Tensor self, bool some=True) -> (Tensor Q, Tensor R)
 inline std::tuple<Tensor,Tensor> Tensor::qr(bool some) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5356,54 +6590,68 @@ inline std::tuple<Tensor,Tensor> Tensor::qr(bool some) const {
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, bool>(const_cast<Tensor&>(*this), some);
 #endif
 }
+
+// aten::geqrf(Tensor self) -> (Tensor a, Tensor tau)
 inline std::tuple<Tensor,Tensor> Tensor::geqrf() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::geqrf(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("geqrf not implemented for ", at::toString(key_set()));
+            AT_ERROR("geqrf not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::geqrf", "");
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::orgqr(Tensor self, Tensor input2) -> Tensor
 inline Tensor Tensor::orgqr(const Tensor & input2) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, input2);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::orgqr(const_cast<Tensor&>(*this), input2);
             break;
         default:
-            AT_ERROR("orgqr not implemented for ", at::toString(key_set()));
+            AT_ERROR("orgqr not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::orgqr", "");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), input2);
 #endif
 }
+
+// aten::ormqr(Tensor self, Tensor input2, Tensor input3, bool left=True, bool transpose=False) -> Tensor
 inline Tensor Tensor::ormqr(const Tensor & input2, const Tensor & input3, bool left, bool transpose) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, input2, input3);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::ormqr(const_cast<Tensor&>(*this), input2, input3, left, transpose);
             break;
         default:
-            AT_ERROR("ormqr not implemented for ", at::toString(key_set()));
+            AT_ERROR("ormqr not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::ormqr", "");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, const Tensor &, bool, bool>(const_cast<Tensor&>(*this), input2, input3, left, transpose);
 #endif
 }
+
+// aten::lu_solve(Tensor self, Tensor LU_data, Tensor LU_pivots) -> Tensor
 inline Tensor Tensor::lu_solve(const Tensor & LU_data, const Tensor & LU_pivots) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5413,38 +6661,48 @@ inline Tensor Tensor::lu_solve(const Tensor & LU_data, const Tensor & LU_pivots)
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), LU_data, LU_pivots);
 #endif
 }
+
+// aten::multinomial(Tensor self, int num_samples, bool replacement=False, *, Generator? generator=None) -> Tensor
 inline Tensor Tensor::multinomial(int64_t num_samples, bool replacement, Generator generator) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::multinomial(const_cast<Tensor&>(*this), num_samples, replacement, generator);
             break;
         default:
-            AT_ERROR("multinomial not implemented for ", at::toString(key_set()));
+            AT_ERROR("multinomial not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::multinomial", "");
     return op.callUnboxed<Tensor, const Tensor &, int64_t, bool, Generator>(const_cast<Tensor&>(*this), num_samples, replacement, generator);
 #endif
 }
+
+// aten::lgamma(Tensor self) -> Tensor
 inline Tensor Tensor::lgamma() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::lgamma(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("lgamma not implemented for ", at::toString(key_set()));
+            AT_ERROR("lgamma not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::lgamma", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::digamma(Tensor self) -> Tensor
 inline Tensor Tensor::digamma() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5454,6 +6712,8 @@ inline Tensor Tensor::digamma() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::polygamma(int n, Tensor self) -> Tensor
 inline Tensor Tensor::polygamma(int64_t n) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5463,38 +6723,48 @@ inline Tensor Tensor::polygamma(int64_t n) const {
     return op.callUnboxed<Tensor, int64_t, const Tensor &>(n, const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::erfinv(Tensor self) -> Tensor
 inline Tensor Tensor::erfinv() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::erfinv(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("erfinv not implemented for ", at::toString(key_set()));
+            AT_ERROR("erfinv not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::erfinv", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::erfinv_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::erfinv_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::erfinv_(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("erfinv_ not implemented for ", at::toString(key_set()));
+            AT_ERROR("erfinv_ not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::erfinv_", "");
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::sign(Tensor self) -> Tensor
 inline Tensor Tensor::sign() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5504,6 +6774,8 @@ inline Tensor Tensor::sign() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::sign_(Tensor(a!) self) -> Tensor(a!)
 inline Tensor & Tensor::sign_() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5513,6 +6785,8 @@ inline Tensor & Tensor::sign_() const {
     return op.callUnboxed<Tensor &, Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::dist(Tensor self, Tensor other, Scalar p=2) -> Tensor
 inline Tensor Tensor::dist(const Tensor & other, Scalar p) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5522,6 +6796,8 @@ inline Tensor Tensor::dist(const Tensor & other, Scalar p) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other, p);
 #endif
 }
+
+// aten::atan2(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::atan2(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5531,118 +6807,148 @@ inline Tensor Tensor::atan2(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::lerp.Scalar(Tensor self, Tensor end, Scalar weight) -> Tensor
 inline Tensor Tensor::lerp(const Tensor & end, Scalar weight) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, end);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::lerp_Scalar(const_cast<Tensor&>(*this), end, weight);
             break;
         default:
-            AT_ERROR("lerp not implemented for ", at::toString(key_set()));
+            AT_ERROR("lerp not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::lerp", "Scalar");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, Scalar>(const_cast<Tensor&>(*this), end, weight);
 #endif
 }
+
+// aten::lerp.Tensor(Tensor self, Tensor end, Tensor weight) -> Tensor
 inline Tensor Tensor::lerp(const Tensor & end, const Tensor & weight) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, end, weight);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::lerp_Tensor(const_cast<Tensor&>(*this), end, weight);
             break;
         default:
-            AT_ERROR("lerp not implemented for ", at::toString(key_set()));
+            AT_ERROR("lerp not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::lerp", "Tensor");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), end, weight);
 #endif
 }
+
+// aten::histc(Tensor self, int bins=100, Scalar min=0, Scalar max=0) -> Tensor
 inline Tensor Tensor::histc(int64_t bins, Scalar min, Scalar max) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::histc(const_cast<Tensor&>(*this), bins, min, max);
             break;
         default:
-            AT_ERROR("histc not implemented for ", at::toString(key_set()));
+            AT_ERROR("histc not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::histc", "");
     return op.callUnboxed<Tensor, const Tensor &, int64_t, Scalar, Scalar>(const_cast<Tensor&>(*this), bins, min, max);
 #endif
 }
+
+// aten::fmod.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::fmod(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::fmod_Scalar(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("fmod not implemented for ", at::toString(key_set()));
+            AT_ERROR("fmod not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::fmod", "Scalar");
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::fmod.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::fmod(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::fmod_Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("fmod not implemented for ", at::toString(key_set()));
+            AT_ERROR("fmod not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::fmod", "Tensor");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::remainder.Scalar(Tensor self, Scalar other) -> Tensor
 inline Tensor Tensor::remainder(Scalar other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::remainder_Scalar(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("remainder not implemented for ", at::toString(key_set()));
+            AT_ERROR("remainder not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::remainder", "Scalar");
     return op.callUnboxed<Tensor, const Tensor &, Scalar>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::remainder.Tensor(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::remainder(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::remainder_Tensor(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("remainder not implemented for ", at::toString(key_set()));
+            AT_ERROR("remainder not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::remainder", "Tensor");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::min.other(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::min(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5652,11 +6958,15 @@ inline Tensor Tensor::min(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::min(Tensor self) -> Tensor
 inline Tensor Tensor::min() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::min(const_cast<Tensor&>(*this));
             break;
@@ -5664,13 +6974,15 @@ inline Tensor Tensor::min() const {
             return QuantizedCPUType::min(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("min not implemented for ", at::toString(key_set()));
+            AT_ERROR("min not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::min", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::max.other(Tensor self, Tensor other) -> Tensor
 inline Tensor Tensor::max(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5680,11 +6992,15 @@ inline Tensor Tensor::max(const Tensor & other) const {
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::max(Tensor self) -> Tensor
 inline Tensor Tensor::max() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::max(const_cast<Tensor&>(*this));
             break;
@@ -5692,34 +7008,42 @@ inline Tensor Tensor::max() const {
             return QuantizedCPUType::max(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("max not implemented for ", at::toString(key_set()));
+            AT_ERROR("max not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::max", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::median(Tensor self) -> Tensor
 inline Tensor Tensor::median() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::median(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("median not implemented for ", at::toString(key_set()));
+            AT_ERROR("median not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::median", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::sort(Tensor self, int dim=-1, bool descending=False) -> (Tensor values, Tensor indices)
 inline std::tuple<Tensor,Tensor> Tensor::sort(int64_t dim, bool descending) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::sort(const_cast<Tensor&>(*this), dim, descending);
             break;
@@ -5727,13 +7051,15 @@ inline std::tuple<Tensor,Tensor> Tensor::sort(int64_t dim, bool descending) cons
             return QuantizedCPUType::sort(const_cast<Tensor&>(*this), dim, descending);
             break;
         default:
-            AT_ERROR("sort not implemented for ", at::toString(key_set()));
+            AT_ERROR("sort not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::sort", "");
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, int64_t, bool>(const_cast<Tensor&>(*this), dim, descending);
 #endif
 }
+
+// aten::sort.dimname(Tensor self, Dimname dim, bool descending=False) -> (Tensor values, Tensor indices)
 inline std::tuple<Tensor,Tensor> Tensor::sort(Dimname dim, bool descending) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5743,6 +7069,8 @@ inline std::tuple<Tensor,Tensor> Tensor::sort(Dimname dim, bool descending) cons
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, Dimname, bool>(const_cast<Tensor&>(*this), dim, descending);
 #endif
 }
+
+// aten::argsort(Tensor self, int dim=-1, bool descending=False) -> Tensor
 inline Tensor Tensor::argsort(int64_t dim, bool descending) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5752,6 +7080,8 @@ inline Tensor Tensor::argsort(int64_t dim, bool descending) const {
     return op.callUnboxed<Tensor, const Tensor &, int64_t, bool>(const_cast<Tensor&>(*this), dim, descending);
 #endif
 }
+
+// aten::argsort.dimname(Tensor self, Dimname dim, bool descending=False) -> Tensor
 inline Tensor Tensor::argsort(Dimname dim, bool descending) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5761,11 +7091,15 @@ inline Tensor Tensor::argsort(Dimname dim, bool descending) const {
     return op.callUnboxed<Tensor, const Tensor &, Dimname, bool>(const_cast<Tensor&>(*this), dim, descending);
 #endif
 }
+
+// aten::topk(Tensor self, int k, int dim=-1, bool largest=True, bool sorted=True) -> (Tensor values, Tensor indices)
 inline std::tuple<Tensor,Tensor> Tensor::topk(int64_t k, int64_t dim, bool largest, bool sorted) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::topk(const_cast<Tensor&>(*this), k, dim, largest, sorted);
             break;
@@ -5773,13 +7107,15 @@ inline std::tuple<Tensor,Tensor> Tensor::topk(int64_t k, int64_t dim, bool large
             return QuantizedCPUType::topk(const_cast<Tensor&>(*this), k, dim, largest, sorted);
             break;
         default:
-            AT_ERROR("topk not implemented for ", at::toString(key_set()));
+            AT_ERROR("topk not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::topk", "");
     return op.callUnboxed<std::tuple<Tensor,Tensor>, const Tensor &, int64_t, int64_t, bool, bool>(const_cast<Tensor&>(*this), k, dim, largest, sorted);
 #endif
 }
+
+// aten::all(Tensor self) -> Tensor
 inline Tensor Tensor::all() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5789,59 +7125,75 @@ inline Tensor Tensor::all() const {
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::any(Tensor self) -> Tensor
 inline Tensor Tensor::any() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::any(const_cast<Tensor&>(*this));
             break;
         default:
-            AT_ERROR("any not implemented for ", at::toString(key_set()));
+            AT_ERROR("any not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::any", "");
     return op.callUnboxed<Tensor, const Tensor &>(const_cast<Tensor&>(*this));
 #endif
 }
+
+// aten::renorm(Tensor self, Scalar p, int dim, Scalar maxnorm) -> Tensor
 inline Tensor Tensor::renorm(Scalar p, int64_t dim, Scalar maxnorm) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::renorm(const_cast<Tensor&>(*this), p, dim, maxnorm);
             break;
         default:
-            AT_ERROR("renorm not implemented for ", at::toString(key_set()));
+            AT_ERROR("renorm not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::renorm", "");
     return op.callUnboxed<Tensor, const Tensor &, Scalar, int64_t, Scalar>(const_cast<Tensor&>(*this), p, dim, maxnorm);
 #endif
 }
+
+// aten::unfold(Tensor(a) self, int dimension, int size, int step) -> Tensor(a)
 inline Tensor Tensor::unfold(int64_t dimension, int64_t size, int64_t step) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::unfold(const_cast<Tensor&>(*this), dimension, size, step);
             break;
         default:
-            AT_ERROR("unfold not implemented for ", at::toString(key_set()));
+            AT_ERROR("unfold not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::unfold", "");
     return op.callUnboxed<Tensor, const Tensor &, int64_t, int64_t, int64_t>(const_cast<Tensor&>(*this), dimension, size, step);
 #endif
 }
+
+// aten::equal(Tensor self, Tensor other) -> bool
 inline bool Tensor::equal(const Tensor & other) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, other);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::equal(const_cast<Tensor&>(*this), other);
             break;
@@ -5849,29 +7201,35 @@ inline bool Tensor::equal(const Tensor & other) const {
             return QuantizedCPUType::equal(const_cast<Tensor&>(*this), other);
             break;
         default:
-            AT_ERROR("equal not implemented for ", at::toString(key_set()));
+            AT_ERROR("equal not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::equal", "");
     return op.callUnboxed<bool, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), other);
 #endif
 }
+
+// aten::pow.Tensor_Tensor(Tensor self, Tensor exponent) -> Tensor
 inline Tensor Tensor::pow(const Tensor & exponent) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
-    switch(dispatchKeyToBackend(c10::impl::dispatchTypeId(key_set(),
-                                c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect)))) {
+    DispatchKeySet _dk_set = c10::detail::multi_dispatch_key_set(*this, exponent);
+    DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+    DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+    switch (dispatchKeyToBackend(_dk)) {
         case Backend::CPU:
             return CPUType::pow_Tensor_Tensor(const_cast<Tensor&>(*this), exponent);
             break;
         default:
-            AT_ERROR("pow not implemented for ", at::toString(key_set()));
+            AT_ERROR("pow not implemented for ", at::toString(_dk));
     }
 #else
     static c10::OperatorHandle op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::pow", "Tensor_Tensor");
     return op.callUnboxed<Tensor, const Tensor &, const Tensor &>(const_cast<Tensor&>(*this), exponent);
 #endif
 }
+
+// aten::normal_(Tensor(a!) self, float mean=0, float std=1, *, Generator? generator=None) -> Tensor(a!)
 inline Tensor & Tensor::normal_(double mean, double std, Generator generator) const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);
@@ -5881,6 +7239,8 @@ inline Tensor & Tensor::normal_(double mean, double std, Generator generator) co
     return op.callUnboxed<Tensor &, Tensor &, double, double, Generator>(const_cast<Tensor&>(*this), mean, std, generator);
 #endif
 }
+
+// aten::alias(Tensor(a) self) -> Tensor(a)
 inline Tensor Tensor::alias() const {
 #ifdef USE_STATIC_DISPATCH
     at::AutoNonVariableTypeMode _var_guard(true);

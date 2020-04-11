@@ -13,290 +13,416 @@ namespace at {
 
 namespace {
 
+// aten::_cudnn_init_dropout_state(float dropout, bool train, int dropout_seed, *, ScalarType dtype, Layout layout, Device device, bool pin_memory=False) -> Tensor
 Tensor _cudnn_init_dropout_state(double dropout, bool train, int64_t dropout_seed, const TensorOptions & options) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_cudnn_init_dropout_state", "");
-  return op.callUnboxedWithDispatchKey<Tensor, double, bool, int64_t, const TensorOptions &>(key, dropout, train, dropout_seed, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_cudnn_init_dropout_state", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, double, bool, int64_t, const TensorOptions &>(_dk, dropout, train, dropout_seed, options);
 }
+// aten::arange(Scalar end, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor arange(Scalar end, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::arange", "");
-  return op.callUnboxedWithDispatchKey<Tensor, Scalar, const TensorOptions &>(key, end, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::arange", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, Scalar, const TensorOptions &>(_dk, end, options);
 }
+// aten::arange.start(Scalar start, Scalar end, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor arange_start(Scalar start, Scalar end, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::arange", "start");
-  return op.callUnboxedWithDispatchKey<Tensor, Scalar, Scalar, const TensorOptions &>(key, start, end, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::arange", "start");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, Scalar, Scalar, const TensorOptions &>(_dk, start, end, options);
 }
+// aten::arange.start_step(Scalar start, Scalar end, Scalar step, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor arange_start_step(Scalar start, Scalar end, Scalar step, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::arange", "start_step");
-  return op.callUnboxedWithDispatchKey<Tensor, Scalar, Scalar, Scalar, const TensorOptions &>(key, start, end, step, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::arange", "start_step");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, Scalar, Scalar, Scalar, const TensorOptions &>(_dk, start, end, step, options);
 }
+// aten::bartlett_window(int window_length, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor bartlett_window(int64_t window_length, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::bartlett_window", "");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, const TensorOptions &>(key, window_length, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::bartlett_window", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, const TensorOptions &>(_dk, window_length, options);
 }
+// aten::bartlett_window.periodic(int window_length, bool periodic, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor bartlett_window_periodic(int64_t window_length, bool periodic, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::bartlett_window", "periodic");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, bool, const TensorOptions &>(key, window_length, periodic, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::bartlett_window", "periodic");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, bool, const TensorOptions &>(_dk, window_length, periodic, options);
 }
+// aten::blackman_window(int window_length, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor blackman_window(int64_t window_length, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::blackman_window", "");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, const TensorOptions &>(key, window_length, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::blackman_window", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, const TensorOptions &>(_dk, window_length, options);
 }
+// aten::blackman_window.periodic(int window_length, bool periodic, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor blackman_window_periodic(int64_t window_length, bool periodic, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::blackman_window", "periodic");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, bool, const TensorOptions &>(key, window_length, periodic, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::blackman_window", "periodic");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, bool, const TensorOptions &>(_dk, window_length, periodic, options);
 }
+// aten::empty.names(int[] size, *, Dimname[]? names, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None, MemoryFormat? memory_format=None) -> Tensor
 Tensor empty_names(IntArrayRef size, c10::optional<DimnameList> names, const TensorOptions & options={}, c10::optional<MemoryFormat> memory_format=c10::nullopt) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::empty", "names");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, c10::optional<DimnameList>, const TensorOptions &, c10::optional<MemoryFormat>>(key, size, names, options, memory_format);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::empty", "names");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, c10::optional<DimnameList>, const TensorOptions &, c10::optional<MemoryFormat>>(_dk, size, names, options, memory_format);
 }
+// aten::empty.memory_format(int[] size, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None, MemoryFormat? memory_format=None) -> Tensor
 Tensor empty_memory_format(IntArrayRef size, const TensorOptions & options={}, c10::optional<MemoryFormat> memory_format=c10::nullopt) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::empty", "memory_format");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, const TensorOptions &, c10::optional<MemoryFormat>>(key, size, options, memory_format);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::empty", "memory_format");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, const TensorOptions &, c10::optional<MemoryFormat>>(_dk, size, options, memory_format);
 }
+// aten::_empty_affine_quantized(int[] size, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None, float scale=1, int zero_point=0, MemoryFormat? memory_format=contiguous_format) -> Tensor
 Tensor _empty_affine_quantized(IntArrayRef size, const TensorOptions & options={}, double scale=1, int64_t zero_point=0, c10::optional<MemoryFormat> memory_format=MemoryFormat::Contiguous) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_empty_affine_quantized", "");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, const TensorOptions &, double, int64_t, c10::optional<MemoryFormat>>(key, size, options, scale, zero_point, memory_format);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_empty_affine_quantized", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, const TensorOptions &, double, int64_t, c10::optional<MemoryFormat>>(_dk, size, options, scale, zero_point, memory_format);
 }
+// aten::_empty_per_channel_affine_quantized(int[] size, *, Tensor scales, Tensor zero_points, int axis, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None, MemoryFormat? memory_format=contiguous_format) -> Tensor
 Tensor _empty_per_channel_affine_quantized(IntArrayRef size, const Tensor & scales, const Tensor & zero_points, int64_t axis, const TensorOptions & options={}, c10::optional<MemoryFormat> memory_format=MemoryFormat::Contiguous) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_empty_per_channel_affine_quantized", "");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, const Tensor &, const Tensor &, int64_t, const TensorOptions &, c10::optional<MemoryFormat>>(key, size, scales, zero_points, axis, options, memory_format);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_empty_per_channel_affine_quantized", "");
+  DispatchKeySet _dk_set = DispatchKeySet(options.computeDispatchKey()) | c10::detail::multi_dispatch_key_set(scales, zero_points);
+  DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+  DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, const Tensor &, const Tensor &, int64_t, const TensorOptions &, c10::optional<MemoryFormat>>(_dk, size, scales, zero_points, axis, options, memory_format);
 }
+// aten::empty_strided(int[] size, int[] stride, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor empty_strided(IntArrayRef size, IntArrayRef stride, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::empty_strided", "");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, IntArrayRef, const TensorOptions &>(key, size, stride, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::empty_strided", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, IntArrayRef, const TensorOptions &>(_dk, size, stride, options);
 }
+// aten::eye(int n, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor eye(int64_t n, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::eye", "");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, const TensorOptions &>(key, n, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::eye", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, const TensorOptions &>(_dk, n, options);
 }
+// aten::eye.m(int n, int m, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor eye_m(int64_t n, int64_t m, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::eye", "m");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, int64_t, const TensorOptions &>(key, n, m, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::eye", "m");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, int64_t, const TensorOptions &>(_dk, n, m, options);
 }
+// aten::full.names(int[] size, Scalar fill_value, *, Dimname[]? names, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor full_names(IntArrayRef size, Scalar fill_value, c10::optional<DimnameList> names, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::full", "names");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, Scalar, c10::optional<DimnameList>, const TensorOptions &>(key, size, fill_value, names, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::full", "names");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, Scalar, c10::optional<DimnameList>, const TensorOptions &>(_dk, size, fill_value, names, options);
 }
+// aten::full(int[] size, Scalar fill_value, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor full(IntArrayRef size, Scalar fill_value, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::full", "");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, Scalar, const TensorOptions &>(key, size, fill_value, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::full", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, Scalar, const TensorOptions &>(_dk, size, fill_value, options);
 }
+// aten::from_file(str filename, bool? shared=None, int? size=0, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor from_file(std::string filename, c10::optional<bool> shared=c10::nullopt, c10::optional<int64_t> size=0, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::from_file", "");
-  return op.callUnboxedWithDispatchKey<Tensor, std::string, c10::optional<bool>, c10::optional<int64_t>, const TensorOptions &>(key, filename, shared, size, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::from_file", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, std::string, c10::optional<bool>, c10::optional<int64_t>, const TensorOptions &>(_dk, filename, shared, size, options);
 }
+// aten::hann_window(int window_length, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor hann_window(int64_t window_length, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::hann_window", "");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, const TensorOptions &>(key, window_length, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::hann_window", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, const TensorOptions &>(_dk, window_length, options);
 }
+// aten::hann_window.periodic(int window_length, bool periodic, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor hann_window_periodic(int64_t window_length, bool periodic, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::hann_window", "periodic");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, bool, const TensorOptions &>(key, window_length, periodic, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::hann_window", "periodic");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, bool, const TensorOptions &>(_dk, window_length, periodic, options);
 }
+// aten::hamming_window(int window_length, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor hamming_window(int64_t window_length, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::hamming_window", "");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, const TensorOptions &>(key, window_length, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::hamming_window", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, const TensorOptions &>(_dk, window_length, options);
 }
+// aten::hamming_window.periodic(int window_length, bool periodic, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor hamming_window_periodic(int64_t window_length, bool periodic, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::hamming_window", "periodic");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, bool, const TensorOptions &>(key, window_length, periodic, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::hamming_window", "periodic");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, bool, const TensorOptions &>(_dk, window_length, periodic, options);
 }
+// aten::hamming_window.periodic_alpha(int window_length, bool periodic, float alpha, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor hamming_window_periodic_alpha(int64_t window_length, bool periodic, double alpha, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::hamming_window", "periodic_alpha");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, bool, double, const TensorOptions &>(key, window_length, periodic, alpha, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::hamming_window", "periodic_alpha");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, bool, double, const TensorOptions &>(_dk, window_length, periodic, alpha, options);
 }
+// aten::hamming_window.periodic_alpha_beta(int window_length, bool periodic, float alpha, float beta, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor hamming_window_periodic_alpha_beta(int64_t window_length, bool periodic, double alpha, double beta, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::hamming_window", "periodic_alpha_beta");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, bool, double, double, const TensorOptions &>(key, window_length, periodic, alpha, beta, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::hamming_window", "periodic_alpha_beta");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, bool, double, double, const TensorOptions &>(_dk, window_length, periodic, alpha, beta, options);
 }
+// aten::linspace(Scalar start, Scalar end, int steps=100, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor linspace(Scalar start, Scalar end, int64_t steps=100, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::linspace", "");
-  return op.callUnboxedWithDispatchKey<Tensor, Scalar, Scalar, int64_t, const TensorOptions &>(key, start, end, steps, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::linspace", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, Scalar, Scalar, int64_t, const TensorOptions &>(_dk, start, end, steps, options);
 }
+// aten::logspace(Scalar start, Scalar end, int steps=100, float base=10.0, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor logspace(Scalar start, Scalar end, int64_t steps=100, double base=10.0, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::logspace", "");
-  return op.callUnboxedWithDispatchKey<Tensor, Scalar, Scalar, int64_t, double, const TensorOptions &>(key, start, end, steps, base, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::logspace", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, Scalar, Scalar, int64_t, double, const TensorOptions &>(_dk, start, end, steps, base, options);
 }
+// aten::ones.names(int[] size, *, Dimname[]? names, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor ones_names(IntArrayRef size, c10::optional<DimnameList> names, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::ones", "names");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, c10::optional<DimnameList>, const TensorOptions &>(key, size, names, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::ones", "names");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, c10::optional<DimnameList>, const TensorOptions &>(_dk, size, names, options);
 }
+// aten::ones(int[] size, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor ones(IntArrayRef size, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::ones", "");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, const TensorOptions &>(key, size, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::ones", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, const TensorOptions &>(_dk, size, options);
 }
+// aten::scalar_tensor(Scalar s, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor scalar_tensor(Scalar s, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::scalar_tensor", "");
-  return op.callUnboxedWithDispatchKey<Tensor, Scalar, const TensorOptions &>(key, s, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::scalar_tensor", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, Scalar, const TensorOptions &>(_dk, s, options);
 }
+// aten::rand.names(int[] size, *, Dimname[]? names, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor rand_names(IntArrayRef size, c10::optional<DimnameList> names, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::rand", "names");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, c10::optional<DimnameList>, const TensorOptions &>(key, size, names, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::rand", "names");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, c10::optional<DimnameList>, const TensorOptions &>(_dk, size, names, options);
 }
+// aten::rand.generator_with_names(int[] size, *, Generator? generator, Dimname[]? names, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor rand_generator_with_names(IntArrayRef size, Generator generator, c10::optional<DimnameList> names, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::rand", "generator_with_names");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, Generator, c10::optional<DimnameList>, const TensorOptions &>(key, size, generator, names, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::rand", "generator_with_names");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, Generator, c10::optional<DimnameList>, const TensorOptions &>(_dk, size, generator, names, options);
 }
+// aten::rand(int[] size, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor rand(IntArrayRef size, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::rand", "");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, const TensorOptions &>(key, size, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::rand", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, const TensorOptions &>(_dk, size, options);
 }
+// aten::rand.generator(int[] size, *, Generator? generator, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor rand_generator(IntArrayRef size, Generator generator, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::rand", "generator");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, Generator, const TensorOptions &>(key, size, generator, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::rand", "generator");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, Generator, const TensorOptions &>(_dk, size, generator, options);
 }
+// aten::randint(int high, int[] size, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor randint(int64_t high, IntArrayRef size, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randint", "");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, IntArrayRef, const TensorOptions &>(key, high, size, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randint", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, IntArrayRef, const TensorOptions &>(_dk, high, size, options);
 }
+// aten::randint.generator(int high, int[] size, *, Generator? generator, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor randint_generator(int64_t high, IntArrayRef size, Generator generator, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randint", "generator");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, IntArrayRef, Generator, const TensorOptions &>(key, high, size, generator, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randint", "generator");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, IntArrayRef, Generator, const TensorOptions &>(_dk, high, size, generator, options);
 }
+// aten::randint.low(int low, int high, int[] size, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor randint_low(int64_t low, int64_t high, IntArrayRef size, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randint", "low");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, int64_t, IntArrayRef, const TensorOptions &>(key, low, high, size, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randint", "low");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, int64_t, IntArrayRef, const TensorOptions &>(_dk, low, high, size, options);
 }
+// aten::randint.low_generator(int low, int high, int[] size, *, Generator? generator, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor randint_low_generator(int64_t low, int64_t high, IntArrayRef size, Generator generator, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randint", "low_generator");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, int64_t, IntArrayRef, Generator, const TensorOptions &>(key, low, high, size, generator, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randint", "low_generator");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, int64_t, IntArrayRef, Generator, const TensorOptions &>(_dk, low, high, size, generator, options);
 }
+// aten::randn(int[] size, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor randn(IntArrayRef size, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randn", "");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, const TensorOptions &>(key, size, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randn", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, const TensorOptions &>(_dk, size, options);
 }
+// aten::randn.generator(int[] size, *, Generator? generator, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor randn_generator(IntArrayRef size, Generator generator, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randn", "generator");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, Generator, const TensorOptions &>(key, size, generator, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randn", "generator");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, Generator, const TensorOptions &>(_dk, size, generator, options);
 }
+// aten::randn.names(int[] size, *, Dimname[]? names, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor randn_names(IntArrayRef size, c10::optional<DimnameList> names, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randn", "names");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, c10::optional<DimnameList>, const TensorOptions &>(key, size, names, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randn", "names");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, c10::optional<DimnameList>, const TensorOptions &>(_dk, size, names, options);
 }
+// aten::randn.generator_with_names(int[] size, *, Generator? generator, Dimname[]? names, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor randn_generator_with_names(IntArrayRef size, Generator generator, c10::optional<DimnameList> names, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randn", "generator_with_names");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, Generator, c10::optional<DimnameList>, const TensorOptions &>(key, size, generator, names, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randn", "generator_with_names");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, Generator, c10::optional<DimnameList>, const TensorOptions &>(_dk, size, generator, names, options);
 }
+// aten::randperm(int n, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor randperm(int64_t n, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randperm", "");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, const TensorOptions &>(key, n, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randperm", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, const TensorOptions &>(_dk, n, options);
 }
+// aten::randperm.generator(int n, *, Generator? generator, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor randperm_generator(int64_t n, Generator generator, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randperm", "generator");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, Generator, const TensorOptions &>(key, n, generator, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::randperm", "generator");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, Generator, const TensorOptions &>(_dk, n, generator, options);
 }
+// aten::range.step(Scalar start, Scalar end, Scalar step=1, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor range_step(Scalar start, Scalar end, Scalar step=1, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::range", "step");
-  return op.callUnboxedWithDispatchKey<Tensor, Scalar, Scalar, Scalar, const TensorOptions &>(key, start, end, step, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::range", "step");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, Scalar, Scalar, Scalar, const TensorOptions &>(_dk, start, end, step, options);
 }
+// aten::range(Scalar start, Scalar end, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor range(Scalar start, Scalar end, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::range", "");
-  return op.callUnboxedWithDispatchKey<Tensor, Scalar, Scalar, const TensorOptions &>(key, start, end, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::range", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, Scalar, Scalar, const TensorOptions &>(_dk, start, end, options);
 }
+// aten::zeros.names(int[] size, *, Dimname[]? names, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor zeros_names(IntArrayRef size, c10::optional<DimnameList> names, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::zeros", "names");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, c10::optional<DimnameList>, const TensorOptions &>(key, size, names, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::zeros", "names");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, c10::optional<DimnameList>, const TensorOptions &>(_dk, size, names, options);
 }
+// aten::zeros(int[] size, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor zeros(IntArrayRef size, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::zeros", "");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, const TensorOptions &>(key, size, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::zeros", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, const TensorOptions &>(_dk, size, options);
 }
+// aten::sparse_coo_tensor.size(int[] size, *, ScalarType dtype, Layout layout, Device device, bool pin_memory=False) -> Tensor
 Tensor sparse_coo_tensor_size(IntArrayRef size, const TensorOptions & options) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::sparse_coo_tensor", "size");
-  return op.callUnboxedWithDispatchKey<Tensor, IntArrayRef, const TensorOptions &>(key, size, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::sparse_coo_tensor", "size");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, IntArrayRef, const TensorOptions &>(_dk, size, options);
 }
+// aten::sparse_coo_tensor.indices(Tensor indices, Tensor values, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor sparse_coo_tensor_indices(const Tensor & indices, const Tensor & values, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::sparse_coo_tensor", "indices");
-  return op.callUnboxedWithDispatchKey<Tensor, const Tensor &, const Tensor &, const TensorOptions &>(key, indices, values, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::sparse_coo_tensor", "indices");
+  DispatchKeySet _dk_set = DispatchKeySet(options.computeDispatchKey()) | c10::detail::multi_dispatch_key_set(indices, values);
+  DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+  DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, const Tensor &, const Tensor &, const TensorOptions &>(_dk, indices, values, options);
 }
+// aten::sparse_coo_tensor.indices_size(Tensor indices, Tensor values, int[] size, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor sparse_coo_tensor_indices_size(const Tensor & indices, const Tensor & values, IntArrayRef size, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::sparse_coo_tensor", "indices_size");
-  return op.callUnboxedWithDispatchKey<Tensor, const Tensor &, const Tensor &, IntArrayRef, const TensorOptions &>(key, indices, values, size, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::sparse_coo_tensor", "indices_size");
+  DispatchKeySet _dk_set = DispatchKeySet(options.computeDispatchKey()) | c10::detail::multi_dispatch_key_set(indices, values);
+  DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+  DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, const Tensor &, const Tensor &, IntArrayRef, const TensorOptions &>(_dk, indices, values, size, options);
 }
+// aten::_sparse_coo_tensor_unsafe(Tensor indices, Tensor values, int[] size, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor _sparse_coo_tensor_unsafe(const Tensor & indices, const Tensor & values, IntArrayRef size, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_sparse_coo_tensor_unsafe", "");
-  return op.callUnboxedWithDispatchKey<Tensor, const Tensor &, const Tensor &, IntArrayRef, const TensorOptions &>(key, indices, values, size, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_sparse_coo_tensor_unsafe", "");
+  DispatchKeySet _dk_set = DispatchKeySet(options.computeDispatchKey()) | c10::detail::multi_dispatch_key_set(indices, values);
+  DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+  DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, const Tensor &, const Tensor &, IntArrayRef, const TensorOptions &>(_dk, indices, values, size, options);
 }
+// aten::_sparse_coo_tensor_with_dims(int sparse_dim, int dense_dim, int[] size, *, ScalarType dtype, Layout layout, Device device, bool pin_memory=False) -> Tensor
 Tensor _sparse_coo_tensor_with_dims(int64_t sparse_dim, int64_t dense_dim, IntArrayRef size, const TensorOptions & options) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_sparse_coo_tensor_with_dims", "");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, int64_t, IntArrayRef, const TensorOptions &>(key, sparse_dim, dense_dim, size, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_sparse_coo_tensor_with_dims", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, int64_t, IntArrayRef, const TensorOptions &>(_dk, sparse_dim, dense_dim, size, options);
 }
+// aten::_sparse_coo_tensor_with_dims_and_tensors(int sparse_dim, int dense_dim, int[] size, Tensor indices, Tensor values, *, ScalarType dtype, Layout layout, Device device, bool pin_memory=False) -> Tensor
 Tensor _sparse_coo_tensor_with_dims_and_tensors(int64_t sparse_dim, int64_t dense_dim, IntArrayRef size, const Tensor & indices, const Tensor & values, const TensorOptions & options) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_sparse_coo_tensor_with_dims_and_tensors", "");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, int64_t, IntArrayRef, const Tensor &, const Tensor &, const TensorOptions &>(key, sparse_dim, dense_dim, size, indices, values, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::_sparse_coo_tensor_with_dims_and_tensors", "");
+  DispatchKeySet _dk_set = DispatchKeySet(options.computeDispatchKey()) | c10::detail::multi_dispatch_key_set(indices, values);
+  DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+  DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, int64_t, IntArrayRef, const Tensor &, const Tensor &, const TensorOptions &>(_dk, sparse_dim, dense_dim, size, indices, values, options);
 }
+// aten::to.dtype_layout(Tensor self, *, ScalarType dtype, Layout layout, Device device, bool pin_memory=False, bool non_blocking=False, bool copy=False, MemoryFormat? memory_format=None) -> Tensor
 Tensor to_dtype_layout(const Tensor & self, const TensorOptions & options, bool non_blocking=false, bool copy=false, c10::optional<MemoryFormat> memory_format=c10::nullopt) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::to", "dtype_layout");
-  return op.callUnboxedWithDispatchKey<Tensor, const Tensor &, const TensorOptions &, bool, bool, c10::optional<MemoryFormat>>(key, self, options, non_blocking, copy, memory_format);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::to", "dtype_layout");
+  DispatchKeySet _dk_set = DispatchKeySet(options.computeDispatchKey()) | c10::detail::multi_dispatch_key_set(self);
+  DispatchKeySet _dk_mask = c10::DispatchKeySet(c10::DispatchKeySet::FULL).remove(DispatchKey::BackendSelect);
+  DispatchKey _dk = c10::impl::dispatchTypeId(_dk_set, _dk_mask);
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, const Tensor &, const TensorOptions &, bool, bool, c10::optional<MemoryFormat>>(_dk, self, options, non_blocking, copy, memory_format);
 }
+// aten::tril_indices(int row, int col, int offset=0, *, ScalarType? dtype=long, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor tril_indices(int64_t row, int64_t col, int64_t offset=0, const TensorOptions & options=at::kLong) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::tril_indices", "");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, int64_t, int64_t, const TensorOptions &>(key, row, col, offset, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::tril_indices", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, int64_t, int64_t, const TensorOptions &>(_dk, row, col, offset, options);
 }
+// aten::triu_indices(int row, int col, int offset=0, *, ScalarType? dtype=long, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor triu_indices(int64_t row, int64_t col, int64_t offset=0, const TensorOptions & options=at::kLong) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::triu_indices", "");
-  return op.callUnboxedWithDispatchKey<Tensor, int64_t, int64_t, int64_t, const TensorOptions &>(key, row, col, offset, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::triu_indices", "");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, int64_t, int64_t, int64_t, const TensorOptions &>(_dk, row, col, offset, options);
 }
+// aten::normal.float_float(float mean, float std, int[] size, *, Generator? generator=None, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
 Tensor normal_float_float(double mean, double std, IntArrayRef size, Generator generator=nullptr, const TensorOptions & options={}) {
-  DispatchKey key = options.computeDispatchKey();
-  static auto op = c10::Dispatcher::singleton().findSchemaOrThrow("aten::normal", "float_float");
-  return op.callUnboxedWithDispatchKey<Tensor, double, double, IntArrayRef, Generator, const TensorOptions &>(key, mean, std, size, generator, options);
+  static OperatorHandle OP = c10::Dispatcher::singleton().findSchemaOrThrow("aten::normal", "float_float");
+  DispatchKey _dk = options.computeDispatchKey();
+  globalLegacyTypeDispatch().initForDispatchKey(_dk);
+  return OP.callUnboxedWithDispatchKey<Tensor, double, double, IntArrayRef, Generator, const TensorOptions &>(_dk, mean, std, size, generator, options);
 }
 
 static auto registry = torch::RegisterOperators()
